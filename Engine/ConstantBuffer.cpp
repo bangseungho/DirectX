@@ -17,8 +17,6 @@ ConstantBuffer::~ConstantBuffer()
 	}
 }
 
-
-
 void ConstantBuffer::Init(uint32 size, uint32 count)
 {
 	// 상수 버퍼는 256 바이트 배수로 만들어야 한다

@@ -33,6 +33,7 @@ void Game::Update()
 		Transform t;
 		t.offset = Vec4(0.75f, 0.f, 0.f, 0.f);
 		mesh->SetTransform(t);
+		mesh->SetObjCBIndex(0);
 
 		mesh->Render();
 	}
@@ -41,6 +42,7 @@ void Game::Update()
 		Transform t;
 		t.offset = Vec4(0.f, 0.75f, 0.f, 0.f);
 		mesh->SetTransform(t);
+		mesh->SetObjCBIndex(1);
 
 		mesh->Render();
 	}

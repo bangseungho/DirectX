@@ -1,6 +1,5 @@
 #pragma once
 
-// [유니티짱]과 같이 정점으로 이루어진 물체
 class Mesh
 {
 public:
@@ -8,6 +7,7 @@ public:
 	void Render();
 
 	void SetTransform(const Transform& t) { _transform = t; }
+	void SetObjCBIndex(UINT i) { _objCBIndex = i; }
 
 private:
 	ComPtr<ID3D12Resource>		_vertexBuffer;
@@ -15,5 +15,7 @@ private:
 	uint32 _vertexCount = 0;
 
 	Transform _transform = {};
+
+	UINT _objCBIndex = -1;
 };
 

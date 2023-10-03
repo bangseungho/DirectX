@@ -45,6 +45,15 @@
     <ClCompile Include="ConstantBuffer.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="MathHelper.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="FrameResource.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="d3dUtil.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -79,6 +88,18 @@
     </ClInclude>
     <ClInclude Include="ConstantBuffer.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="UploadBuffer.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="MathHelper.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="FrameResource.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dUtil.h">
+      <Filter>Utils</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

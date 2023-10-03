@@ -2,23 +2,38 @@
 
 // °¢Á¾ include
 #include <windows.h>
+#include <fstream>
+#include <sstream>
+#include <format>
+#include <cassert>
+#include <filesystem>
+#include <algorithm>
 #include <tchar.h>
+#include <comdef.h>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
 #include <array>
 #include <list>
 #include <map>
+#include <unordered_map>
 using namespace std;
 
 #include "d3dx12.h"
 #include <d3d12.h>
+#include <dxgi1_4.h>
 #include <wrl.h>
 #include <d3dcompiler.h>
 #include <dxgi.h>
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
+#include <DirectXCollision.h>
 #include <DirectXColors.h>
+//#include "DDSTextureLoader.h"
+//#include <DirectXTex/DirectXTex.h>
+//#include <DirectXTex/DirectXTex.inl>
+#include "MathHelper.h"
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
@@ -42,6 +57,13 @@ using Vec2		= XMFLOAT2;
 using Vec3		= XMFLOAT3;
 using Vec4		= XMFLOAT4;
 using Matrix	= XMMATRIX;
+
+template<class T>
+using sptr = std::shared_ptr<T>;
+template<class T>
+using uptr = std::unique_ptr<T>;
+template<class T>
+using wptr = std::weak_ptr<T>;
 
 enum
 {
@@ -72,3 +94,5 @@ struct Transform
 #define ROOT_SIGNATURE	GEngine->GetRootSignature()->GetSignature()
 
 extern unique_ptr<class Engine> GEngine;
+
+const int gNumFrameResources = 3;
