@@ -15,6 +15,7 @@ public:
 
 public:
 	void Init(const WindowInfo& info);
+	void Update();
 	void Render();
 
 public:
@@ -30,7 +31,7 @@ public:
 	void ResizeWindow(int32 width, int32 height);
 
 private:
-	// 그려질 화면 크기 관련
+	// window size
 	WindowInfo		_window;
 	D3D12_VIEWPORT	_viewport = {};
 	D3D12_RECT		_scissorRect = {};

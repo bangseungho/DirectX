@@ -90,6 +90,7 @@ struct Transform
 };
 
 #define DEVICE					GEngine->GetDevice()->GetDevice()
+#define CMD_QUEUE				GEngine->GetCmdQueue()
 #define CMD_LIST				GEngine->GetCmdQueue()->GetCmdList()
 #define CURR_FRAME_RESOURCE		GEngine->GetCmdQueue()->GetCurrFrameResource()
 #define OBJECT_CB				GEngine->GetCmdQueue()->GetCurrFrameResource()->ObjectCB->Resource()

@@ -10,8 +10,11 @@ public:
 	void SetObjCBIndex(UINT i) { _objCBIndex = i; }
 
 private:
-	ComPtr<ID3D12Resource>		_vertexBuffer;
-	D3D12_VERTEX_BUFFER_VIEW	_vertexBufferView = {};
+	ComPtr<ID3D12Resource> _vertexBuffer			= nullptr;
+	ComPtr<ID3D12Resource> _vertexBufferUploader	= nullptr;
+
+	D3D12_VERTEX_BUFFER_VIEW _vertexBufferView = {};
+
 	uint32 _vertexCount = 0;
 
 	Transform _transform = {};

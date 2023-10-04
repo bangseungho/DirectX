@@ -9,6 +9,7 @@ shared_ptr<Shader> shader = make_shared<Shader>();
 void Game::Init(const WindowInfo& info)
 {
 	GEngine->Init(info);
+	CMD_LIST->Reset(CMD_QUEUE->GetCmdAlloc().Get(), nullptr);
 
 	vector<Vertex> vec(3);
 	vec[0].pos = Vec3(0.f, 0.5f, 0.5f);
@@ -22,11 +23,17 @@ void Game::Init(const WindowInfo& info)
 
 	shader->Init(L"..\\Resources\\Shader\\default.hlsli");
 
+	ThrowIfFailed(CMD_LIST->Close());
+	ID3D12CommandList* cmdsLists[] = { CMD_LIST.Get() };
+	CMD_QUEUE->GetCmdQueue()->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+
 	GEngine->GetCmdQueue()->WaitSync();
 }
 
 void Game::Update()
 {
+	GEngine->Update();
+
 	GEngine->RenderBegin();
 
 	shader->Update();

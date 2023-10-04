@@ -164,7 +164,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="CommandQueue.h" />
-    <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="d3dUtil.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="Device.h" />
@@ -181,7 +180,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandQueue.cpp" />
-    <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="d3dUtil.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Engine.cpp" />

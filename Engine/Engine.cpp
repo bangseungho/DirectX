@@ -29,6 +29,11 @@ void Engine::Init(const WindowInfo& info)
 	_cmdQueue->BuildFrameResource(_device->GetDevice());
 }
 
+void Engine::Update()
+{
+	_cmdQueue->Update();
+}
+
 void Engine::Render()
 {
 	RenderBegin();
@@ -40,7 +45,6 @@ void Engine::Render()
 
 void Engine::RenderBegin()
 {
-	_cmdQueue->Update();
 	_cmdQueue->RenderBegin(&_viewport, &_scissorRect);
 }
 
