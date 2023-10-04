@@ -6,22 +6,22 @@
 #include "RootSignature.h"
 #include "Mesh.h"
 #include "Shader.h"
-#include "ConstantBuffer.h"
+#include "FrameResource.h"
 
 class Engine
 {
 public:
+	~Engine();
 
+public:
 	void Init(const WindowInfo& info);
 	void Render();
-	void BuildFrameResources();
 
 public:
 	sptr<Device> GetDevice() { return _device; }
 	sptr<CommandQueue> GetCmdQueue() { return _cmdQueue; }
 	sptr<SwapChain> GetSwapChain() { return _swapChain; }
 	sptr<RootSignature> GetRootSignature() { return _rootSignature; }
-	sptr<ConstantBuffer> GetCB() { return _cb; }
 
 public:
 	void RenderBegin();
@@ -39,10 +39,5 @@ private:
 	sptr<CommandQueue> _cmdQueue;
 	sptr<SwapChain> _swapChain;
 	sptr<RootSignature> _rootSignature;
-	sptr<ConstantBuffer> _cb;
-
-	std::vector<uptr<FrameResource>> mFrameResources;
-	FrameResource* mCurrFrameResource = nullptr;
-	int mCurrFrameResourceIndex = 0;
 };
 

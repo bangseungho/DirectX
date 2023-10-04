@@ -37,6 +37,20 @@ void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapC
 	_fenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
 }
 
+void CommandQueue::Update()
+{
+	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % gNumFrameResources;
+	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
+
+	if (mCurrFrameResource->Fence != 0 && _fence->GetCompletedValue() < mCurrFrameResource->Fence)
+	{
+		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
+		ThrowIfFailed(_fence->SetEventOnCompletion(mCurrFrameResource->Fence, eventHandle));
+		WaitForSingleObject(eventHandle, INFINITE);
+		CloseHandle(eventHandle);
+	}
+}
+
 void CommandQueue::WaitSync()
 {
 	// Advance the fence value to mark commands up to this fence point.
@@ -58,11 +72,21 @@ void CommandQueue::WaitSync()
 	}
 }
 
+void CommandQueue::BuildFrameResource(ComPtr<ID3D12Device> device)
+{
+	for (int i = 0; i < gNumFrameResources; ++i)
+	{
+		mFrameResources.push_back(std::make_unique<FrameResource>(device, 0, 2));
+	}
+}
+
 
 void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 {
-	_cmdAlloc->Reset();
-	_cmdList->Reset(_cmdAlloc.Get(), nullptr);
+	auto cmdAlloc = mCurrFrameResource->_cmdAlloc;
+
+	cmdAlloc->Reset();
+	_cmdList->Reset(cmdAlloc.Get(), nullptr);
 
 	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
 		_swapChain->GetBackRTVBuffer().Get(),
@@ -70,7 +94,6 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 		D3D12_RESOURCE_STATE_RENDER_TARGET); // 외주 결과물
 
 	_cmdList->SetGraphicsRootSignature(ROOT_SIGNATURE.Get());
-	GEngine->GetCB()->Clear();
 
 	_cmdList->ResourceBarrier(1, &barrier);
 
@@ -103,7 +126,9 @@ void CommandQueue::RenderEnd()
 	// Wait until frame commands are complete.  This waiting is inefficient and is
 	// done for simplicity.  Later we will show how to organize our rendering code
 	// so we do not have to wait per frame.
-	WaitSync();
 
 	_swapChain->SwapIndex();
+
+	mCurrFrameResource->Fence = ++_fenceValue;
+	_cmdQueue->Signal(_fence.Get(), _fenceValue);
 }

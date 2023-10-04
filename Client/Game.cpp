@@ -3,6 +3,7 @@
 #include "Engine.h"
 
 shared_ptr<Mesh> mesh = make_shared<Mesh>();
+shared_ptr<Mesh> mesh2 = make_shared<Mesh>();
 shared_ptr<Shader> shader = make_shared<Shader>();
 
 void Game::Init(const WindowInfo& info)
@@ -17,6 +18,7 @@ void Game::Init(const WindowInfo& info)
 	vec[2].pos = Vec3(-0.5f, -0.5f, 0.5f);
 	vec[2].color = Vec4(0.f, 0.f, 1.f, 1.f);
 	mesh->Init(vec);
+	mesh2->Init(vec);
 
 	shader->Init(L"..\\Resources\\Shader\\default.hlsli");
 
@@ -32,8 +34,8 @@ void Game::Update()
 	{
 		Transform t;
 		t.offset = Vec4(0.75f, 0.f, 0.f, 0.f);
-		mesh->SetTransform(t);
 		mesh->SetObjCBIndex(0);
+		mesh->SetTransform(t);
 
 		mesh->Render();
 	}
@@ -41,10 +43,10 @@ void Game::Update()
 	{
 		Transform t;
 		t.offset = Vec4(0.f, 0.75f, 0.f, 0.f);
-		mesh->SetTransform(t);
-		mesh->SetObjCBIndex(1);
+		mesh2->SetObjCBIndex(1);
+		mesh2->SetTransform(t);
 
-		mesh->Render();
+		mesh2->Render();
 	}
 
 	GEngine->RenderEnd();

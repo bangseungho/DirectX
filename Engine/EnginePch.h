@@ -89,9 +89,11 @@ struct Transform
 	Vec4 offset;
 };
 
-#define DEVICE			GEngine->GetDevice()->GetDevice()
-#define CMD_LIST		GEngine->GetCmdQueue()->GetCmdList()
-#define ROOT_SIGNATURE	GEngine->GetRootSignature()->GetSignature()
+#define DEVICE					GEngine->GetDevice()->GetDevice()
+#define CMD_LIST				GEngine->GetCmdQueue()->GetCmdList()
+#define CURR_FRAME_RESOURCE		GEngine->GetCmdQueue()->GetCurrFrameResource()
+#define OBJECT_CB				GEngine->GetCmdQueue()->GetCurrFrameResource()->ObjectCB->Resource()
+#define ROOT_SIGNATURE			GEngine->GetRootSignature()->GetSignature()
 
 extern unique_ptr<class Engine> GEngine;
 

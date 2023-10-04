@@ -1,6 +1,11 @@
 #include "pch.h"
 #include "Engine.h"
-#include "FrameResource.h"
+
+Engine::~Engine()
+{
+	if (_device != nullptr)
+		_cmdQueue->WaitSync();
+}
 
 void Engine::Init(const WindowInfo& info)
 {
@@ -15,15 +20,13 @@ void Engine::Init(const WindowInfo& info)
 	_cmdQueue = make_shared<CommandQueue>();
 	_swapChain = make_shared<SwapChain>();
 	_rootSignature = make_shared<RootSignature>();
-	_cb = make_shared<ConstantBuffer>();
 
 	_device->Init();
 	_cmdQueue->Init(_device->GetDevice(), _swapChain);
 	_swapChain->Init(info, _device->GetDevice(), _device->GetDXGI(), _cmdQueue->GetCmdQueue());
 	_rootSignature->Init(_device->GetDevice());
-	_cb->Init(sizeof(Transform), 256);
 
-	BuildFrameResources();
+	_cmdQueue->BuildFrameResource(_device->GetDevice());
 }
 
 void Engine::Render()
@@ -35,16 +38,9 @@ void Engine::Render()
 	RenderEnd();
 }
 
-void Engine::BuildFrameResources()
-{
-	for (int i = 0; i < gNumFrameResources; ++i)
-	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(_device, 0, 2));
-	}
-}
-
 void Engine::RenderBegin()
 {
+	_cmdQueue->Update();
 	_cmdQueue->RenderBegin(&_viewport, &_scissorRect);
 }
 
