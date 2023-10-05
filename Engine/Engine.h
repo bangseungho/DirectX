@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "TableDescriptorHeap.h"
 #include "FrameResource.h"
+#include "Texture.h"
 
 class Engine
 {

@@ -19,6 +19,7 @@
 #include <map>
 #include <unordered_map>
 using namespace std;
+namespace fs = std::filesystem;
 
 #include "d3dx12.h"
 #include <d3d12.h>
@@ -30,9 +31,9 @@ using namespace std;
 #include <DirectXPackedVector.h>
 #include <DirectXCollision.h>
 #include <DirectXColors.h>
-//#include "DDSTextureLoader.h"
-//#include <DirectXTex/DirectXTex.h>
-//#include <DirectXTex/DirectXTex.inl>
+#include "DDSTextureLoader.h"
+#include <DirectXTex/DirectXTex.h>
+#include <DirectXTex/DirectXTex.inl>
 #include "MathHelper.h"
 using namespace DirectX;
 using namespace DirectX::PackedVector;
@@ -241,17 +242,6 @@ struct Material
 	float Roughness = .25f;
 	DirectX::XMFLOAT4X4 MatTransform = MathHelper::Identity4x4();
 	float TexOn = 1.f;
-};
-
-struct Texture
-{
-	// Unique material name for lookup.
-	std::string Name;
-
-	std::wstring Filename;
-
-	Microsoft::WRL::ComPtr<ID3D12Resource> Resource = nullptr;
-	Microsoft::WRL::ComPtr<ID3D12Resource> UploadHeap = nullptr;
 };
 
 #ifndef ThrowIfFailed

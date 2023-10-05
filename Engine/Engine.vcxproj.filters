@@ -51,9 +51,17 @@
     <ClCompile Include="d3dUtil.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="TableDescriptorHeap.cpp" />
     <ClCompile Include="ConstantBuffer.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="TableDescriptorHeap.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader.cpp">
+      <Filter>Utils</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,14 +104,22 @@
     <ClInclude Include="d3dUtil.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="TableDescriptorHeap.h" />
     <ClInclude Include="ConstantBuffer.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="TableDescriptorHeap.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Resources\Shader\default.hlsli">
+    <FxCompile Include="..\Resources\Shader\Default.hlsl">
       <Filter>Shader</Filter>
-    </None>
+    </FxCompile>
   </ItemGroup>
 </Project>
