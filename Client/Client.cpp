@@ -1,5 +1,7 @@
 ﻿// Client.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
+#include <Engine.h>
+
 #include "pch.h"
 #include "framework.h"
 #include "Client.h"
@@ -8,6 +10,7 @@
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
+Game gGame;
 WindowInfo GWindowInfo;
 
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -49,8 +52,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     GWindowInfo.height = 600;
     GWindowInfo.windowed = true;
 
-    unique_ptr<Game> game = make_unique<Game>();
-    game->Init(GWindowInfo);
+    gGame.Init(GWindowInfo);
 
     // 기본 메시지 루프입니다:
     while (true)
@@ -68,7 +70,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
 
 		// TODO
-        game->Update();
+        gGame.Update();
     }
 
     return (int) msg.wParam;
@@ -144,38 +146,46 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    int wmId, wmEvent;
+    PAINTSTRUCT ps;
+    HDC hdc;
+
     switch (message)
     {
+    case WM_SIZE:
+    case WM_LBUTTONDOWN:
+    case WM_LBUTTONUP:
+    case WM_RBUTTONDOWN:
+    case WM_RBUTTONUP:
+    case WM_MOUSEMOVE:
+    case WM_KEYDOWN:
+    case WM_KEYUP:
+        gGame.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
+        break;
     case WM_COMMAND:
+        wmId = LOWORD(wParam);
+        wmEvent = HIWORD(wParam);
+        switch (wmId)
         {
-            int wmId = LOWORD(wParam);
-            // 메뉴 선택을 구문 분석합니다:
-            switch (wmId)
-            {
-            case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-                break;
-            case IDM_EXIT:
-                DestroyWindow(hWnd);
-                break;
-            default:
-                return DefWindowProc(hWnd, message, wParam, lParam);
-            }
+        case IDM_ABOUT:
+            ::DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+            break;
+        case IDM_EXIT:
+            ::DestroyWindow(hWnd);
+            break;
+        default:
+            return(::DefWindowProc(hWnd, message, wParam, lParam));
         }
         break;
     case WM_PAINT:
-        {
-            PAINTSTRUCT ps;
-            HDC hdc = BeginPaint(hWnd, &ps);
-            // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
-            EndPaint(hWnd, &ps);
-        }
+        hdc = ::BeginPaint(hWnd, &ps);
+        EndPaint(hWnd, &ps);
         break;
     case WM_DESTROY:
-        PostQuitMessage(0);
+        ::PostQuitMessage(0);
         break;
     default:
-        return DefWindowProc(hWnd, message, wParam, lParam);
+        return(::DefWindowProc(hWnd, message, wParam, lParam));
     }
     return 0;
 }

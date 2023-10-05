@@ -65,13 +65,19 @@ void Game::Update()
 	shader->Update();
 
 	{
-		ObjectConstants o;
-		o.offset = Vec4(-0.4f, 0.f, -0.1f, 0.f);
-		o.color = Vec4(0.0f, 0.f, 0.f, 0.f);
+		static ObjectConstants o;
+
+		if (KEY_PRESSED('W'))
+			o.offset.y += 1.f * GET_SINGLE(Timer)->DeltaTime();
+		if (KEY_PRESSED('D'))
+			o.offset.x += 1.f * GET_SINGLE(Timer)->DeltaTime();
+		if (KEY_PRESSED('S'))
+			o.offset.y -= 1.f * GET_SINGLE(Timer)->DeltaTime();
+		if (KEY_PRESSED('A'))
+			o.offset.x -= 1.f * GET_SINGLE(Timer)->DeltaTime();
+
 		mesh->SetObjectConstant(o);
 
-		o.offset = Vec4(0.4f, 0.f, 0.f, 0.f);
-		o.color = Vec4(0.0f, 0.f, 0.f, 0.f);
 		mesh2->SetObjectConstant(o);
 
 		mesh->SetTexture(texture);
@@ -82,4 +88,33 @@ void Game::Update()
 	}
 
 	GEngine->RenderEnd();
+}
+
+LRESULT Game::OnProcessingWindowMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_ACTIVATE:
+	{
+		if (LOWORD(wParam) == WA_INACTIVE)
+			GET_SINGLE(Timer)->Stop();
+		else
+			GET_SINGLE(Timer)->Start();
+		break;
+	}
+	case WM_SIZE:
+		break;
+	case WM_LBUTTONDOWN:
+	case WM_RBUTTONDOWN:
+	case WM_LBUTTONUP:
+	case WM_RBUTTONUP:
+	case WM_MOUSEMOVE:
+		//OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
+		break;
+	case WM_KEYDOWN:
+	case WM_KEYUP:
+		//OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+		break;
+	}
+	return(0);
 }

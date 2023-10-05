@@ -10,6 +10,8 @@
 #include "FrameResource.h"
 #include "Texture.h"
 #include "DepthStencilBuffer.h"
+#include "InputManager.h"
+#include "Timer.h"
 
 class Engine
 {
