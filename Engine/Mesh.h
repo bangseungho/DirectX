@@ -3,21 +3,26 @@
 class Mesh
 {
 public:
-	void Init(vector<Vertex>& vec);
+	void Init(const vector<Vertex>& vertexBuffer, const vector<uint32>& indexBuffer);
 	void Render();
 
-	void SetTransform(const ObjectConstants& t) { _transform = t; }
+	void SetObjectConstant(const ObjectConstants& o) { _objectConstant = o; }
+
+public:
+	void CreateVertexBuffer(const vector<Vertex>& buffer);
+	void CreateIndexBuffer(const vector<uint32>& buffer);
 
 private:
-	ComPtr<ID3D12Resource> _vertexBuffer			= nullptr;
-	ComPtr<ID3D12Resource> _vertexBufferUploader	= nullptr;
-
+	ComPtr<ID3D12Resource> _vertexBuffer;
+	ComPtr<ID3D12Resource> _vertexBufferUploader;
 	D3D12_VERTEX_BUFFER_VIEW _vertexBufferView = {};
-
 	uint32 _vertexCount = 0;
 
-	ObjectConstants _transform = {};
+	ComPtr<ID3D12Resource> _indexBuffer;
+	ComPtr<ID3D12Resource> _indexBufferUploader;
+	D3D12_INDEX_BUFFER_VIEW _indexBufferView = {};
+	uint32 _indexCount = 0;
 
-	UINT _objCBIndex = -1;
+	ObjectConstants _objectConstant = {};
 };
 
