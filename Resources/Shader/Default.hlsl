@@ -7,7 +7,7 @@ struct ObjectConstants
 
 ConstantBuffer<ObjectConstants> gObjConstants : register(b0);
 
-Texture2D tex_0 : register(t0);
+Texture2D gDiffuseMap : register(t0);
 
 SamplerState gsamPointWrap        : register(s0);
 SamplerState gsamPointClamp       : register(s1);
@@ -47,6 +47,6 @@ VS_OUT VS_Main(VS_IN input)
 
 float4 PS_Main(VS_OUT input) : SV_Target
 {
-    float4 color = tex_0.Sample(gsamAnisotropicWrap, input.uv);
+    float4 color = gDiffuseMap.Sample(gsamAnisotropicWrap, input.uv);
     return color;
 }
