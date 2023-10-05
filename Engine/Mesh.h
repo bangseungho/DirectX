@@ -6,8 +6,7 @@ public:
 	void Init(vector<Vertex>& vec);
 	void Render();
 
-	void SetTransform(const Transform& t) { _transform = t; }
-	void SetObjCBIndex(UINT i) { _objCBIndex = i; }
+	void SetTransform(const ObjectConstants& t) { _transform = t; }
 
 private:
 	ComPtr<ID3D12Resource> _vertexBuffer			= nullptr;
@@ -17,7 +16,7 @@ private:
 
 	uint32 _vertexCount = 0;
 
-	Transform _transform = {};
+	ObjectConstants _transform = {};
 
 	UINT _objCBIndex = -1;
 };

@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "d3dUtil.h"
 
 using Microsoft::WRL::ComPtr;

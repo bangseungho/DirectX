@@ -13,28 +13,26 @@ void Mesh::Init(vector<Vertex>& vec)
 	_vertexBuffer = d3dUtil::CreateDefaultBuffer(DEVICE, CMD_LIST, &vec[0], bufferSize, _vertexBufferUploader);
 
 	_vertexBufferView.BufferLocation = _vertexBuffer->GetGPUVirtualAddress();
-	_vertexBufferView.StrideInBytes = sizeof(Vertex); // 정점 1개 크기
-	_vertexBufferView.SizeInBytes = bufferSize; // 버퍼의 크기	
+	_vertexBufferView.StrideInBytes = sizeof(Vertex); 
+	_vertexBufferView.SizeInBytes = bufferSize; 
 }
 
 void Mesh::Render()
 {
-	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
-
 	CMD_LIST->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	CMD_LIST->IASetVertexBuffers(0, 1, &_vertexBufferView); // Slot: (0~15)
 
-	// TODO
-	// 1) Buffer에다가 데이터 세팅
-	// 2) Buffer의 주소를 register에다가 전송
+	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 	ObjectConstants objConstants;
 	objConstants.offset = _transform.offset;
+	objConstants.color = _transform.color;
+	
+	{
+		D3D12_CPU_DESCRIPTOR_HANDLE handle = CURR_OBJECT_CB->PushData(0, &objConstants, objCBByteSize);
+		GEngine->GetTableDescHeap()->SetCBV(handle, CBV_REGISTER::b0);
+	}
 
-	CURR_FRAME_RESOURCE->ObjectCB->CopyData(_objCBIndex, objConstants);
-
-	D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = OBJECT_CB->GetGPUVirtualAddress() + _objCBIndex * objCBByteSize;
-
-	CMD_LIST->SetGraphicsRootConstantBufferView(0, objCBAddress);
+	GEngine->GetTableDescHeap()->CommitTable();
 
 	CMD_LIST->DrawInstanced(_vertexCount, 1, 0, 0);
 }

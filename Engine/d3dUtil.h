@@ -1,6 +1,50 @@
 #pragma once
 
-extern const int gNumFrameResources;
+// 각종 include
+#include <windows.h>
+#include <fstream>
+#include <sstream>
+#include <format>
+#include <cassert>
+#include <filesystem>
+#include <algorithm>
+#include <tchar.h>
+#include <comdef.h>
+#include <cstdint>
+#include <memory>
+#include <string>
+#include <vector>
+#include <array>
+#include <list>
+#include <map>
+#include <unordered_map>
+using namespace std;
+
+#include "d3dx12.h"
+#include <d3d12.h>
+#include <dxgi1_4.h>
+#include <wrl.h>
+#include <d3dcompiler.h>
+#include <dxgi.h>
+#include <DirectXMath.h>
+#include <DirectXPackedVector.h>
+#include <DirectXCollision.h>
+#include <DirectXColors.h>
+//#include "DDSTextureLoader.h"
+//#include <DirectXTex/DirectXTex.h>
+//#include <DirectXTex/DirectXTex.inl>
+#include "MathHelper.h"
+using namespace DirectX;
+using namespace DirectX::PackedVector;
+using namespace Microsoft::WRL;
+
+// 각종 lib
+#pragma comment(lib, "d3d12")
+#pragma comment(lib, "dxgi")
+#pragma comment(lib, "dxguid")
+#pragma comment(lib, "d3dcompiler")
+
+const int gNumFrameResources = 3;
 
 inline void d3dSetDebugName(IDXGIObject* obj, const char* name)
 {

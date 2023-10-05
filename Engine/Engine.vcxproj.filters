@@ -51,6 +51,10 @@
     <ClCompile Include="d3dUtil.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
+    <ClCompile Include="TableDescriptorHeap.cpp" />
+    <ClCompile Include="ConstantBuffer.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -83,9 +87,6 @@
     <ClInclude Include="Shader.h">
       <Filter>Resource</Filter>
     </ClInclude>
-    <ClInclude Include="UploadBuffer.h">
-      <Filter>Utils</Filter>
-    </ClInclude>
     <ClInclude Include="MathHelper.h">
       <Filter>Utils</Filter>
     </ClInclude>
@@ -94,6 +95,10 @@
     </ClInclude>
     <ClInclude Include="d3dUtil.h">
       <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="TableDescriptorHeap.h" />
+    <ClInclude Include="ConstantBuffer.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

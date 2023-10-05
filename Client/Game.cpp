@@ -9,7 +9,7 @@ shared_ptr<Shader> shader = make_shared<Shader>();
 void Game::Init(const WindowInfo& info)
 {
 	GEngine->Init(info);
-	CMD_LIST->Reset(CMD_QUEUE->GetCmdAlloc().Get(), nullptr);
+	CMD_LIST->Reset(CMD_ALLOC.Get(), nullptr);
 
 	vector<Vertex> vec(3);
 	vec[0].pos = Vec3(0.f, 0.5f, 0.5f);
@@ -25,8 +25,7 @@ void Game::Init(const WindowInfo& info)
 
 	ThrowIfFailed(CMD_LIST->Close());
 	ID3D12CommandList* cmdsLists[] = { CMD_LIST.Get() };
-	CMD_QUEUE->GetCmdQueue()->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
-
+	CMD_QUEUE->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
 	GEngine->GetCmdQueue()->WaitSync();
 }
 
@@ -39,21 +38,21 @@ void Game::Update()
 	shader->Update();
 
 	{
-		Transform t;
-		t.offset = Vec4(0.75f, 0.f, 0.f, 0.f);
-		mesh->SetObjCBIndex(0);
-		mesh->SetTransform(t);
+		ObjectConstants o;
+		o.offset = Vec4(0.75f, 0.f, 0.f, 0.f);
+		o.color = Vec4(0.75f, 0.f, 0.f, 0.f);
+		mesh->SetTransform(o);
 
 		mesh->Render();
 	}
 
 	{
-		Transform t;
-		t.offset = Vec4(0.f, 0.75f, 0.f, 0.f);
-		mesh2->SetObjCBIndex(1);
-		mesh2->SetTransform(t);
+		ObjectConstants o;
+		o.offset = Vec4(0.f, 0.75f, 0.f, 0.f);
+		o.color = Vec4(0.f, 0.75f, 0.f, 0.f);
+		mesh->SetTransform(o);
 
-		mesh2->Render();
+		mesh->Render();
 	}
 
 	GEngine->RenderEnd();

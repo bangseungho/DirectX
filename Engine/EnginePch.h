@@ -1,48 +1,6 @@
 #pragma once
 
-// 각종 include
-#include <windows.h>
-#include <fstream>
-#include <sstream>
-#include <format>
-#include <cassert>
-#include <filesystem>
-#include <algorithm>
-#include <tchar.h>
-#include <comdef.h>
-#include <cstdint>
-#include <memory>
-#include <string>
-#include <vector>
-#include <array>
-#include <list>
-#include <map>
-#include <unordered_map>
-using namespace std;
-
-#include "d3dx12.h"
-#include <d3d12.h>
-#include <dxgi1_4.h>
-#include <wrl.h>
-#include <d3dcompiler.h>
-#include <dxgi.h>
-#include <DirectXMath.h>
-#include <DirectXPackedVector.h>
-#include <DirectXCollision.h>
-#include <DirectXColors.h>
-//#include "DDSTextureLoader.h"
-//#include <DirectXTex/DirectXTex.h>
-//#include <DirectXTex/DirectXTex.inl>
-#include "MathHelper.h"
-using namespace DirectX;
-using namespace DirectX::PackedVector;
-using namespace Microsoft::WRL;
-
-// 각종 lib
-#pragma comment(lib, "d3d12")
-#pragma comment(lib, "dxgi")
-#pragma comment(lib, "dxguid")
-#pragma comment(lib, "d3dcompiler")
+#include "d3dUtil.h"
 
 // 각종 typedef
 using int8		= __int8;
@@ -65,9 +23,22 @@ using uptr = std::unique_ptr<T>;
 template<class T>
 using wptr = std::weak_ptr<T>;
 
+enum class CBV_REGISTER
+{
+	b0,
+	b1,
+	b2,
+	b3,
+	b4,
+
+	END
+};
+
 enum
 {
-	SWAP_CHAIN_BUFFER_COUNT = 2
+	SWAP_CHAIN_BUFFER_COUNT = 2,
+	CBV_REGISTER_COUNT = CBV_REGISTER::END,
+	REGISTER_COUNT = CBV_REGISTER::END,
 };
 
 struct WindowInfo
@@ -89,13 +60,37 @@ struct Transform
 	Vec4 offset;
 };
 
+struct ObjectConstants
+{
+	Vec4 offset = Vec4(0.f, 0.f, 0.f, 0.f);
+	Vec4 color = Vec4(0.5f, 0.5f, 0.5f, 0.f);
+};
+
+struct PassConstants
+{
+	DirectX::XMFLOAT4X4 View = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 InvView = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 Proj = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 InvProj = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4();
+	DirectX::XMFLOAT4X4 InvViewProj = MathHelper::Identity4x4();
+	DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
+	float cbPerObjectPad1 = 0.0f;
+	DirectX::XMFLOAT2 RenderTargetSize = { 0.0f, 0.0f };
+	DirectX::XMFLOAT2 InvRenderTargetSize = { 0.0f, 0.0f };
+	float NearZ = 0.0f;
+	float FarZ = 0.0f;
+	float TotalTime = 0.0f;
+	float DeltaTime = 0.0f;
+};
+
 #define DEVICE					GEngine->GetDevice()->GetDevice()
-#define CMD_QUEUE				GEngine->GetCmdQueue()
+
+#define CMD_QUEUE				GEngine->GetCmdQueue()->GetCmdQueue()
 #define CMD_LIST				GEngine->GetCmdQueue()->GetCmdList()
-#define CURR_FRAME_RESOURCE		GEngine->GetCmdQueue()->GetCurrFrameResource()
-#define OBJECT_CB				GEngine->GetCmdQueue()->GetCurrFrameResource()->ObjectCB->Resource()
+#define CMD_ALLOC				GEngine->GetCmdQueue()->GetCmdAlloc()
+
+#define CURR_OBJECT_CB			GEngine->GetCmdQueue()->GetCurrFrameResource()->ObjectCB
 #define ROOT_SIGNATURE			GEngine->GetRootSignature()->GetSignature()
 
 extern unique_ptr<class Engine> GEngine;
-
-const int gNumFrameResources = 3;

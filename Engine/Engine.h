@@ -6,6 +6,7 @@
 #include "RootSignature.h"
 #include "Mesh.h"
 #include "Shader.h"
+#include "TableDescriptorHeap.h"
 #include "FrameResource.h"
 
 class Engine
@@ -23,6 +24,7 @@ public:
 	sptr<CommandQueue> GetCmdQueue() { return _cmdQueue; }
 	sptr<SwapChain> GetSwapChain() { return _swapChain; }
 	sptr<RootSignature> GetRootSignature() { return _rootSignature; }
+	sptr<TableDescriptorHeap> GetTableDescHeap() { return _tableDescHeap; }
 
 public:
 	void RenderBegin();
@@ -40,5 +42,6 @@ private:
 	sptr<CommandQueue> _cmdQueue;
 	sptr<SwapChain> _swapChain;
 	sptr<RootSignature> _rootSignature;
+	sptr<TableDescriptorHeap> _tableDescHeap;
 };
 

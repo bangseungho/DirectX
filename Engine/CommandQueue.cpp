@@ -58,7 +58,7 @@ void CommandQueue::BuildFrameResource(ComPtr<ID3D12Device> device)
 {
 	for (int i = 0; i < gNumFrameResources; ++i)
 	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(device, 0, 2));
+		mFrameResources.push_back(std::make_unique<FrameResource>(device));
 	}
 }
 
@@ -76,6 +76,12 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 		D3D12_RESOURCE_STATE_RENDER_TARGET); 
 
 	_cmdList->SetGraphicsRootSignature(ROOT_SIGNATURE.Get());
+
+	CURR_OBJECT_CB->Clear();
+	GEngine->GetTableDescHeap()->Clear();
+
+	ID3D12DescriptorHeap* descHeap = GEngine->GetTableDescHeap()->GetDescriptorHeap().Get();
+	_cmdList->SetDescriptorHeaps(1, &descHeap);
 
 	_cmdList->ResourceBarrier(1, &barrier);
 
