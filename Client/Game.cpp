@@ -3,10 +3,6 @@
 #include "Engine.h"
 
 shared_ptr<Mesh> mesh = make_shared<Mesh>();
-shared_ptr<Mesh> mesh2 = make_shared<Mesh>();
-shared_ptr<Shader> shader = make_shared<Shader>();
-shared_ptr<Texture> texture = make_shared<Texture>();
-shared_ptr<Texture> texture2 = make_shared<Texture>();
 
 void Game::Init(const WindowInfo& info)
 {
@@ -43,12 +39,19 @@ void Game::Init(const WindowInfo& info)
 
 	mesh->Init(vec, indexVec);
 
-	mesh2->Init(vec, indexVec);
-
+	shared_ptr<Shader> shader = make_shared<Shader>();
+	shared_ptr<Texture> texture = make_shared<Texture>();
 	shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
-
 	texture->Init(L"..\\Resources\\Texture\\newjeans3.dds");
-	texture2->Init(L"..\\Resources\\Texture\\newjeans2.dds");
+	
+	shared_ptr<Material> material = make_shared<Material>();
+	material->SetShader(shader);
+	material->SetDiffuse(Vec4(0.5f, 0.5f, 0.5f, 1.f));
+	material->SetFresnel(Vec3(0.01f, 0.01f, 0.01f));
+	material->SetRoughness(0.5f);
+	material->SetTexOn(1.f);
+	material->SetTexture(0, texture);
+	mesh->SetMaterial(material);
 
 	ThrowIfFailed(CMD_LIST->Close());
 	ID3D12CommandList* cmdsLists[] = { CMD_LIST.Get() };
@@ -61,8 +64,6 @@ void Game::Update()
 	GEngine->Update();
 
 	GEngine->RenderBegin();
-
-	shader->Update();
 
 	{
 		static ObjectConstants o;
@@ -78,13 +79,7 @@ void Game::Update()
 
 		mesh->SetObjectConstant(o);
 
-		mesh2->SetObjectConstant(o);
-
-		mesh->SetTexture(texture);
-		mesh2->SetTexture(texture2);
-
 		mesh->Render();
-		mesh2->Render();
 	}
 
 	GEngine->RenderEnd();

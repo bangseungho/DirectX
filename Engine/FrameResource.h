@@ -7,10 +7,13 @@ public:
     FrameResource(ComPtr<ID3D12Device> device);
     ~FrameResource();
 
-public:
-    ComPtr<ID3D12CommandAllocator> _cmdAlloc;
+    sptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type);
 
-    uptr<ConstantBuffer> ObjectCB = nullptr;
+public:
+    ComPtr<ID3D12CommandAllocator> CmdAlloc;
+
+    sptr<ConstantBuffer> ObjectCB = nullptr;
+    sptr<ConstantBuffer> MaterialCB = nullptr;
 
     uint64 Fence = 0;
 };

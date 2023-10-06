@@ -17,8 +17,8 @@ void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapC
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 
 	device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&_cmdQueue));
-	device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_cmdAlloc));
-	device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _cmdAlloc.Get(), nullptr, IID_PPV_ARGS(&_cmdList));
+	device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&CmdAlloc));
+	device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, CmdAlloc.Get(), nullptr, IID_PPV_ARGS(&_cmdList));
 
 	_cmdList->Close();
 
@@ -65,7 +65,7 @@ void CommandQueue::BuildFrameResource(ComPtr<ID3D12Device> device)
 
 void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 {
-	auto cmdAlloc = mCurrFrameResource->_cmdAlloc;
+	auto cmdAlloc = mCurrFrameResource->CmdAlloc;
 
 	cmdAlloc->Reset();
 	_cmdList->Reset(cmdAlloc.Get(), nullptr);
@@ -77,7 +77,9 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 
 	_cmdList->SetGraphicsRootSignature(ROOT_SIGNATURE.Get());
 
-	CURR_OBJECT_CB->Clear();
+	CB(CONSTANT_BUFFER_TYPE::OBJECT)->Clear();
+	CB(CONSTANT_BUFFER_TYPE::MATERIAL)->Clear();
+
 	GEngine->GetTableDescHeap()->Clear();
 
 	ID3D12DescriptorHeap* descHeap = GEngine->GetTableDescHeap()->GetDescriptorHeap().Get();

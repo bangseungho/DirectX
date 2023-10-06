@@ -14,6 +14,7 @@ using uint64	= unsigned __int64;
 using Vec2		= XMFLOAT2;
 using Vec3		= XMFLOAT3;
 using Vec4		= XMFLOAT4;
+using Vec4x4	= XMFLOAT4X4;
 using Matrix	= XMMATRIX;
 
 template<class T>
@@ -102,6 +103,21 @@ struct PassConstants
 	float DeltaTime = 0.0f;
 };
 
+struct MaterialConstants
+{
+	void SetDiffuse(Vec4 diffuse) { DiffuseAlbedo = diffuse; }
+	void SetFresnel(Vec3 fresnel) { FresnelR0 = fresnel; }
+	void SetRoughness(float roughness) { Roughness = roughness; }
+	void SetMatTransform(Vec4x4 matTransform) { MatTransform = matTransform; }
+	void SetTexOn(bool texOn) { TexOn = texOn; }
+
+	Vec4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Vec3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
+	float Roughness = 0.25f;
+	Vec4x4 MatTransform = MathHelper::Identity4x4();
+	bool TexOn = false;
+};
+
 #define DEVICE					GEngine->GetDevice()->GetDevice()
 
 #define CMD_QUEUE				GEngine->GetCmdQueue()->GetCmdQueue()
@@ -110,5 +126,7 @@ struct PassConstants
 
 #define CURR_OBJECT_CB			GEngine->GetCmdQueue()->GetCurrFrameResource()->ObjectCB
 #define ROOT_SIGNATURE			GEngine->GetRootSignature()->GetSignature()
+
+#define CB(type)				GEngine->GetCmdQueue()->GetCurrFrameResource()->GetConstantBuffer(type)
 
 extern unique_ptr<class Engine> GEngine;

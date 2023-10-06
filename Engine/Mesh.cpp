@@ -2,6 +2,7 @@
 #include "Mesh.h"
 #include "Engine.h"
 #include "Texture.h"
+#include "Material.h"
 
 void Mesh::Init(const vector<Vertex>& vertexBuffer, const vector<uint32>& indexBuffer)
 {
@@ -15,12 +16,9 @@ void Mesh::Render()
 	CMD_LIST->IASetVertexBuffers(0, 1, &_vertexBufferView);
 	CMD_LIST->IASetIndexBuffer(&_indexBufferView);
 
-	{
-		D3D12_CPU_DESCRIPTOR_HANDLE handle = CURR_OBJECT_CB->PushData(0, &_objectConstant, sizeof(_objectConstant));
-		GEngine->GetTableDescHeap()->SetCBV(handle, CBV_REGISTER::b0);
+	CB(CONSTANT_BUFFER_TYPE::OBJECT)->PushData(&_objectConstant, sizeof(ObjectConstants));
 
-		GEngine->GetTableDescHeap()->SetSRV(_tex->GetCpuHandle(), SRV_REGISTER::t0);
-	}
+	_mat->Update();
 
 	GEngine->GetTableDescHeap()->CommitTable();
 

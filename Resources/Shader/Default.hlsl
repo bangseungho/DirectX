@@ -5,7 +5,17 @@ struct ObjectConstants
     float4 offset1;
 };
 
+struct MaterialConstants
+{
+    float4 diffuseAlbedo;
+    float3 fresnelR0;
+    float roughness;
+    float4x4 matTransform;
+    float texOn;
+};
+
 ConstantBuffer<ObjectConstants> gObjConstants : register(b0);
+ConstantBuffer<MaterialConstants> gMaterialConstants : register(b1);
 
 Texture2D gDiffuseMap : register(t0);
 
