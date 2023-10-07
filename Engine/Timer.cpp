@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Timer.h"
 
+DEFINITION_SINGLE(Timer)
+
 void Timer::Init(const WindowInfo info)
 {
 	mSecondsPerCount = 0.0;

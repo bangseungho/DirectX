@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Engine.h"
+#include "SceneManager.h"
 
 Engine::~Engine()
 {
@@ -41,13 +42,15 @@ void Engine::Update()
 	_cmdQueue->Update();
 	GET_SINGLE(InputManager)->Update();
 	GET_SINGLE(Timer)->Update();
+
+	Render();
 }
 
 void Engine::Render()
 {
 	RenderBegin();
 
-	// TODO : 나머지 물체들 그려준다
+	GET_SINGLE(SceneManager)->Update();
 
 	RenderEnd();
 }

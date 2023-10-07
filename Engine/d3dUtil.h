@@ -222,15 +222,18 @@ struct Light
 #define ReleaseCom(x) { if(x){ x->Release(); x = 0; } }
 #endif
 
-#define DECLARE_SINGLE(type)		\
-private:							\
-	type() {}						\
-	~type() {}						\
-public:								\
-	static type* GetInstance()		\
-	{								\
-		static type instance;		\
-		return &instance;			\
-	}								\
+#define DECLARE_SINGLE(type)					\
+private:										\
+	type() {}									\
+	~type() {}									\
+public:											\
+	static type* GetInstance()					\
+	{											\
+		if (!instance) instance = new type();	\
+		return instance;						\
+	}											\
+private:										\
+	static type* instance;						\
 
-#define GET_SINGLE(type)	type::GetInstance()
+#define GET_SINGLE(type)			type::GetInstance()
+#define DEFINITION_SINGLE(type)		type* type::instance = nullptr;
