@@ -16,11 +16,7 @@ void Mesh::Render()
 	CMD_LIST->IASetVertexBuffers(0, 1, &_vertexBufferView);
 	CMD_LIST->IASetIndexBuffer(&_indexBufferView);
 
-	CB(CONSTANT_BUFFER_TYPE::OBJECT)->PushData(&_objectConstant, sizeof(ObjectConstants));
-
-	_mat->Update();
-
-	GEngine->GetTableDescHeap()->CommitTable();
+	gEngine->GetTableDescHeap()->CommitTable();
 
 	CMD_LIST->DrawIndexedInstanced(_indexCount, 1, 0, 0, 0);
 }

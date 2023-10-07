@@ -24,7 +24,7 @@ void Shader::Init(const wstring& path)
 	_pipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	_pipelineDesc.NumRenderTargets = 1;
 	_pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-	_pipelineDesc.DSVFormat = GEngine->GetDepthStencilBuffer()->GetDSVFormat();
+	_pipelineDesc.DSVFormat = gEngine->GetDepthStencilBuffer()->GetDSVFormat();
 	_pipelineDesc.SampleDesc.Count = 1;
 
 	DEVICE->CreateGraphicsPipelineState(&_pipelineDesc, IID_PPV_ARGS(&_pipelineState));

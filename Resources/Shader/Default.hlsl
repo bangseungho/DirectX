@@ -18,6 +18,7 @@ ConstantBuffer<ObjectConstants> gObjConstants : register(b0);
 ConstantBuffer<MaterialConstants> gMaterialConstants : register(b1);
 
 Texture2D gDiffuseMap : register(t0);
+Texture2D gDiffuseMap2 : register(t1);
 
 SamplerState gsamPointWrap        : register(s0);
 SamplerState gsamPointClamp       : register(s1);
@@ -58,5 +59,6 @@ VS_OUT VS_Main(VS_IN input)
 float4 PS_Main(VS_OUT input) : SV_Target
 {
     float4 color = gDiffuseMap.Sample(gsamAnisotropicWrap, input.uv);
+    
     return color;
 }

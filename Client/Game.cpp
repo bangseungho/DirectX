@@ -1,12 +1,16 @@
 #include "pch.h"
 #include "Game.h"
 #include "Engine.h"
+#include "Material.h"
 
-shared_ptr<Mesh> mesh = make_shared<Mesh>();
+#include "GameObject.h"
+#include "MeshRenderer.h"
+
+sptr<GameObject> gameObject = make_shared<GameObject>();
 
 void Game::Init(const WindowInfo& info)
 {
-	GEngine->Init(info);
+	gEngine->Init(info);
 	CMD_LIST->Reset(CMD_ALLOC.Get(), nullptr);
 
 	vector<Vertex> vec(4);
@@ -37,52 +41,49 @@ void Game::Init(const WindowInfo& info)
 		indexVec.push_back(3);
 	}
 
-	mesh->Init(vec, indexVec);
-
-	shared_ptr<Shader> shader = make_shared<Shader>();
-	shared_ptr<Texture> texture = make_shared<Texture>();
-	shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
-	texture->Init(L"..\\Resources\\Texture\\newjeans3.dds");
+	gameObject->Init();
 	
-	shared_ptr<Material> material = make_shared<Material>();
-	material->SetShader(shader);
-	material->SetDiffuse(Vec4(0.5f, 0.5f, 0.5f, 1.f));
-	material->SetFresnel(Vec3(0.01f, 0.01f, 0.01f));
-	material->SetRoughness(0.5f);
-	material->SetTexOn(1.f);
-	material->SetTexture(0, texture);
-	mesh->SetMaterial(material);
+	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	{
+		shared_ptr<Mesh> mesh = make_shared<Mesh>();
+		mesh->Init(vec, indexVec);
+		meshRenderer->SetMesh(mesh);
+	}
+
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
+
+		shared_ptr<Texture> texture = make_shared<Texture>();
+		texture->Init(L"..\\Resources\\Texture\\newjeans3.dds");
+
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(shader);
+		material->SetDiffuse(Vec4(0.5f, 0.5f, 0.5f, 1.f));
+		material->SetFresnel(Vec3(0.01f, 0.01f, 0.01f));
+		material->SetRoughness(0.5f);
+		material->SetTexOn(1.f);
+		material->SetTexture(0, texture);
+		meshRenderer->SetMaterial(material);
+	}
+
+	gameObject->AddComponent(meshRenderer);
 
 	ThrowIfFailed(CMD_LIST->Close());
 	ID3D12CommandList* cmdsLists[] = { CMD_LIST.Get() };
 	CMD_QUEUE->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
-	GEngine->GetCmdQueue()->WaitSync();
+	gEngine->GetCmdQueue()->WaitSync();
 }
 
 void Game::Update()
 {
-	GEngine->Update();
+	gEngine->Update();
 
-	GEngine->RenderBegin();
+	gEngine->RenderBegin();
 
-	{
-		static ObjectConstants o;
+	gameObject->Update();
 
-		if (KEY_PRESSED('W'))
-			o.offset.y += 1.f * GET_SINGLE(Timer)->DeltaTime();
-		if (KEY_PRESSED('D'))
-			o.offset.x += 1.f * GET_SINGLE(Timer)->DeltaTime();
-		if (KEY_PRESSED('S'))
-			o.offset.y -= 1.f * GET_SINGLE(Timer)->DeltaTime();
-		if (KEY_PRESSED('A'))
-			o.offset.x -= 1.f * GET_SINGLE(Timer)->DeltaTime();
-
-		mesh->SetObjectConstant(o);
-
-		mesh->Render();
-	}
-
-	GEngine->RenderEnd();
+	gEngine->RenderEnd();
 }
 
 LRESULT Game::OnProcessingWindowMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

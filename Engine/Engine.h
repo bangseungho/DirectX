@@ -12,7 +12,6 @@
 #include "DepthStencilBuffer.h"
 #include "InputManager.h"
 #include "Timer.h"
-#include "Material.h"
 
 class Engine
 {

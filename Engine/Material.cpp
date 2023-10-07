@@ -14,7 +14,7 @@ void Material::Update()
 			continue;
 
 		SRV_REGISTER reg = SRV_REGISTER(static_cast<int8>(SRV_REGISTER::t0) + i);
-		GEngine->GetTableDescHeap()->SetSRV(_textures[i]->GetCpuHandle(), reg);
+		gEngine->GetTableDescHeap()->SetSRV(_textures[i]->GetCpuHandle(), reg);
 	}
 
 	// 파이프라인 세팅

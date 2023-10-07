@@ -7,7 +7,6 @@ public:
 	void Render();
 
 	void SetObjectConstant(const ObjectConstants& o) { _objectConstant = o; }
-	void SetMaterial(shared_ptr<class Material> mat) { _mat = mat; }
 
 public:
 	void CreateVertexBuffer(const vector<Vertex>& buffer);
@@ -25,6 +24,5 @@ private:
 	uint32 _indexCount = 0;
 
 	ObjectConstants _objectConstant = {};
-	shared_ptr<class Material> _mat = {};
 };
 

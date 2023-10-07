@@ -74,11 +74,6 @@ struct Vertex
 	Vec2 uv;
 };
 
-struct Transform
-{
-	Vec4 offset;
-};
-
 struct ObjectConstants
 {
 	Vec4 offset = Vec4(0.f, 0.f, 0.f, 0.f);
@@ -118,15 +113,15 @@ struct MaterialConstants
 	bool TexOn = false;
 };
 
-#define DEVICE					GEngine->GetDevice()->GetDevice()
+#define DEVICE					gEngine->GetDevice()->GetDevice()
 
-#define CMD_QUEUE				GEngine->GetCmdQueue()->GetCmdQueue()
-#define CMD_LIST				GEngine->GetCmdQueue()->GetCmdList()
-#define CMD_ALLOC				GEngine->GetCmdQueue()->GetCmdAlloc()
+#define CMD_QUEUE				gEngine->GetCmdQueue()->GetCmdQueue()
+#define CMD_LIST				gEngine->GetCmdQueue()->GetCmdList()
+#define CMD_ALLOC				gEngine->GetCmdQueue()->GetCmdAlloc()
 
-#define CURR_OBJECT_CB			GEngine->GetCmdQueue()->GetCurrFrameResource()->ObjectCB
-#define ROOT_SIGNATURE			GEngine->GetRootSignature()->GetSignature()
+#define CURR_OBJECT_CB			gEngine->GetCmdQueue()->GetCurrFrameResource()->ObjectCB
+#define ROOT_SIGNATURE			gEngine->GetRootSignature()->GetSignature()
 
-#define CB(type)				GEngine->GetCmdQueue()->GetCurrFrameResource()->GetConstantBuffer(type)
+#define CB(type)				gEngine->GetCmdQueue()->GetCurrFrameResource()->GetConstantBuffer(type)
 
-extern unique_ptr<class Engine> GEngine;
+extern unique_ptr<class Engine> gEngine;
