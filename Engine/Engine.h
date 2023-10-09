@@ -32,6 +32,7 @@ public:
 	sptr<TableDescriptorHeap> GetTableDescHeap() { return _tableDescHeap; }
 	sptr<DepthStencilBuffer> GetDepthStencilBuffer() { return _depthStencilBuffer; }
 	FrameResource* GetCurrFrameResource() { return	mCurrFrameResource; }
+	WindowInfo GetWindow() const { return _window; }
 
 public:
 	void RenderBegin();

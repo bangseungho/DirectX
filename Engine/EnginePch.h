@@ -11,11 +11,10 @@ using uint8		= unsigned __int8;
 using uint16	= unsigned __int16;
 using uint32	= unsigned __int32;
 using uint64	= unsigned __int64;
-using Vec2		= XMFLOAT2;
-using Vec3		= XMFLOAT3;
-using Vec4		= XMFLOAT4;
-using Vec4x4	= XMFLOAT4X4;
-using Matrix	= XMMATRIX;
+using Vec2		= DirectX::SimpleMath::Vector2;
+using Vec3		= DirectX::SimpleMath::Vector3;
+using Vec4		= DirectX::SimpleMath::Vector4;
+using Matrix	= DirectX::SimpleMath::Matrix;
 
 template<class T>
 using sptr = std::shared_ptr<T>;
@@ -81,8 +80,7 @@ struct Vertex
 
 struct ObjectConstants
 {
-	Vec4 offset = Vec4(0.f, 0.f, 0.f, 0.f);
-	Vec4 color = Vec4(0.5f, 0.5f, 0.5f, 0.f);
+	Matrix matWVP;
 };
 
 struct PassConstants
@@ -108,13 +106,13 @@ struct MaterialConstants
 	void SetDiffuse(Vec4 diffuse) { DiffuseAlbedo = diffuse; }
 	void SetFresnel(Vec3 fresnel) { FresnelR0 = fresnel; }
 	void SetRoughness(float roughness) { Roughness = roughness; }
-	void SetMatTransform(Vec4x4 matTransform) { MatTransform = matTransform; }
+	void SetMatTransform(Matrix matTransform) { MatTransform = matTransform; }
 	void SetTexOn(bool texOn) { TexOn = texOn; }
 
 	Vec4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Vec3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
 	float Roughness = 0.25f;
-	Vec4x4 MatTransform = MathHelper::Identity4x4();
+	Matrix MatTransform = MathHelper::Identity4x4();
 	bool TexOn = false;
 };
 

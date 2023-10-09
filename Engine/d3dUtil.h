@@ -34,6 +34,7 @@ namespace fs = std::filesystem;
 #include "DDSTextureLoader.h"
 #include <DirectXTex/DirectXTex.h>
 #include <DirectXTex/DirectXTex.inl>
+#include "SimpleMath.h"
 #include "MathHelper.h"
 using namespace DirectX;
 using namespace DirectX::PackedVector;

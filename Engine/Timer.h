@@ -34,3 +34,4 @@ private:
 	WindowInfo mInfo;
 };
 
+#define DELTA_TIME GET_SINGLE(Timer)->DeltaTime()

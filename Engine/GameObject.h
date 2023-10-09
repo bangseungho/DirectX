@@ -3,6 +3,7 @@
 
 class Transform;
 class MeshRenderer;
+class Camera;
 class MonoBehaviour;
 
 class GameObject : public enable_shared_from_this<GameObject>
@@ -19,13 +20,18 @@ public:
 	void Start();
 	void Update();
 	void LateUpdate();
+	void FinalUpdate();
 
 public:
-	shared_ptr<Transform> GetTransform();
-	void AddComponent(shared_ptr<Component> component);
+	sptr<Component> GetFixedComponent(COMPONENT_TYPE type);
+	sptr<Transform> GetTransform();
+	sptr<MeshRenderer> GetMeshRenderer();
+	sptr<Camera> GetCamera();
+
+	void AddComponent(sptr<Component> component);
 
 private:
-	array<shared_ptr<Component>, FIXED_COMPONENT_COUNT> _components;
-	vector<shared_ptr<MonoBehaviour>> _scripts;
+	array<sptr<Component>, FIXED_COMPONENT_COUNT> _components;
+	vector<sptr<MonoBehaviour>> _scripts;
 };
 

@@ -6,6 +6,10 @@
 #include "Material.h"
 #include "GameObject.h"
 #include "MeshRenderer.h"
+#include "Transform.h"
+#include "Camera.h"
+
+#include "TestCameraScript.h"
 
 DECLARE_SINGLE(SceneManager)
 
@@ -14,8 +18,26 @@ void SceneManager::Update()
 	if (_activeScene == nullptr)
 		return;
 
+	if (KEY_PRESSED('1')) 
+		_activeScene->SetMainCamera(FIRST_CAMERA);
+	if (KEY_PRESSED('2'))
+		_activeScene->SetMainCamera(SECOND_CAMERA);
+	if (KEY_PRESSED('3'))
+		_activeScene->SetMainCamera(THIRD_CAMERA);
+
 	_activeScene->Update();
 	_activeScene->LateUpdate();
+	_activeScene->FinalUpdate();
+}
+
+void SceneManager::Render()
+{
+	if (_activeScene == nullptr)
+		return;
+
+	const shared_ptr<GameObject>& cameraObjects = _activeScene->GetMainCamera();
+	
+	cameraObjects->GetCamera()->Render();
 }
 
 void SceneManager::LoadScene(wstring sceneName)
@@ -33,8 +55,9 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 {
 	shared_ptr<Scene> scene = make_shared<Scene>();
 
-	// TestObject
+#pragma region TestObject
 	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+	gameObject->Init();
 
 	vector<Vertex> vec(4);
 	vec[0].pos = Vec3(-0.5f, 0.5f, 0.5f);
@@ -62,36 +85,53 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		indexVec.push_back(3);
 	}
 
-	gameObject->Init(); // Transform
+	shared_ptr<Transform> transform = gameObject->GetTransform();
+	transform->SetLocalPosition(Vec3(0.f, 100.f, 200.f));
+	transform->SetLocalScale(Vec3(100.f, 100.f, 1.f));
 
 	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-
 	{
 		shared_ptr<Mesh> mesh = make_shared<Mesh>();
 		mesh->Init(vec, indexVec);
 		meshRenderer->SetMesh(mesh);
 	}
-
 	{
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
-
 		shared_ptr<Texture> texture = make_shared<Texture>();
+		shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
 		texture->Init(L"..\\Resources\\Texture\\newjeans3.dds");
-
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(shader);
-		material->SetDiffuse(Vec4(0.5f, 0.5f, 0.5f, 1.f));
-		material->SetFresnel(Vec3(0.01f, 0.01f, 0.01f));
-		material->SetRoughness(0.5f);
-		material->SetTexOn(1.f);
 		material->SetTexture(0, texture);
 		meshRenderer->SetMaterial(material);
 	}
-
 	gameObject->AddComponent(meshRenderer);
-
 	scene->AddGameObject(gameObject);
+#pragma endregion
+
+#pragma region Camera1
+	{
+		shared_ptr<GameObject> camera = make_shared<GameObject>();
+		camera->Init();
+		camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
+		camera->AddComponent(make_shared<TestCameraScript>());
+		camera->GetTransform()->SetLocalPosition(Vec3(-100.f, 100.f, 0.f));
+		scene->AddCameraObject(FIRST_CAMERA, camera);
+	}
+#pragma endregion
+
+#pragma region Camera2
+	{
+		shared_ptr<GameObject> camera = make_shared<GameObject>();
+		camera->Init();
+		camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
+		camera->AddComponent(make_shared<TestCameraScript>());
+		camera->GetTransform()->SetLocalPosition(Vec3(100.f, 100.f, 0.f));
+		scene->AddCameraObject(SECOND_CAMERA, camera);
+	}
+#pragma endregion
+
+	scene->SetMainCamera(FIRST_CAMERA);
 
 	return scene;
 }

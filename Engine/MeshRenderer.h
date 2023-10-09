@@ -13,8 +13,6 @@ public:
 	void SetMesh(sptr<Mesh> mesh) { _mesh = mesh; }
 	void SetMaterial(sptr<Material> material) { _material = material; }
 
-	virtual void Update() override { Render(); }
-
 	void Render();
 
 private:

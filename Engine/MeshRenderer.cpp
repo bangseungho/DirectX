@@ -2,7 +2,7 @@
 #include "MeshRenderer.h"
 #include "Mesh.h"
 #include "Material.h"
-#include "GameObject.h"
+#include "Transform.h"
 
 MeshRenderer::MeshRenderer() : Component(COMPONENT_TYPE::MESH_RENDERER)
 {
@@ -16,8 +16,7 @@ MeshRenderer::~MeshRenderer()
 
 void MeshRenderer::Render()
 {
-	//GetTransform()->Update();
-
+	GetTransform()->PushData();
 	_material->Update();
 	_mesh->Render();
 }

@@ -1,8 +1,7 @@
 
 struct ObjectConstants
 {
-    float4 offset0;
-    float4 offset1;
+    row_major matrix gMatWVP;
 };
 
 struct MaterialConstants
@@ -45,12 +44,8 @@ VS_OUT VS_Main(VS_IN input)
 {
     VS_OUT output = (VS_OUT)0;
 
-    output.pos = float4(input.pos, 1.f);
-    output.pos += gObjConstants.offset0;
-    
+    output.pos = mul(float4(input.pos, 1.f), gObjConstants.gMatWVP);
     output.color = input.color;
-    output.color += gObjConstants.offset1;
-    
     output.uv = input.uv;
 
     return output;
@@ -59,6 +54,5 @@ VS_OUT VS_Main(VS_IN input)
 float4 PS_Main(VS_OUT input) : SV_Target
 {
     float4 color = gDiffuseMap.Sample(gsamAnisotropicWrap, input.uv);
-    
     return color;
 }

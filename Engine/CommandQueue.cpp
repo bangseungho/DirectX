@@ -17,9 +17,9 @@ void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapC
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 
 	device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&_cmdQueue));
+
 	device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_cmdAlloc));
 	device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, _cmdAlloc.Get(), nullptr, IID_PPV_ARGS(&_cmdList));
-
 	_cmdList->Close();
 
 	device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_fence));
@@ -39,6 +39,7 @@ void CommandQueue::WaitSync()
 		::WaitForSingleObject(_fenceEvent, INFINITE);
 	}
 }
+
 
 void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 {
