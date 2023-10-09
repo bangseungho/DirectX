@@ -35,3 +35,4 @@ private:
 };
 
 #define DELTA_TIME GET_SINGLE(Timer)->DeltaTime()
+#define TOTAL_TIME GET_SINGLE(Timer)->TotalTime()

@@ -1,4 +1,5 @@
 #pragma once
+#include "Object.h"
 
 enum
 {
@@ -6,8 +7,12 @@ enum
 	MATERIAL_TEXTURE_COUNT = 5,
 };
 
-class Material
+class Material : public Object
 {
+public:
+	Material();
+	virtual ~Material();
+
 public:
 	void SetShader(shared_ptr<class Shader> shader) { _shader = shader; }
 	shared_ptr<class Shader> GetShader() { return _shader; }
@@ -22,7 +27,7 @@ public:
 	void Update();
 
 private:
-	shared_ptr<class Shader>	_shader;
+	shared_ptr<class Shader> _shader;
 	MaterialConstants _params;
 	array<shared_ptr<class Texture>, MATERIAL_TEXTURE_COUNT> _textures;
 };

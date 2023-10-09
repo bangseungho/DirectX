@@ -2,12 +2,19 @@
 #include "Material.h"
 #include "Engine.h"
 
+
+Material::Material() : Object(OBJECT_TYPE::MATERIAL)
+{
+}
+
+Material::~Material()
+{
+}
+
 void Material::Update()
 {
-	// CBV 업로드
 	CB(CONSTANT_BUFFER_TYPE::MATERIAL)->PushData(&_params, sizeof(_params));
 
-	// SRV 업로드
 	for (size_t i = 0; i < _textures.size(); i++)
 	{
 		if (_textures[i] == nullptr)
@@ -17,6 +24,6 @@ void Material::Update()
 		gEngine->GetTableDescHeap()->SetSRV(_textures[i]->GetCpuHandle(), reg);
 	}
 
-	// 파이프라인 세팅
 	_shader->Update();
 }
+
