@@ -45,8 +45,6 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "dxguid")
 #pragma comment(lib, "d3dcompiler")
 
-const int gNumFrameResources = 3;
-
 inline void d3dSetDebugName(IDXGIObject* obj, const char* name)
 {
 	if (obj)
@@ -222,7 +220,7 @@ struct Light
 #define ReleaseCom(x) { if(x){ x->Release(); x = 0; } }
 #endif
 
-#define DECLARE_SINGLE(type)					\
+#define SINGLETON(type)							\
 private:										\
 	type() {}									\
 	~type() {}									\
@@ -236,4 +234,4 @@ private:										\
 	static type* instance;						\
 
 #define GET_SINGLE(type)			type::GetInstance()
-#define DEFINITION_SINGLE(type)		type* type::instance = nullptr;
+#define DECLARE_SINGLE(type)		type* type::instance = nullptr;

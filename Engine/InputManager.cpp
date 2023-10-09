@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "InputManager.h"
 
-DEFINITION_SINGLE(InputManager)
+DECLARE_SINGLE(InputManager)
 
 int keyList[] =
 {

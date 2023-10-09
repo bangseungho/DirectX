@@ -59,6 +59,11 @@ enum
 	STATIC_SAMPLER_COUNT = 6,
 };
 
+enum
+{
+	FRAME_RESOURCE_COUNT = 3
+};
+
 struct WindowInfo
 {
 	HWND	hwnd; // 출력 윈도우
@@ -119,9 +124,10 @@ struct MaterialConstants
 #define CMD_LIST				gEngine->GetCmdQueue()->GetCmdList()
 #define CMD_ALLOC				gEngine->GetCmdQueue()->GetCmdAlloc()
 
-#define CURR_OBJECT_CB			gEngine->GetCmdQueue()->GetCurrFrameResource()->ObjectCB
+#define CURR_FRAMERESOURCE		gEngine->GetCurrFrameResource()
+#define CURR_OBJECT_CB			gEngine->GetCurrFrameResource()->ObjectCB
 #define ROOT_SIGNATURE			gEngine->GetRootSignature()->GetSignature()
 
-#define CB(type)				gEngine->GetCmdQueue()->GetCurrFrameResource()->GetConstantBuffer(type)
+#define CB(type)				gEngine->GetCurrFrameResource()->GetConstantBuffer(type)
 
 extern unique_ptr<class Engine> gEngine;

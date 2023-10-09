@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Timer.h"
 
-DEFINITION_SINGLE(Timer)
+DECLARE_SINGLE(Timer)
 
 void Timer::Init(const WindowInfo info)
 {

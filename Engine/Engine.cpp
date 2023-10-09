@@ -31,15 +31,24 @@ void Engine::Init(const WindowInfo& info)
 	_rootSignature->Init(_device->GetDevice());
 	_tableDescHeap->Init(256);
 	_depthStencilBuffer->Init(_window);
+	BuildFrameResource(_device->GetDevice());
 
 	ResizeWindow(info.width, info.height);
-
-	_cmdQueue->BuildFrameResource(_device->GetDevice());
 }
 
 void Engine::Update()
 {
-	_cmdQueue->Update();
+	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % FRAME_RESOURCE_COUNT;
+	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
+
+	if (mCurrFrameResource->Fence != 0 && _cmdQueue->GetFence()->GetCompletedValue() < mCurrFrameResource->Fence)
+	{
+		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
+		ThrowIfFailed(_cmdQueue->GetFence()->SetEventOnCompletion(mCurrFrameResource->Fence, eventHandle));
+		WaitForSingleObject(eventHandle, INFINITE);
+		CloseHandle(eventHandle);
+	}
+
 	GET_SINGLE(InputManager)->Update();
 	GET_SINGLE(Timer)->Update();
 
@@ -53,6 +62,14 @@ void Engine::Render()
 	GET_SINGLE(SceneManager)->Update();
 
 	RenderEnd();
+}
+
+void Engine::BuildFrameResource(ComPtr<ID3D12Device> device)
+{
+	for (int i = 0; i < FRAME_RESOURCE_COUNT; ++i)
+	{
+		mFrameResources[i] = std::make_unique<FrameResource>(device);
+	}
 }
 
 void Engine::RenderBegin()

@@ -10,9 +10,7 @@ public:
 	~CommandQueue();
 
 	void Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapChain);
-	void Update();
 	void WaitSync();
-	void BuildFrameResource(ComPtr<ID3D12Device> device);
 
 	void RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect);
 	void RenderEnd();
@@ -20,7 +18,7 @@ public:
 	ComPtr<ID3D12CommandQueue> GetCmdQueue() { return _cmdQueue; }
 	ComPtr<ID3D12GraphicsCommandList> GetCmdList() { return	_cmdList; }
 	ComPtr<ID3D12CommandAllocator> GetCmdAlloc() { return	_cmdAlloc; }
-	FrameResource* GetCurrFrameResource() { return	mCurrFrameResource; }
+	ComPtr<ID3D12Fence> GetFence() { return	_fence; }
 
 private:
 	ComPtr<ID3D12CommandQueue>			_cmdQueue;
@@ -33,8 +31,5 @@ private:
 
 	shared_ptr<SwapChain>		_swapChain;
 
-	std::vector<uptr<FrameResource>> mFrameResources;
-	FrameResource* mCurrFrameResource = nullptr;
-	int mCurrFrameResourceIndex = 0;
 };
 

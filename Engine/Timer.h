@@ -2,7 +2,7 @@
 
 class Timer
 {
-	DECLARE_SINGLE(Timer)
+	SINGLETON(Timer)
 
 public:
 	void Init(const WindowInfo info);

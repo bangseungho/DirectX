@@ -4,7 +4,7 @@ class Scene;
 
 class SceneManager
 {
-	DECLARE_SINGLE(SceneManager)
+	SINGLETON(SceneManager)
 
 public:
 	void Update();

@@ -26,20 +26,6 @@ void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapC
 	_fenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
 }
 
-void CommandQueue::Update()
-{
-	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % gNumFrameResources;
-	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
-
-	if (mCurrFrameResource->Fence != 0 && _fence->GetCompletedValue() < mCurrFrameResource->Fence)
-	{
-		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
-		ThrowIfFailed(_fence->SetEventOnCompletion(mCurrFrameResource->Fence, eventHandle));
-		WaitForSingleObject(eventHandle, INFINITE);
-		CloseHandle(eventHandle);
-	}
-}
-
 void CommandQueue::WaitSync()
 {
 	_fenceValue++;
@@ -54,18 +40,9 @@ void CommandQueue::WaitSync()
 	}
 }
 
-void CommandQueue::BuildFrameResource(ComPtr<ID3D12Device> device)
-{
-	for (int i = 0; i < gNumFrameResources; ++i)
-	{
-		mFrameResources.push_back(std::make_unique<FrameResource>(device));
-	}
-}
-
-
 void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 {
-	auto cmdAlloc = mCurrFrameResource->CmdAlloc;
+	auto cmdAlloc = CURR_FRAMERESOURCE->CmdAlloc;
 
 	cmdAlloc->Reset();
 	_cmdList->Reset(cmdAlloc.Get(), nullptr);
@@ -116,6 +93,6 @@ void CommandQueue::RenderEnd()
 
 	_swapChain->SwapIndex();
 
-	mCurrFrameResource->Fence = ++_fenceValue;
+	CURR_FRAMERESOURCE->Fence = ++_fenceValue;
 	_cmdQueue->Signal(_fence.Get(), _fenceValue);
 }

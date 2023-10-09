@@ -7,7 +7,7 @@
 #include "GameObject.h"
 #include "MeshRenderer.h"
 
-DEFINITION_SINGLE(SceneManager)
+DECLARE_SINGLE(SceneManager)
 
 void SceneManager::Update()
 {

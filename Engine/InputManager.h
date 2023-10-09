@@ -13,7 +13,7 @@ struct KeyInfo {
 };
 
 class InputManager {
-	DECLARE_SINGLE(InputManager)
+	SINGLETON(InputManager)
 
 public:
 	void Init(const WindowInfo& info);

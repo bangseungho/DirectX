@@ -22,6 +22,7 @@ public:
 	void Init(const WindowInfo& info);
 	void Update();
 	void Render();
+	void BuildFrameResource(ComPtr<ID3D12Device> device);
 
 public:
 	sptr<Device> GetDevice() { return _device; }
@@ -30,6 +31,7 @@ public:
 	sptr<RootSignature> GetRootSignature() { return _rootSignature; }
 	sptr<TableDescriptorHeap> GetTableDescHeap() { return _tableDescHeap; }
 	sptr<DepthStencilBuffer> GetDepthStencilBuffer() { return _depthStencilBuffer; }
+	FrameResource* GetCurrFrameResource() { return	mCurrFrameResource; }
 
 public:
 	void RenderBegin();
@@ -49,5 +51,9 @@ private:
 	sptr<RootSignature> _rootSignature;
 	sptr<TableDescriptorHeap> _tableDescHeap;
 	sptr<DepthStencilBuffer> _depthStencilBuffer;
+
+	std::array<uptr<FrameResource>, FRAME_RESOURCE_COUNT> mFrameResources;
+	FrameResource* mCurrFrameResource = nullptr;
+	int mCurrFrameResourceIndex = 0;
 };
 
