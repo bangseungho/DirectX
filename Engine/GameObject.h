@@ -5,8 +5,8 @@
 class Transform;
 class MeshRenderer;
 class Camera;
+class Light;
 class MonoBehaviour;
-
 class GameObject : public Object, public enable_shared_from_this<GameObject>
 {
 public:
@@ -28,6 +28,7 @@ public:
 	sptr<Transform> GetTransform();
 	sptr<MeshRenderer> GetMeshRenderer();
 	sptr<Camera> GetCamera();
+	sptr<Light> GetLight();
 
 	void AddComponent(sptr<Component> component);
 

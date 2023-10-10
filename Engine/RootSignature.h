@@ -3,7 +3,7 @@
 class RootSignature
 {
 public:
-	void Init(ComPtr<ID3D12Device> device);
+	void Init();
 
 	ComPtr<ID3D12RootSignature>	GetSignature() { return _signature; }
 

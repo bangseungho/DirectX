@@ -1,18 +1,22 @@
 #include "pch.h"
 #include "RootSignature.h"
+#include "Engine.h"
 
-void RootSignature::Init(ComPtr<ID3D12Device> device)
+void RootSignature::Init()
 {
-	CD3DX12_DESCRIPTOR_RANGE ranges[2];
-	ranges[0].Init(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, CBV_REGISTER_COUNT, 0); // b0~b4
-	ranges[1].Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, SRV_REGISTER_COUNT, 0); // t0~t4
+	CD3DX12_DESCRIPTOR_RANGE ranges[] =
+	{
+		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, CBV_REGISTER_COUNT - 1, 1), // b1~b4
+		CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, SRV_REGISTER_COUNT, 0), // t0~t4
+	};
 
-	CD3DX12_ROOT_PARAMETER rootParameter[1];
-	rootParameter[0].InitAsDescriptorTable(2, ranges, D3D12_SHADER_VISIBILITY_ALL);
+	CD3DX12_ROOT_PARAMETER rootParameter[2];
+	rootParameter[0].InitAsConstantBufferView(static_cast<uint32>(CBV_REGISTER::b0)); // b0
+	rootParameter[1].InitAsDescriptorTable(_countof(ranges), ranges); // b1~b4, t0~t4
 
 	auto staticSamplers = GetStaticSamplers();
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, rootParameter,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(2, rootParameter,
 		(UINT)STATIC_SAMPLER_COUNT, staticSamplers.data(),
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
@@ -25,7 +29,7 @@ void RootSignature::Init(ComPtr<ID3D12Device> device)
 	}
 	ThrowIfFailed(hr);
 
-	ThrowIfFailed(device->CreateRootSignature(0, blobSignature->GetBufferPointer(), blobSignature->GetBufferSize(), IID_PPV_ARGS(&_signature)))
+	ThrowIfFailed(DEVICE->CreateRootSignature(0, blobSignature->GetBufferPointer(), blobSignature->GetBufferSize(), IID_PPV_ARGS(&_signature)))
 }
 
 array<const CD3DX12_STATIC_SAMPLER_DESC, STATIC_SAMPLER_COUNT> RootSignature::GetStaticSamplers()

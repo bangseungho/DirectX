@@ -8,10 +8,12 @@
 #include "MeshRenderer.h"
 #include "Transform.h"
 #include "Camera.h"
+#include "Light.h"
 
 #include "TestCameraScript.h"
 #include "TestRotationScript.h"
 #include "TestAutoMoveScript.h"
+#include "TestLightMoveToCamera.h"
 
 #include "Resources.h"
 
@@ -34,12 +36,8 @@ void SceneManager::Update()
 
 void SceneManager::Render()
 {
-	if (_activeScene == nullptr)
-		return;
-
-	const shared_ptr<GameObject>& cameraObjects = _activeScene->GetMainCamera();
-	
-	cameraObjects->GetCamera()->Render();
+	if (_activeScene)
+		_activeScene->Render();
 }
 
 void SceneManager::LoadScene(wstring sceneName)
@@ -58,14 +56,12 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	shared_ptr<Scene> scene = make_shared<Scene>();
 
 #pragma region Camera1
-	{
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
 		camera->Init();
 		camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
 		camera->AddComponent(make_shared<TestCameraScript>());
 		camera->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 0.f));
 		scene->AddCameraObject(FIRST_CAMERA, camera);
-	}
 
 	scene->SetMainCamera(FIRST_CAMERA);
 #pragma endregion
@@ -140,6 +136,30 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		scene->AddGameObject(gameObject);
 	}
 #pragma endregion
+
+#pragma region Light
+	{
+		shared_ptr<GameObject> light = make_shared<GameObject>();
+		light->Init();
+		light->AddComponent(make_shared<Transform>());
+		light->AddComponent(make_shared<Light>());
+		light->GetLight()->SetLightType(LIGHT_TYPE::POINT_LIGHT);
+		light->GetLight()->SetDiffuse(Vec3(1.0f, 1.f, 1.f));
+		light->GetLight()->SetLightDirection(Vec3(0.0f, -1.f, 0.f));
+		light->GetLight()->SetAmbient(Vec3(0.1f, 0.1f, 0.1f));
+		light->GetLight()->SetSpecular(Vec3(0.1f, 0.1f, 0.1f));
+		light->GetLight()->SetLightRange(1000.f);
+		light->GetLight()->SetLightAngle(45.f);
+
+		sptr<TestLightMoveToCamera> moveLightScript = make_shared<TestLightMoveToCamera>();
+		moveLightScript->SetGameObject(camera);
+		light->AddComponent(moveLightScript);
+
+		scene->AddGameObject(light);
+	}
+#pragma endregion
+
+	
 
 	return scene;
 }

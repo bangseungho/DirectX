@@ -132,6 +132,12 @@
     <ClCompile Include="TestAutoMoveScript.cpp">
       <Filter>Object\Test</Filter>
     </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>Object\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="TestLightMoveToCamera.cpp">
+      <Filter>Object\Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -239,9 +245,21 @@
     <ClInclude Include="TestAutoMoveScript.h">
       <Filter>Object\Test</Filter>
     </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="TestLightMoveToCamera.h">
+      <Filter>Object\Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Resources\Shader\Default.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Utils.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Params.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

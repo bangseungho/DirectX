@@ -21,6 +21,12 @@ public:
 	void LateUpdate();
 	void FinalUpdate();
 
+	void Render();
+
+private:
+	void PushPassData();
+
+public:
 	void AddGameObject(sptr<GameObject> gameObject);
 	void AddCameraObject(NUMBER_CAMERA number, sptr<GameObject> gameObject);
 

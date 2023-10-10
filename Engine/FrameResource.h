@@ -12,8 +12,9 @@ public:
 public:
     ComPtr<ID3D12CommandAllocator> CmdAlloc;
 
-    sptr<ConstantBuffer> ObjectCB = nullptr;
-    sptr<ConstantBuffer> MaterialCB = nullptr;
+    sptr<ConstantBuffer> PassCB;
+    sptr<ConstantBuffer> ObjectCB;
+    sptr<ConstantBuffer> MaterialCB;
 
     uint64 Fence = 0;
 };
