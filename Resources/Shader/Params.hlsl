@@ -1,47 +1,53 @@
 #ifndef _PARAMS_HLSL_
 #define _PARAMS_HLSL_
-
-struct LightColor
-{
-    float4      diffuse;
-    float4      ambient;
-    float4      specular;
-};
+#define MaxLights 50
 
 struct LightInfo
 {
-    LightColor  color;
-    float4	    position;
-    float4	    direction; 
-    int		    lightType;
-    float	    range;
-    float	    angle;
-    int  	    padding;
+    float3      strength;
+    float       fallOffStart; 
+    float3      direction;    
+    float       fallOffEnd;   
+    float3      position;     
+    float       spotPower;    
+    int         lightType;
+    float3      padding;
+};
+
+struct Material
+{
+    float4 diffuseAlbedo;
+    float3 fresnelR0;
+    float shininess;
 };
 
 struct PassConstants
 {
-    int		    lightCount;
-	float3	    padding;
-	LightInfo	lights[50];
+    row_major matrix    view;
+    row_major matrix    proj;
+    row_major matrix    viewProj;
+    float4              eyePosW;
+	float               nearZ;
+	float               farZ;
+	float               totalTime;
+	float               deltaTime;
+	float4              ambientLight;
+    int		            lightCount;
+	float3	            padding;
+	LightInfo	        lights[50];
 };
 
 struct ObjectConstants
 {
-     row_major matrix gMatWorld;
-	 row_major matrix gMatView;
-	 row_major matrix gMatProjection;
-	 row_major matrix gMatWV;
-	 row_major matrix gMatWVP;
+     row_major matrix world;
 };
 
 struct MaterialConstants
 {
-    float4 diffuseAlbedo;
-    float3 fresnelR0;
-    float roughness;
-    float4x4 matTransform;
-    float texOn;
+    float4              diffuseAlbedo;
+    float3              fresnelR0;
+    float               roughness;
+    row_major float4x4  matTransform;
 };
 
 ConstantBuffer<PassConstants> gPassConstants : register(b0);

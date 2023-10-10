@@ -39,8 +39,8 @@ public:
 
 private:
 	vector<sptr<GameObject>> _gameObjects;
-	
 	array<sptr<GameObject>, CAMERA_COUNT> _cameraObjects;
+	Vec4 _ambientLight = { 0.2f, 0.2f, 0.2f, 1.f };
 	sptr<GameObject> _mainCamera;
 };
 

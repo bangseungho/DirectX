@@ -7,9 +7,6 @@
 #include "MeshRenderer.h"
 #include "Engine.h"
 
-Matrix Camera::S_MatView;
-Matrix Camera::S_MatProjection;
-
 Camera::Camera() : Component(COMPONENT_TYPE::CAMERA)
 {
 }
@@ -29,9 +26,6 @@ void Camera::FinalUpdate()
 		_matProjection = ::XMMatrixPerspectiveFovLH(_fov, width / height, _near, _far);
 	else
 		_matProjection = ::XMMatrixOrthographicLH(width * _scale, height * _scale, _near, _far);
-
-	S_MatView = _matView;
-	S_MatProjection = _matProjection;
 }
 
 void Camera::Render()

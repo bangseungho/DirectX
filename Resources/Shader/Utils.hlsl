@@ -3,76 +3,120 @@
 
 #include "Params.hlsl"
 
-LightColor CalculateLightColor(int lightIndex, float3 viewNormal, float3 viewPos)
+float CalcAttenuation(float d, float falloffStart, float falloffEnd)
 {
-    LightColor color = (LightColor)0.f;
-
-    float3 viewLightDir = (float3)0.f;
-
-    float diffuseRatio = 0.f;
-    float specularRatio = 0.f;
-    float distanceRatio = 1.f;
-
-    if (gPassConstants.lights[lightIndex].lightType == 0)
-    {
-        // Directional Light
-        viewLightDir = normalize(mul(float4(gPassConstants.lights[lightIndex].direction.xyz, 0.f), gObjConstants.gMatView).xyz);
-        diffuseRatio = saturate(dot(-viewLightDir, viewNormal));
-    }
-    else if (gPassConstants.lights[lightIndex].lightType == 1)
-    {
-        // Point Light
-        float3 viewLightPos = mul(float4(gPassConstants.lights[lightIndex].position.xyz, 1.f), gObjConstants.gMatView).xyz;
-        viewLightDir = normalize(viewPos - viewLightPos);
-        diffuseRatio = saturate(dot(-viewLightDir, viewNormal));
-
-        float dist = distance(viewPos, viewLightPos);
-        if (gPassConstants.lights[lightIndex].range == 0.f)
-            distanceRatio = 0.f;
-        else
-            distanceRatio = saturate(1.f - pow(dist / gPassConstants.lights[lightIndex].range, 2));
-    }
-    else
-    {
-        // Spot Light
-        float3 viewLightPos = mul(float4(gPassConstants.lights[lightIndex].position.xyz, 1.f), gObjConstants.gMatView).xyz;
-        viewLightDir = normalize(viewPos - viewLightPos);
-        diffuseRatio = saturate(dot(-viewLightDir, viewNormal));
-
-        if (gPassConstants.lights[lightIndex].range == 0.f)
-            distanceRatio = 0.f;
-        else
-        {
-            float halfAngle = gPassConstants.lights[lightIndex].angle / 2;
-
-            float3 viewLightVec = viewPos - viewLightPos;
-            float3 viewCenterLightDir = normalize(mul(float4(gPassConstants.lights[lightIndex].direction.xyz, 0.f), gObjConstants.gMatView).xyz);
-
-            float centerDist = dot(viewLightVec, viewCenterLightDir);
-            distanceRatio = saturate(1.f - centerDist / gPassConstants.lights[lightIndex].range);
-
-            float lightAngle = acos(dot(normalize(viewLightVec), viewCenterLightDir));
-
-            if (centerDist < 0.f || centerDist > gPassConstants.lights[lightIndex].range) // 최대 거리를 벗어났는지
-                distanceRatio = 0.f;
-            else if (lightAngle > halfAngle) // 최대 시야각을 벗어났는지
-                distanceRatio = 0.f;
-            else // 거리에 따라 적절히 세기를 조절
-                distanceRatio = saturate(1.f - pow(centerDist / gPassConstants.lights[lightIndex].range, 2));
-        }
-    }
-
-    float3 reflectionDir = normalize(viewLightDir + 2 * (saturate(dot(-viewLightDir, viewNormal)) * viewNormal));
-    float3 eyeDir = normalize(viewPos);
-    specularRatio = saturate(dot(-eyeDir, reflectionDir));
-    specularRatio = pow(specularRatio, 2);
-
-    color.diffuse = gPassConstants.lights[lightIndex].color.diffuse * diffuseRatio * distanceRatio;
-    color.ambient = gPassConstants.lights[lightIndex].color.ambient * distanceRatio;
-    color.specular = gPassConstants.lights[lightIndex].color.specular * specularRatio * distanceRatio;
-
-    return color;
+    return saturate((falloffEnd-d) / (falloffEnd - falloffStart));
 }
 
+float3 SchlickFresnel(float3 R0, float3 normal, float3 lightVec)
+{
+    float cosIncidentAngle = saturate(dot(normal, lightVec));
+
+    float f0 = 1.0f - cosIncidentAngle;
+    float3 reflectPercent = R0 + (1.0f - R0)*(f0*f0*f0*f0*f0);
+
+    return reflectPercent;
+}
+
+float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 toEye, Material mat)
+{
+    const float m = mat.shininess * 256.0f;
+    float3 halfVec = normalize(toEye + lightVec);
+
+    float roughnessFactor = (m + 8.0f)*pow(max(dot(halfVec, normal), 0.0f), m) / 8.0f;
+    float3 fresnelFactor = SchlickFresnel(mat.fresnelR0, halfVec, lightVec);
+
+    float3 specAlbedo = fresnelFactor*roughnessFactor;
+
+    specAlbedo = specAlbedo / (specAlbedo + 1.0f);
+
+    return (mat.diffuseAlbedo.rgb + specAlbedo) * lightStrength;
+}
+
+float3 ComputeDirectionalLight(LightInfo L, Material mat, float3 normal, float3 toEye)
+{
+    // 빛 벡터의 반대 방향 벡터
+    float3 lightVec = -L.direction;
+
+    // 빛과 점의 노멀에 람베르트 코사인 법칙을 적용
+    float ndotl = max(dot(lightVec, normal), 0.0f);
+    
+    // ndotl이 0~1이므로 각도가 높아질수록 빛의 세기가 약해진다.
+    float3 lightStrength = L.strength * ndotl;
+
+    return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
+}
+
+float3 ComputePointLight(LightInfo L, Material mat, float3 pos, float3 normal, float3 toEye)
+{
+    // 점에서 광원으로의 벡터
+    float3 lightVec = L.position - pos;
+
+    // 점에서 광원까지의 거리
+    float d = length(lightVec);
+
+    // 점에서 광원까지의 거리가 범위보다 크면 0리턴
+    if(d > L.fallOffEnd)
+        return 0.0f;
+
+    // 점에서 광원으로의 벡터 정규화
+    lightVec /= d;
+
+    // 점에서 광원으로의 벡터와 점의 노멀에 람베르트 코사인 법칙을 적용
+    float ndotl = max(dot(lightVec, normal), 0.0f);
+    float3 lightStrength = L.strength * ndotl;
+
+    // 선형 감쇠 함수로 거리에 따라 약해진다.
+    float att = CalcAttenuation(d, L.fallOffStart, L.fallOffEnd);
+    lightStrength *= att;
+
+    return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
+}
+
+float3 ComputeSpotLight(LightInfo L, Material mat, float3 pos, float3 normal, float3 toEye)
+{
+    // 점에서 광원으로의 벡터
+    float3 lightVec = L.position - pos;
+
+    // 점에서 광원까지의 거리
+    float d = length(lightVec);
+
+    // 점에서 광원까지의 거리가 범위보다 크면 0리턴
+    if(d > L.fallOffEnd)
+        return 0.0f;
+
+    // 점에서 광원으로의 벡터 정규화
+    lightVec /= d;
+
+    // 점에서 광원으로의 벡터와 점의 노멀에 람베르트 코사인 법칙을 적용
+    float ndotl = max(dot(lightVec, normal), 0.0f);
+    float3 lightStrength = L.strength * ndotl;
+
+    // Attenuate light by distance.
+    float att = CalcAttenuation(d, L.fallOffStart, L.fallOffEnd);
+    lightStrength *= att;
+
+    // Scale by spotlight
+    float spotFactor = pow(max(dot(-lightVec, L.direction), 0.0f), L.spotPower);
+    lightStrength *= spotFactor;
+
+    return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
+}
+
+float4 ComputeLighting(LightInfo gLights[MaxLights], Material mat, float3 pos, float3 normal, float3 toEye, float3 shadowFactor)
+{
+    float3 result = 0.0f;
+
+    for (int i = 0; i < gPassConstants.lightCount; ++i)
+    {
+        if (gLights[i].lightType == 0)
+            result += shadowFactor[i] * ComputeDirectionalLight(gLights[i], mat, normal, toEye);
+        if (gLights[i].lightType == 1)
+            result += ComputePointLight(gLights[i], mat, pos, normal, toEye);
+        if (gLights[i].lightType == 2)
+            result += ComputeSpotLight(gLights[i], mat, pos, normal, toEye);
+    }
+        return float4(result, 0.f);
+}
 
 #endif

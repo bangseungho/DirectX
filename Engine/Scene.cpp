@@ -5,6 +5,8 @@
 #include "Engine.h"
 #include "ConstantBuffer.h"
 #include "Light.h"
+#include "Transform.h"
+#include "Timer.h"
 
 void Scene::Awake()
 {
@@ -90,7 +92,17 @@ void Scene::RemoveGameObject(sptr<GameObject> gameObject)
 void Scene::PushPassData()
 {
 	PassConstants passConstants = {};
-	
+
+	passConstants.view = _mainCamera->GetCamera()->_matView;
+	passConstants.proj = _mainCamera->GetCamera()->_matProjection;
+	passConstants.viewProj = passConstants.view * passConstants.proj;
+	passConstants.eyePosW = _mainCamera->GetTransform()->GetLocalPosition();
+	passConstants.nearZ = _mainCamera->GetCamera()->_near;
+	passConstants.farZ = _mainCamera->GetCamera()->_far;
+	passConstants.totalTime = TOTAL_TIME;
+	passConstants.deltaTime = DELTA_TIME;
+	passConstants.ambientLight = _ambientLight;
+
 	for (auto& gameObject : _gameObjects)
 	{
 		if (gameObject->GetLight() == nullptr)

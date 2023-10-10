@@ -12,15 +12,12 @@ public:
 public:
 	const LightInfo& GetLightInfo() { return _lightInfo; }
 
+	void SetLightStrenth(const Vec3& strength) { _lightInfo.strength = strength; }
 	void SetLightDirection(const Vec3& direction) { _lightInfo.direction = direction; }
 
-	void SetDiffuse(const Vec3& diffuse) { _lightInfo.color.diffuse = diffuse; }
-	void SetAmbient(const Vec3& ambient) { _lightInfo.color.ambient = ambient; }
-	void SetSpecular(const Vec3& specular) { _lightInfo.color.specular = specular; }
-
 	void SetLightType(LIGHT_TYPE type) { _lightInfo.lightType = static_cast<int32>(type); }
-	void SetLightRange(float range) { _lightInfo.range = range; }
-	void SetLightAngle(float angle) { _lightInfo.angle = angle; }
+	void SetFallOff(float start, float end) { _lightInfo.fallOffStart = start, _lightInfo.fallOffEnd = end; }
+	void SetSpotPower(float spotPower) { _lightInfo.spotPower = spotPower; }
 
 private:
 	LightInfo _lightInfo = {};

@@ -17,6 +17,8 @@ public:
 	void Render();
 
 private:
+	friend class Scene;
+
 	PROJECTION_TYPE _type = PROJECTION_TYPE::PERSPECTIVE;
 
 	float _near = 1.f;
@@ -26,8 +28,5 @@ private:
 
 	Matrix _matView = {};
 	Matrix _matProjection = {};
-public:
-	static Matrix S_MatView;
-	static Matrix S_MatProjection;
 };
 

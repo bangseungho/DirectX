@@ -36,10 +36,6 @@ void Transform::PushData()
 	ObjectConstants objectConstants;
 
 	objectConstants.matWorld = _matWorld;
-	objectConstants.matView = Camera::S_MatView;
-	objectConstants.matProjection = Camera::S_MatProjection;
-	objectConstants.matWV = _matWorld * Camera::S_MatView;
-	objectConstants.matWVP = _matWorld * Camera::S_MatView * Camera::S_MatProjection;
 
 	CB(CONSTANT_BUFFER_TYPE::OBJECT)->PushData(&objectConstants, sizeof(objectConstants));
 }

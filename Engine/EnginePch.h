@@ -93,26 +93,31 @@ enum class LIGHT_TYPE : uint8
 	SPOT_LIGHT,
 };
 
-struct LightColor
-{
-	Vec4	diffuse;
-	Vec4	ambient;
-	Vec4	specular;
-};
-
 struct LightInfo
 {
-	LightColor	color;
-	Vec4		position;
-	Vec4		direction;
-	int32		lightType;
-	float		range;
-	float		angle;
-	int32		padding;
+	Vec3 strength = { 0.5f, 0.5f, 0.5f };
+	float fallOffStart = 1.0f;                  // point/spot light only
+	Vec3 direction = { 0.0f, -1.0f, 0.0f };		// directional/spot light only
+	float fallOffEnd = 10.0f;                   // point/spot light only
+	Vec3 position = { 0.0f, 0.0f, 0.0f };		// point/spot light only
+	float spotPower = 64.0f;                    // spot light only
+	int32 lightType;
+	Vec3 padding;
 };
 
 struct PassConstants
 {
+	Matrix view = Matrix::Identity;
+	Matrix proj = Matrix::Identity;
+	Matrix viewProj = Matrix::Identity;
+	Vec4 eyePosW = { 0.f, 0.f, 0.f, 0.f };
+	float nearZ = 0.f;
+	float farZ = 0.f;
+	float totalTime = 0.f;
+	float deltaTime = 0.f;
+
+	Vec4 ambientLight = { 0.f, 0.f, 0.f, 1.f };
+
 	uint32		lightCount;
 	Vec3		padding;
 	LightInfo	lights[50];
@@ -121,52 +126,14 @@ struct PassConstants
 struct ObjectConstants
 {
 	Matrix matWorld;
-	Matrix matView;
-	Matrix matProjection;
-	Matrix matWV;
-	Matrix matWVP;
 };
-
-//struct PassConstants
-//{
-//	DirectX::XMFLOAT4X4 View = MathHelper::Identity4x4();
-//	DirectX::XMFLOAT4X4 InvView = MathHelper::Identity4x4();
-//	DirectX::XMFLOAT4X4 Proj = MathHelper::Identity4x4();
-//	DirectX::XMFLOAT4X4 InvProj = MathHelper::Identity4x4();
-//	DirectX::XMFLOAT4X4 ViewProj = MathHelper::Identity4x4();
-//	DirectX::XMFLOAT4X4 InvViewProj = MathHelper::Identity4x4();
-//	DirectX::XMFLOAT3 EyePosW = { 0.0f, 0.0f, 0.0f };
-//	float cbPerObjectPad1 = 0.0f;
-//	DirectX::XMFLOAT2 RenderTargetSize = { 0.0f, 0.0f };
-//	DirectX::XMFLOAT2 InvRenderTargetSize = { 0.0f, 0.0f };
-//	float NearZ = 0.0f;
-//	float FarZ = 0.0f;
-//	float TotalTime = 0.0f;
-//	float DeltaTime = 0.0f;
-//
-//	DirectX::XMFLOAT4 AmbientLight = { 0.0f, 0.0f, 0.0f, 1.0f };
-//
-//	DirectX::XMFLOAT4 FogColor = { 0.7f, 0.7f, 0.7f, 1.0f };
-//	float gFogStart = 50.0f;
-//	float gFogRange = 150.0f;
-//	DirectX::XMFLOAT2 cbPerObjectPad2;
-//
-//	Light Lights[MaxLights];
-//};
 
 struct MaterialConstants
 {
-	void SetDiffuse(Vec4 diffuse) { DiffuseAlbedo = diffuse; }
-	void SetFresnel(Vec3 fresnel) { FresnelR0 = fresnel; }
-	void SetRoughness(float roughness) { Roughness = roughness; }
-	void SetMatTransform(Matrix matTransform) { MatTransform = matTransform; }
-	void SetTexOn(bool texOn) { TexOn = texOn; }
-
 	Vec4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Vec3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
 	float Roughness = 0.25f;
 	Matrix MatTransform = MathHelper::Identity4x4();
-	bool TexOn = false;
 };
 
 #define DEVICE					gEngine->GetDevice()->GetDevice()

@@ -6,52 +6,68 @@
 
 struct VS_IN
 {
-    float3 pos : POSITION;
+    float3 posL : POSITION;
+    float3 normalL : NORMAL;
     float2 uv : TEXCOORD;
-    float3 normal : NORMAL;
 };
 
 struct VS_OUT
 {
-    float4 pos : SV_Position;
+    float4 posH : SV_Position;
+    float3 posW : POSITION;
+    float3 normalW : NORMAL;
     float2 uv : TEXCOORD;
-    float3 viewPos : POSITION;
-    float3 viewNormal : NORMAL;
 };
 
-VS_OUT VS_Main(VS_IN input)
+VS_OUT VS_Main(VS_IN vin)
 {
-    VS_OUT output = (VS_OUT)0;
+    VS_OUT vout = (VS_OUT)0.f;
+    
+    // 세계 공간으로 변환
+    float4 posW = mul(float4(vin.posL, 1.0f), gObjConstants.world);
+    vout.posW = posW.xyz;
+    
+    // 비균등 비례가 없을 경우 법선 변환 있다면 역전치 행렬을 사용
+    vout.normalW = mul(vin.normalL, (float3x3)gObjConstants.world);
+    
+    // 동차 절단 공간으로 변환
+    vout.posH = mul(posW, gPassConstants.viewProj);
 
-    output.pos = mul(float4(input.pos, 1.f), gObjConstants.gMatWVP);
-    output.uv = input.uv;
-
-    output.viewPos = mul(float4(input.pos, 1.f), gObjConstants.gMatWV).xyz;
-    output.viewNormal = normalize(mul(float4(input.normal, 0.f), gObjConstants.gMatWV).xyz);
-
-    return output;
+    float4 uv = mul(float4(vin.uv, 0.f, 1.f), gMaterialConstants.matTransform);
+    vout.uv = uv.xy;
+ 
+    return vout;
 }
 
-float4 PS_Main(VS_OUT input) : SV_Target
+float4 PS_Main(VS_OUT pin) : SV_Target
 {
-    float4 color = gDiffuseMap.Sample(gsamAnisotropicWrap, input.uv);
-    //float4 color = float4(1.f, 1.f, 1.f, 1.f);
+    float4 diffuseAlbedo = gDiffuseMap.Sample(gsamAnisotropicWrap, pin.uv) * gMaterialConstants.diffuseAlbedo;
+    
+    // 보간 과정에서 단위 벡터가 안될 수 있으므로 노말라이즈를 한다.
+    pin.normalW = normalize(pin.normalW);
 
-    LightColor totalColor = (LightColor)0.f;
+    // 조명되는 점에서 눈으로의 벡터
+	float3 toEyeW = gPassConstants.eyePosW.xyz - pin.posW;
+	float distToEye = length(toEyeW);
+	toEyeW /= distToEye; // 노말라이즈
 
-    for (int i = 0; i < gPassConstants.lightCount; ++i)
-    {
-         LightColor color = CalculateLightColor(i, input.viewNormal, input.viewPos);
-         totalColor.diffuse += color.diffuse;
-         totalColor.ambient += color.ambient;
-         totalColor.specular += color.specular;
-    }
-
-    color.xyz = (totalColor.diffuse.xyz * color.xyz)
-        + totalColor.ambient.xyz * color.xyz
-        + totalColor.specular.xyz;
-
-     return color;
+    // 주변광
+    float4 ambient = gPassConstants.ambientLight * diffuseAlbedo;
+    
+    // 광택 : 거칠수록 광택이 떨어짐
+    const float shininess = 1.0f - gMaterialConstants.roughness;
+    
+    // 조명을 입힐 최종 머티리얼
+    float3 shadowFactor = 1.0f;
+    Material mat = { diffuseAlbedo, gMaterialConstants.fresnelR0, shininess };
+    float4 directLight = ComputeLighting(gPassConstants.lights, mat, pin.posW, pin.normalW, toEyeW, shadowFactor);
+    
+    float4 resColor = ambient + directLight;
+    
+    // 분산 재질에서 알파를 가져온다.
+    resColor.a = diffuseAlbedo.a;
+    
+    return resColor;
 }
 
 #endif
