@@ -20,6 +20,7 @@ public:
 	void SetDiffuse(Vec4 diffuse) { _params.DiffuseAlbedo = diffuse; }
 	void SetFresnel(Vec3 fresnel) { _params.FresnelR0 = fresnel; }
 	void SetRoughness(float roughness) { _params.Roughness = roughness; }
+	void SetNormalMapping(float normalMapping) { _params.NormalMapping = normalMapping; }
 	void SetMatTransform(Matrix matTransform) { _params.MatTransform = matTransform; }
 	void SetTexture(uint8 index, shared_ptr<class Texture> texture) { _textures[index] = texture; }
 

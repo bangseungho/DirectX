@@ -36,6 +36,8 @@ void Shader::Init(const wstring& path)
 	_pipelineDesc.DSVFormat = gEngine->GetDepthStencilBuffer()->GetDSVFormat();
 	_pipelineDesc.SampleDesc.Count = 1;
 
+	//_pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+
 	_pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 
 	DEVICE->CreateGraphicsPipelineState(&_pipelineDesc, IID_PPV_ARGS(&_pipelineState));

@@ -128,12 +128,16 @@ struct ObjectConstants
 	Matrix matWorld;
 };
 
+#define NORMAL_MAPPING_ON	1.f
+#define NORMAL_MAPPING_OFF	0.f
 struct MaterialConstants
 {
 	Vec4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
 	Vec3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
 	float Roughness = 0.25f;
 	Matrix MatTransform = MathHelper::Identity4x4();
+	float NormalMapping = NORMAL_MAPPING_OFF;
+	Vec3 padding;
 };
 
 #define DEVICE					gEngine->GetDevice()->GetDevice()

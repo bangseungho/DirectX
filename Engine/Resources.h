@@ -23,8 +23,10 @@ public:
 	template<typename T>
 	OBJECT_TYPE GetObjectType();
 
+	sptr<Mesh> LoadRectMesh();
 	sptr<Mesh> LoadCubeMesh();
 	sptr<Mesh> LoadSphereMesh();
+	sptr<Mesh> LoadGridMesh();
 
 private:
 	using KeyObjMap = std::map<wstring, sptr<Object>>;

@@ -3,6 +3,32 @@
 
 DECLARE_SINGLE(Resources)
 
+sptr<Mesh> Resources::LoadRectMesh()
+{
+	sptr<Mesh> findMesh = Get<Mesh>(L"Rectangle");
+	if (findMesh)
+		return findMesh;
+
+	float w2 = 20.0f;
+	float h2 = 20.0f;
+	
+	vector<Vertex> vec(4);
+	vec[0] = Vertex(Vec3(-w2, -h2, 0.f), Vec2(0.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
+	vec[1] = Vertex(Vec3(-w2, +h2, 0.f), Vec2(0.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
+	vec[2] = Vertex(Vec3(+w2, +h2, 0.f), Vec2(1.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
+	vec[3] = Vertex(Vec3(+w2, -h2, 0.f), Vec2(1.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
+
+	vector<uint32> idx(6);
+	idx[0] = 0; idx[1] = 1; idx[2] = 2;
+	idx[3] = 0; idx[4] = 2; idx[5] = 3;
+
+	sptr<Mesh> mesh = make_shared<Mesh>();
+	mesh->Init(vec, idx);
+	Add<Mesh>(L"Rectangle", mesh);
+
+	return mesh;
+}
+
 shared_ptr<Mesh> Resources::LoadCubeMesh()
 {
 	shared_ptr<Mesh> findMesh = Get<Mesh>(L"Cube");
@@ -188,6 +214,67 @@ shared_ptr<Mesh> Resources::LoadSphereMesh()
 	shared_ptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
 	Add(L"Sphere", mesh);
+
+	return mesh;
+}
+
+sptr<Mesh> Resources::LoadGridMesh()
+{
+	sptr<Mesh> findMesh = Get<Mesh>(L"Gird");
+	if (findMesh)
+		return findMesh;
+
+	uint32 m = 200;
+	uint32 n = 200;
+	float width = 10000.f;
+	float depth = 10000.f;
+
+	uint32 vertexCount = m * n;
+	uint32 faceCount = (m - 1) * (n - 1) * 2;
+
+	float halfWidth = 0.5f * width;
+	float halfDepth = 0.5f * depth;
+
+	float dx = width / (n - 1);
+	float dz = depth / (m - 1);
+	
+	float du = 1.f / (n - 1);
+	float dv = 1.f / (m - 1);
+
+	vector<Vertex> vec(vertexCount);
+	for (uint32 i = 0; i < m; ++i) {
+		float z = -halfDepth + i * dz;
+		for (uint32 j = 0; j < n; ++j) {
+			float x = -halfWidth + j * dx;
+			
+			vec[i * n + j].pos = Vec3(x, 0.f, z);
+			vec[i * n + j].normal = Vec3(0.f, 1.f, 0.f);
+			vec[i * n + j].tangent = Vec3(1.f, 0.f, 0.f);
+			
+			vec[i * n + j].uv.x = j * du;
+			vec[i * n + j].uv.y = i * dv;
+		}
+	}
+
+	vector<uint32> idx(faceCount * 3);
+	uint32 k = 0;
+	for (uint32 i = 0; i < m - 1; ++i) {
+		for (uint32 j = 0; j < n - 1; ++j) {
+			idx[k] = i * n + j;
+			idx[k + 1] = i * n + j + 1;
+			idx[k + 2] = (i + 1) * n + j;
+			
+			idx[k + 3] = (i + 1) * n + j;
+			idx[k + 4] = i * n + j + 1;
+			idx[k + 5] = (i + 1) * n + j + 1;
+
+			k += 6;
+		}
+	}
+	
+	sptr<Mesh> mesh = make_shared<Mesh>();
+	mesh->Init(vec, idx);
+	Add<Mesh>(L"Grid", mesh);
 
 	return mesh;
 }

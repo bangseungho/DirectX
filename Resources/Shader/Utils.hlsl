@@ -119,4 +119,22 @@ float4 ComputeLighting(LightInfo gLights[MaxLights], Material mat, float3 pos, f
         return float4(result, 0.f);
 }
 
+float3 NormalToWorldSpace(float3 normalMapSample, float3 unitNormalW, float3 tangentW)
+{
+	// [0, 1]에서 [-1, 1]로 사상
+	float3 normalT = 2.0f*normalMapSample - 1.0f;
+
+	// 정규 직교 기저를 구축
+	float3 N = unitNormalW;
+	float3 T = normalize(tangentW - dot(tangentW, N)*N);
+	float3 B = cross(N, T);
+
+	float3x3 TBN = float3x3(T, B, N);
+
+    // 접공간에서 세계 공간으로 변환
+	float3 bumpedNormalW = mul(normalT, TBN);
+
+	return bumpedNormalW;
+}
+
 #endif
