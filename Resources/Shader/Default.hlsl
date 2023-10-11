@@ -33,7 +33,7 @@ VS_OUT VS_Main(VS_IN vin)
     vout.normalW = mul(vin.normalL, (float3x3)gObjConstants.world);
     
     vout.tangentW = mul(vin.tangentU, (float3x3)gObjConstants.world);
-    
+
     // 동차 절단 공간으로 변환
     vout.posH = mul(posW, gPassConstants.viewProj);
 
@@ -48,21 +48,26 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     // 보간 과정에서 단위 벡터가 안될 수 있으므로 노말라이즈를 한다.
     pin.normalW = normalize(pin.normalW);
 
+    // 노멀 맵
     float4 normalMap = gNormalMap.Sample(gsamAnisotropicWrap, pin.uv);
     float3 bumpedNormalW = NormalToWorldSpace(normalMap.rgb, pin.normalW, pin.tangentW);
+    
+    // 거칠기 
+    float roughness = gRoughnessMap.Sample(gsamAnisotropicWrap, pin.uv).x;
+
     
     // 베이스 컬러
     float4 diffuseAlbedo = gDiffuseMap.Sample(gsamAnisotropicWrap, pin.uv) * gMaterialConstants.diffuseAlbedo;
     clip(diffuseAlbedo.a - 0.1f);
     
     // 조명되는 점에서 눈으로의 벡터
-	float3 toEyeW = gPassConstants.eyePosW.xyz - pin.posW;
+    float3 toEyeW = normalize(gPassConstants.eyePosW.xyz - pin.posW);
     
     // 주변광
     float4 ambient = gPassConstants.ambientLight * diffuseAlbedo;
     
     // 광택 : 거칠수록 광택이 떨어짐
-    float shininess = 1.0f - gMaterialConstants.roughness;
+    float shininess = 1.0f - roughness;
     
     if (gMaterialConstants.normalMapping == 1.f)
         shininess *= normalMap.a;
