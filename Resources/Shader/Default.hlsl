@@ -74,7 +74,6 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     else 
 	    bumpedNormalW = pin.normalW;
     
-    
     // 조명을 입힐 최종 머티리얼
     float3 shadowFactor = 1.0f;
     Material mat = { diffuseAlbedo, gMaterialConstants.fresnelR0, shininess };

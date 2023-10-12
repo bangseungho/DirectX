@@ -144,6 +144,43 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		gameObject->Init();
 
 		shared_ptr<Transform> transform = gameObject->GetTransform();
+		transform->SetLocalPosition(Vec3(150.f, 100.f, -220.f));
+		transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
+
+		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		{
+			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
+			meshRenderer->SetMesh(mesh);
+		}
+		{
+			shared_ptr<Shader> shader = make_shared<Shader>();
+			shared_ptr<Texture> texture = make_shared<Texture>();
+			shared_ptr<Texture> textureNormal = make_shared<Texture>();
+			shared_ptr<Texture> textureRoughness = make_shared<Texture>();
+			shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
+			texture->Init(L"..\\Resources\\Texture\\Leather.dds");
+			textureNormal->Init(L"..\\Resources\\Texture\\Leather_Normal_BC7.dds");
+			textureRoughness->Init(L"..\\Resources\\Texture\\Leather_Weave_004_roughness.dds");
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(shader);
+			material->SetFresnel(Vec3(0.8f, 0.8f, 0.8f));
+			material->SetTexture(0, texture);
+			material->SetTexture(1, textureNormal);
+			material->SetTexture(2, textureRoughness);
+			material->SetNormalMapping(NORMAL_MAPPING_ON);
+			meshRenderer->SetMaterial(material);
+		}
+		gameObject->AddComponent(meshRenderer);
+		scene->AddGameObject(gameObject);
+	}
+#pragma endregion
+
+#pragma region NormalCube
+	{
+		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+		gameObject->Init();
+
+		shared_ptr<Transform> transform = gameObject->GetTransform();
 		transform->SetLocalPosition(Vec3(150.f, 100.f, 0.f));
 		transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
 
@@ -158,13 +195,12 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			shared_ptr<Texture> textureNormal = make_shared<Texture>();
 			shared_ptr<Texture> textureRoughness = make_shared<Texture>();
 			shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
-			texture->Init(L"..\\Resources\\Texture\\Rock.dds");
-			textureNormal->Init(L"..\\Resources\\Texture\\Rock_Normal.dds");
-			textureRoughness->Init(L"..\\Resources\\Texture\\Rock_Roughness.dds");
+			texture->Init(L"..\\Resources\\Texture\\Sci-Fi_Wall_014_basecolor.dds");
+			textureNormal->Init(L"..\\Resources\\Texture\\Sci-Fi_Wall_014_normal_BC7.dds");
+			textureRoughness->Init(L"..\\Resources\\Texture\\Sci-Fi_Wall_014_roughness.dds");
 			shared_ptr<Material> material = make_shared<Material>();
 			material->SetShader(shader);
-			material->SetFresnel(Vec3(0.5f, 0.5f, 0.5f));
-			material->SetRoughness(0.01f);
+			material->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
 			material->SetTexture(0, texture);
 			material->SetTexture(1, textureNormal);
 			material->SetTexture(2, textureRoughness);
