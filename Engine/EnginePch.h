@@ -120,7 +120,7 @@ struct PassConstants
 
 	uint32		lightCount;
 	Vec3		padding;
-	LightInfo	lights[50];
+	LightInfo	lights[200];
 };
 
 struct ObjectConstants

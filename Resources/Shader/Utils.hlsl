@@ -103,22 +103,6 @@ float3 ComputeSpotLight(LightInfo L, Material mat, float3 pos, float3 normal, fl
     return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
 }
 
-float4 ComputeLighting(LightInfo gLights[MaxLights], Material mat, float3 pos, float3 normal, float3 toEye, float3 shadowFactor)
-{
-    float3 result = 0.0f;
-
-    for (int i = 0; i < gPassConstants.lightCount; ++i)
-    {
-        if (gLights[i].lightType == 0)
-            result += shadowFactor[i] * ComputeDirectionalLight(gLights[i], mat, normal, toEye);
-        if (gLights[i].lightType == 1)
-            result += ComputePointLight(gLights[i], mat, pos, normal, toEye);
-        if (gLights[i].lightType == 2)
-            result += ComputeSpotLight(gLights[i], mat, pos, normal, toEye);
-    }
-        return float4(result, 0.f);
-}
-
 float3 NormalToWorldSpace(float3 normalMapSample, float3 unitNormalW, float3 tangentW)
 {
 	// [0, 1]에서 [-1, 1]로 사상

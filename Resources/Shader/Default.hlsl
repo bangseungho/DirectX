@@ -78,9 +78,21 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     // 조명을 입힐 최종 머티리얼
     float3 shadowFactor = 1.0f;
     Material mat = { diffuseAlbedo, gMaterialConstants.fresnelR0, shininess };
-    float4 directLight = ComputeLighting(gPassConstants.lights, mat, pin.posW, bumpedNormalW, toEyeW, shadowFactor);
     
-    float4 resColor = ambient + directLight;
+    // 조명 계산
+    float3 directLight = 0.0f;
+    
+    for(int i = 0; i < gPassConstants.lightCount; ++i)
+    {
+        if (gPassConstants.lights[i].lightType == 0)
+            directLight += shadowFactor[i] * ComputeDirectionalLight(gPassConstants.lights[i], mat, bumpedNormalW, toEyeW);
+        if (gPassConstants.lights[i].lightType == 1)
+            directLight += ComputePointLight(gPassConstants.lights[i], mat, pin.posW, bumpedNormalW, toEyeW);
+        if (gPassConstants.lights[i].lightType == 2)
+            directLight += ComputeSpotLight(gPassConstants.lights[i], mat, pin.posW, bumpedNormalW, toEyeW);
+    }
+    
+    float4 resColor = ambient + float4(directLight, 0.f);
     
     // 분산 재질에서 알파를 가져온다.
     resColor.a = diffuseAlbedo.a;

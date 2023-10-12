@@ -1,6 +1,6 @@
 #ifndef _PARAMS_HLSL_
 #define _PARAMS_HLSL_
-#define MaxLights 50
+#define MaxLights 200
 
 struct LightInfo
 {
@@ -34,7 +34,7 @@ struct PassConstants
 	float4              ambientLight;
     int		            lightCount;
 	float3	            padding;
-	LightInfo	        lights[50];
+	LightInfo	        lights[MaxLights];
 };
 
 struct ObjectConstants
