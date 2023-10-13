@@ -121,4 +121,21 @@ float3 NormalToWorldSpace(float3 normalMapSample, float3 unitNormalW, float3 tan
 	return bumpedNormalW;
 }
 
+float4 ComputeLighting(Material mat, float3 pos, float3 normal, float3 toEye, float3 shadowFactor)
+{
+    float3 result = 0.0f;
+    
+    for(int i = 0; i < gPassConstants.lightCount; ++i)
+    {
+        if (gPassConstants.lights[i].lightType == 0)
+            result += shadowFactor[i] * ComputeDirectionalLight(gPassConstants.lights[i], mat, normal, toEye);
+        if (gPassConstants.lights[i].lightType == 1)
+            result += ComputePointLight(gPassConstants.lights[i], mat, pos, normal, toEye);
+        if (gPassConstants.lights[i].lightType == 2)
+            result += ComputeSpotLight(gPassConstants.lights[i], mat, pos, normal, toEye);
+    }
+
+    return float4(result, 0.0f);
+}
+
 #endif

@@ -105,6 +105,7 @@ struct LightInfo
 	Vec3 padding;
 };
 
+#define MAX_LIGHTS	200
 struct PassConstants
 {
 	Matrix view = Matrix::Identity;
@@ -120,7 +121,7 @@ struct PassConstants
 
 	uint32		lightCount;
 	Vec3		padding;
-	LightInfo	lights[200];
+	LightInfo	lights[MAX_LIGHTS];
 };
 
 struct ObjectConstants
