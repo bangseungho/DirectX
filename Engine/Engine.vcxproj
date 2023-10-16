@@ -200,6 +200,7 @@
     <ClInclude Include="TableDescriptorHeap.h" />
     <ClInclude Include="ConstantBuffer.h" />
     <ClInclude Include="TestAutoMoveScript.h" />
+    <ClInclude Include="TestBillBoard.h" />
     <ClInclude Include="TestCameraScript.h" />
     <ClInclude Include="TestLightMoveToCamera.h" />
     <ClInclude Include="TestRotationScript.h" />
@@ -252,6 +253,7 @@
     <ClCompile Include="TableDescriptorHeap.cpp" />
     <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="TestAutoMoveScript.cpp" />
+    <ClCompile Include="TestBillBoard.cpp" />
     <ClCompile Include="TestCameraScript.cpp" />
     <ClCompile Include="TestLightMoveToCamera.cpp" />
     <ClCompile Include="TestRotationScript.cpp" />
@@ -285,6 +287,14 @@
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.1</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Sky.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS_Main</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.1</ShaderModel>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">VS_Main</EntryPointName>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.1</ShaderModel>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>

@@ -278,3 +278,64 @@ sptr<Mesh> Resources::LoadGridMesh()
 
 	return mesh;
 }
+
+sptr<Mesh> Resources::LoadParticleMesh()
+{
+	sptr<Mesh> findMesh = Get<Mesh>(L"Particle");
+	if (findMesh)
+		return findMesh;
+
+	uint32 m = 2;
+	uint32 n = 2;
+	float width = 100.f;
+	float depth = 100.f;
+
+	uint32 vertexCount = m * n;
+	uint32 faceCount = (m - 1) * (n - 1) * 2;
+
+	float halfWidth = 0.5f * width;
+	float halfDepth = 0.5f * depth;
+
+	float dx = width / (n - 1);
+	float dz = depth / (m - 1);
+
+	float du = 1.f / (n - 1);
+	float dv = 1.f / (m - 1);
+
+	vector<Vertex> vec(vertexCount);
+	for (uint32 i = 0; i < m; ++i) {
+		float z = -halfDepth + i * dz;
+		for (uint32 j = 0; j < n; ++j) {
+			float x = -halfWidth + j * dx;
+
+			vec[i * n + j].pos = Vec3(x, z, 0.f);
+			vec[i * n + j].normal = Vec3(0.f, 0.f, 1.f);
+			vec[i * n + j].tangent = Vec3(1.f, 0.f, 0.f);
+
+			vec[i * n + j].uv.x = j * du;
+			vec[i * n + j].uv.y = i * dv;
+		}
+	}
+
+	vector<uint32> idx(faceCount * 3);
+	uint32 k = 0;
+	for (uint32 i = 0; i < m - 1; ++i) {
+		for (uint32 j = 0; j < n - 1; ++j) {
+			idx[k] = i * n + j;
+			idx[k + 1] = i * n + j + 1;
+			idx[k + 2] = (i + 1) * n + j;
+
+			idx[k + 3] = (i + 1) * n + j;
+			idx[k + 4] = i * n + j + 1;
+			idx[k + 5] = (i + 1) * n + j + 1;
+
+			k += 6;
+		}
+	}
+
+	sptr<Mesh> mesh = make_shared<Mesh>();
+	mesh->Init(vec, idx);
+	Add<Mesh>(L"Particle", mesh);
+
+	return mesh;
+}

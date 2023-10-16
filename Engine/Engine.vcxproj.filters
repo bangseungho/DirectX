@@ -138,6 +138,9 @@
     <ClCompile Include="TestLightMoveToCamera.cpp">
       <Filter>Object\Test</Filter>
     </ClCompile>
+    <ClCompile Include="TestBillBoard.cpp">
+      <Filter>Object\Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -251,6 +254,9 @@
     <ClInclude Include="TestLightMoveToCamera.h">
       <Filter>Object\Test</Filter>
     </ClInclude>
+    <ClInclude Include="TestBillBoard.h">
+      <Filter>Object\Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Resources\Shader\Default.hlsl">
@@ -263,6 +269,9 @@
       <Filter>Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Resources\Shader\GUI.hlsl">
+      <Filter>Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Sky.hlsl">
       <Filter>Shader</Filter>
     </FxCompile>
   </ItemGroup>

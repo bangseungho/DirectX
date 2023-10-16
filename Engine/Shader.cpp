@@ -10,7 +10,7 @@ Shader::~Shader()
 {
 }
 
-void Shader::Init(const wstring& path)
+void Shader::Init(const wstring& path, ShaderInfo info)
 {
 	CreateVertexShader(path, "VS_Main", "vs_5_1");
 	CreatePixelShader(path, "PS_Main", "ps_5_1");
@@ -37,6 +37,50 @@ void Shader::Init(const wstring& path)
 	_pipelineDesc.SampleDesc.Count = 1;
 
 	_pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+
+	switch (info.rasterizerType)
+	{
+	case RASTERIGER_TYPE::CULL_NONE:
+		_pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		_pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+		break;
+	case RASTERIGER_TYPE::CULL_FRONT:
+		_pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		_pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT;
+		break;
+	case RASTERIGER_TYPE::CULL_BACK:
+		_pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		_pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+		break;
+	case RASTERIGER_TYPE::WIREFRAME:
+		_pipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+		_pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+		break;
+	default:
+		break;
+	}
+
+	switch (info.dpethStencilType)
+	{
+	case DEPTH_STENCIL_TYPE::LESS:
+		_pipelineDesc.DepthStencilState.DepthEnable = TRUE;
+		_pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		break;
+	case DEPTH_STENCIL_TYPE::LESS_EQUAL:
+		_pipelineDesc.DepthStencilState.DepthEnable = TRUE;
+		_pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		break;
+	case DEPTH_STENCIL_TYPE::GREATER:
+		_pipelineDesc.DepthStencilState.DepthEnable = TRUE;
+		_pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_GREATER;
+		break;
+	case DEPTH_STENCIL_TYPE::GREATER_EQUAL:
+		_pipelineDesc.DepthStencilState.DepthEnable = TRUE;
+		_pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_GREATER_EQUAL;
+		break;
+	default:
+		break;
+	}
 
 	DEVICE->CreateGraphicsPipelineState(&_pipelineDesc, IID_PPV_ARGS(&_pipelineState));
 }

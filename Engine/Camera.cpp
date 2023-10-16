@@ -17,7 +17,7 @@ Camera::~Camera()
 
 void Camera::FinalUpdate()
 {
-	_matView = GetTransform()->GetWorldMatrix().Invert();
+	_matView = GetTransform()->GetLocalToWorldMatrix().Invert();
 
 	float width = static_cast<float>(gEngine->GetWindow().width);
 	float height = static_cast<float>(gEngine->GetWindow().height);

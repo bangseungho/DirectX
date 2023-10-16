@@ -1,6 +1,12 @@
 #pragma once
 #include "Object.h"
 
+enum class TEXTURE_TYPE
+{
+	TEXTURE2D,
+	TEXTURECUBE,
+};
+
 class Texture : public Object
 {
 public:
@@ -8,13 +14,13 @@ public:
 	virtual ~Texture();
 
 public:
-	void Init(const wstring& path);
+	void Init(const wstring& path, TEXTURE_TYPE textureType = TEXTURE_TYPE::TEXTURE2D);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCpuHandle() { return _srvHandle; }
 
 public:
 	void CreateTexture(const wstring& path);
-	void CreateView();
+	void CreateView(TEXTURE_TYPE textureType);
 
 private:
 	ComPtr<ID3D12Resource>			_resource;

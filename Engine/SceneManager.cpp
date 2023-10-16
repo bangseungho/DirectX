@@ -14,6 +14,7 @@
 #include "TestRotationScript.h"
 #include "TestAutoMoveScript.h"
 #include "TestLightMoveToCamera.h"
+#include "TestBillBoard.h"
 
 #include "Resources.h"
 
@@ -77,6 +78,32 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	}
 #pragma endregion
 
+#pragma region SkyBox
+	{
+		shared_ptr<GameObject> skybox = make_shared<GameObject>();
+		skybox->Init();
+
+		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		{
+			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
+			meshRenderer->SetMesh(mesh);
+		}
+		{
+			shared_ptr<Shader> shader = make_shared<Shader>();
+			shared_ptr<Texture> texture = make_shared<Texture>();
+			shader->Init(L"..\\Resources\\Shader\\Sky.hlsl", { RASTERIGER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::LESS_EQUAL });
+			texture->Init(L"..\\Resources\\Texture\\Sky.dds", TEXTURE_TYPE::TEXTURECUBE);
+			shared_ptr<Material> material = make_shared<Material>();
+			material->SetShader(shader);
+			material->SetTexture(3, texture);
+			meshRenderer->SetMaterial(material);
+		}
+		skybox->AddComponent(meshRenderer);
+		scene->AddGameObject(skybox);
+	}
+#pragma endregion
+
+
 #pragma region Grid
 	{
 		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
@@ -133,7 +160,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		gameObject->AddComponent(meshRenderer);
 		gameObject->AddComponent(make_shared<TestAutoMoveScript>(transform->GetLocalPosition().x));
 
-
 		scene->AddGameObject(gameObject);
 	}
 #pragma endregion
@@ -170,6 +196,12 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			material->SetNormalMapping(NORMAL_MAPPING_ON);
 			meshRenderer->SetMaterial(material);
 		}
+		//sptr<TestBillBoard> testBillBoard = make_shared<TestBillBoard>();
+		//testBillBoard->SetCamera(camera);
+		//gameObject->AddComponent(testBillBoard);
+		
+
+
 		gameObject->AddComponent(meshRenderer);
 		scene->AddGameObject(gameObject);
 	}

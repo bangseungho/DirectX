@@ -27,6 +27,7 @@ public:
 	sptr<Mesh> LoadCubeMesh();
 	sptr<Mesh> LoadSphereMesh();
 	sptr<Mesh> LoadGridMesh();
+	sptr<Mesh> LoadParticleMesh();
 
 private:
 	using KeyObjMap = std::map<wstring, sptr<Object>>;
