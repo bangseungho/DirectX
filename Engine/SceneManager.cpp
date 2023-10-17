@@ -32,7 +32,7 @@ void SceneManager::Update()
 		_activeScene->SetMainCamera(SECOND_CAMERA);
 
 	_currTime += DELTA_TIME;
-	if (_currTime >= 0.02f) {
+	if (_currTime >= 0.01f) {
 		_activeScene->FixedUpdate();
 		_currTime = 0.f;
 	}
@@ -166,6 +166,9 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		}
 		gameObject->AddComponent(meshRenderer);
 		gameObject->AddComponent(make_shared<TestAutoMoveScript>(transform->GetLocalPosition().x));
+		sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
+		rigid->SetMass(200.f);
+		gameObject->AddComponent(rigid);
 
 		scene->AddGameObject(gameObject);
 	}
@@ -206,8 +209,10 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		//sptr<TestBillBoard> testBillBoard = make_shared<TestBillBoard>();
 		//testBillBoard->SetCamera(camera);
 		//gameObject->AddComponent(testBillBoard);
-		
 
+		sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
+		rigid->SetMass(300.f);
+		gameObject->AddComponent(rigid);
 
 		gameObject->AddComponent(meshRenderer);
 		scene->AddGameObject(gameObject);
@@ -247,6 +252,9 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			meshRenderer->SetMaterial(material);
 		}
 		gameObject->AddComponent(meshRenderer);
+		sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
+		rigid->SetMass(500.f);
+		gameObject->AddComponent(rigid);
 		scene->AddGameObject(gameObject);
 	}
 #pragma endregion
@@ -257,7 +265,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		gameObject->Init();
 
 		shared_ptr<Transform> transform = gameObject->GetTransform();
-		transform->SetLocalPosition(Vec3(0.f, 50.f, 200.f));
+		transform->SetLocalPosition(Vec3(0.f, 100.f, 200.f));
 		transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
 
 		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
@@ -278,7 +286,9 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			meshRenderer->SetMaterial(material);
 		}
 		gameObject->AddComponent(meshRenderer);
-		gameObject->AddComponent(make_shared<Rigidbody3D>());
+		sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
+		rigid->SetMass(100.f);
+		gameObject->AddComponent(rigid);
 		gameObject->AddComponent(make_shared<TestRotationScript>());
 		scene->AddGameObject(gameObject);
 	}
