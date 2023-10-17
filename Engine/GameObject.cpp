@@ -49,6 +49,20 @@ void GameObject::Start()
 	}
 }
 
+void GameObject::FixedUpdate()
+{
+	for (shared_ptr<Component>& component : _components)
+	{
+		if (component)
+			component->FixedUpdate();
+	}
+
+	for (shared_ptr<MonoBehaviour>& script : _scripts)
+	{
+		script->FixedUpdate();
+	}
+}
+
 void GameObject::Update()
 {
 	for (shared_ptr<Component>& component : _components)

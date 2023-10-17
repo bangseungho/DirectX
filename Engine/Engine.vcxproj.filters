@@ -141,6 +141,9 @@
     <ClCompile Include="TestBillBoard.cpp">
       <Filter>Object\Test</Filter>
     </ClCompile>
+    <ClCompile Include="Rigidbody3D.cpp">
+      <Filter>Object\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -256,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="TestBillBoard.h">
       <Filter>Object\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="Rigidbody3D.h">
+      <Filter>Object\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

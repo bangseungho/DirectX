@@ -37,6 +37,17 @@ void Scene::Start()
 		_mainCamera->Start();
 }
 
+void Scene::FixedUpdate()
+{
+	for (const sptr<GameObject>& gameObject : _gameObjects)
+	{
+		gameObject->FixedUpdate();
+	}
+
+	if (_mainCamera != nullptr)
+		_mainCamera->FixedUpdate();
+}
+
 void Scene::Update()
 {
 	for (const sptr<GameObject>& gameObject : _gameObjects)

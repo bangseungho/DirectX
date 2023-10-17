@@ -9,6 +9,7 @@
 #include "Transform.h"
 #include "Camera.h"
 #include "Light.h"
+#include "Rigidbody3D.h"
 
 #include "TestCameraScript.h"
 #include "TestRotationScript.h"
@@ -29,6 +30,12 @@ void SceneManager::Update()
 		_activeScene->SetMainCamera(FIRST_CAMERA);
 	if (KEY_PRESSED('2'))
 		_activeScene->SetMainCamera(SECOND_CAMERA);
+
+	_currTime += DELTA_TIME;
+	if (_currTime >= 0.02f) {
+		_activeScene->FixedUpdate();
+		_currTime = 0.f;
+	}
 
 	_activeScene->Update();
 	_activeScene->LateUpdate();
@@ -271,6 +278,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 			meshRenderer->SetMaterial(material);
 		}
 		gameObject->AddComponent(meshRenderer);
+		gameObject->AddComponent(make_shared<Rigidbody3D>());
 		gameObject->AddComponent(make_shared<TestRotationScript>());
 		scene->AddGameObject(gameObject);
 	}

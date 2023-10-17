@@ -19,6 +19,7 @@ public:
 public:
 	void Awake();
 	void Start();
+	void FixedUpdate();
 	void Update();
 	void LateUpdate();
 	void FinalUpdate();

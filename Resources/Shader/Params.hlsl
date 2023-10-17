@@ -2,6 +2,12 @@
 #define _PARAMS_HLSL_
 #define MaxLights 200
 
+struct Temp
+{
+    float3 worldPos;
+    float curTime;
+};
+
 struct LightInfo
 {
     float3      strength;
@@ -60,6 +66,7 @@ Texture2D gDiffuseMap : register(t0);
 Texture2D gNormalMap : register(t1);
 Texture2D gRoughnessMap : register(t2);
 TextureCube gCubeMap : register(t3);
+StructuredBuffer<Temp> gData : register(t9);
 
 SamplerState gsamPointWrap        : register(s0);
 SamplerState gsamPointClamp       : register(s1);

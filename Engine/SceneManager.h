@@ -10,6 +10,7 @@ public:
 	void Update();
 	void Render();
 	void LoadScene(wstring sceneName);
+	void SetFixedTimestep(float fixedTimeStep) { _fixedTimestep = fixedTimeStep; }
 
 public:
 	shared_ptr<Scene> GetActiveScene() { return _activeScene; }
@@ -19,5 +20,7 @@ private:
 
 private:
 	shared_ptr<Scene> _activeScene;
+	float _fixedTimestep = 0.02f;
+	float _currTime = 0.f;
 };
 
