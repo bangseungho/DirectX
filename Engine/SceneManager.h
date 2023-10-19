@@ -9,7 +9,7 @@ class SceneManager
 public:
 	void Update();
 	void Render();
-	void LoadScene(wstring sceneName);
+	uint32 LoadScene(wstring sceneName);
 	void SetFixedTimestep(float fixedTimeStep) { _fixedTimestep = fixedTimeStep; }
 
 public:

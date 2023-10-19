@@ -13,16 +13,15 @@ Material::~Material()
 
 void Material::Update()
 {
-	CB(CONSTANT_BUFFER_TYPE::MATERIAL)->PushData(&_params, sizeof(_params));
+	CB(CONSTANT_BUFFER_TYPE::MATERIAL)->CopyData(_matCBIndex, &_params, sizeof(MaterialConstants));
 
-	for (size_t i = 0; i < _textures.size(); i++)
-	{
-		if (_textures[i] == nullptr)
-			continue;
+	UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MaterialConstants));
+	D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = CURR_FRAMERESOURCE->MaterialCB->Resource()->GetGPUVirtualAddress() + _matCBIndex * matCBByteSize;
+	CMD_LIST->SetGraphicsRootConstantBufferView(2, matCBAddress);
 
-		SRV_REGISTER reg = SRV_REGISTER(static_cast<int8>(SRV_REGISTER::t0) + i);
-		gEngine->GetTableDescHeap()->SetSRV(_textures[i]->GetCpuHandle(), reg);
-	}
+	CD3DX12_GPU_DESCRIPTOR_HANDLE tex(DESCHEAP->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
+	tex.Offset(_diffuseSrvHeapIndex, DESCHEAP->GetCbvSrvDescriptorSize());
+	CMD_LIST->SetGraphicsRootDescriptorTable(3, tex);
 
 	_shader->Update();
 }

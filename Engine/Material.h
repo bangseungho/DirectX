@@ -24,11 +24,17 @@ public:
 	void SetMatTransform(Matrix matTransform) { _params.MatTransform = matTransform; }
 	void SetTexture(uint8 index, shared_ptr<class Texture> texture) { _textures[index] = texture; }
 
+	void SetMatCBIndex(uint32 index) { _matCBIndex = index; }
+	void SetDiffuseSrvHeapIndex(uint32 index) { _diffuseSrvHeapIndex = index; }
+
 	void Update();
 
 private:
 	shared_ptr<class Shader> _shader;
 	MaterialConstants _params;
 	array<shared_ptr<class Texture>, MATERIAL_TEXTURE_COUNT> _textures;
+
+	uint32 _matCBIndex = 0;
+	uint32 _diffuseSrvHeapIndex = -1;
 };
 

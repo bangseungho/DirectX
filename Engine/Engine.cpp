@@ -29,9 +29,7 @@ void Engine::Init(const WindowInfo& info)
 	_cmdQueue->Init(_device->GetDevice(), _swapChain);
 	_swapChain->Init(info, _device->GetDevice(), _device->GetDXGI(), _cmdQueue->GetCmdQueue());
 	_rootSignature->Init();
-	_tableDescHeap->Init(256);
 	_depthStencilBuffer->Init(_window);
-	BuildFrameResource(_device->GetDevice());
 
 	ResizeWindow(info.width, info.height);
 }
@@ -65,11 +63,11 @@ void Engine::Render()
 	RenderEnd();
 }
 
-void Engine::BuildFrameResource(ComPtr<ID3D12Device> device)
+void Engine::BuildFrameResource(ComPtr<ID3D12Device> device, uint32 objectCount)
 {
 	for (int i = 0; i < FRAME_RESOURCE_COUNT; ++i)
 	{
-		mFrameResources[i] = std::make_unique<FrameResource>(device);
+		mFrameResources[i] = std::make_unique<FrameResource>(device, objectCount, 3);
 	}
 }
 

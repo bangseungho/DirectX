@@ -7,9 +7,12 @@
 #include "MonoBehaviour.h"
 #include "Collider.h"
 
+uint32 GameObject::ObjCBIndex = 0;
+
 GameObject::GameObject() : Object(OBJECT_TYPE::GAMEOBJECT)
 {
 	_tag = L"Untagged";
+	_objCBIndex = ObjCBIndex++;
 }
 
 GameObject::~GameObject()

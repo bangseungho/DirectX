@@ -63,10 +63,10 @@ ConstantBuffer<ObjectConstants> gObjConstants : register(b1);
 ConstantBuffer<MaterialConstants> gMaterialConstants : register(b2);
 
 Texture2D gDiffuseMap : register(t0);
-Texture2D gNormalMap : register(t1);
-Texture2D gRoughnessMap : register(t2);
-TextureCube gCubeMap : register(t3);
-StructuredBuffer<Temp> gData : register(t9);
+//Texture2D gNormalMap : register(t1);
+//Texture2D gRoughnessMap : register(t2);
+//TextureCube gCubeMap : register(t3);
+//StructuredBuffer<Temp> gData : register(t9);
 
 SamplerState gsamPointWrap        : register(s0);
 SamplerState gsamPointClamp       : register(s1);

@@ -42,19 +42,15 @@ void Camera::Render()
 		if (gameObject->GetMeshRenderer() == nullptr)
 			continue;
 
-		//BoundingOrientedBox boundingBox = gameObject->GetMeshRenderer()->GetBoundingBox();
-		//boundingBox.Transform(boundingBox, gameObject->GetTransform()->GetLocalToWorldMatrix());
-		//
-		//if (gameObject->GetCheckFrustum())
-		//	if (!IsInFrustum(boundingBox))
-		//		continue;
-
-		if (Vec3::Distance(GetTransform()->GetLocalPosition(), gameObject->GetTransform()->GetLocalPosition()) > 500.f )
-			continue;
+		BoundingOrientedBox boundingBox = gameObject->GetMeshRenderer()->GetBoundingBox();
+		boundingBox.Transform(boundingBox, gameObject->GetTransform()->GetLocalToWorldMatrix());
+		
+		if (gameObject->GetCheckFrustum())
+			if (!IsInFrustum(boundingBox))
+				continue;
 
 		gameObject->GetMeshRenderer()->Render();
 	}
-
 }
 
 void Camera::GenerateFrustum()

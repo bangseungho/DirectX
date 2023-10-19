@@ -55,13 +55,11 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 
 	_cmdList->SetGraphicsRootSignature(ROOT_SIGNATURE.Get());
 
-	CB(CONSTANT_BUFFER_TYPE::OBJECT)->Clear();
-	CB(CONSTANT_BUFFER_TYPE::MATERIAL)->Clear();
-
-	gEngine->GetTableDescHeap()->Clear();
-
 	ID3D12DescriptorHeap* descHeap = gEngine->GetTableDescHeap()->GetDescriptorHeap().Get();
 	_cmdList->SetDescriptorHeaps(1, &descHeap);
+
+	auto passCB = CURR_FRAMERESOURCE->PassCB->Resource();
+	_cmdList->SetGraphicsRootConstantBufferView(0, passCB->GetGPUVirtualAddress());
 
 	_cmdList->ResourceBarrier(1, &barrier);
 

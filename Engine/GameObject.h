@@ -42,6 +42,11 @@ public:
 	void SetCheckFrustum(bool checkFrustum) { _checkFrustum = checkFrustum; }
 	bool GetCheckFrustum() { return _checkFrustum; }
 
+	void SetObjCBIndex(uint32 index) { _objCBIndex = index; }
+	uint32 GetObjCBIndex() const { return _objCBIndex; }
+
+	static uint32 ObjCBIndex;
+
 private:
 	array<sptr<Component>, FIXED_COMPONENT_COUNT> _components;
 	vector<sptr<MonoBehaviour>> _scripts;
@@ -49,6 +54,7 @@ private:
 	MinMaxVert _minMaxVertices;
 
 	bool _checkFrustum = true;
+	uint32 _objCBIndex = -1;
 
 };
 

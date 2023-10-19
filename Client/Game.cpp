@@ -9,7 +9,8 @@ void Game::Init(const WindowInfo& info)
 	gEngine->Init(info);
 	CMD_LIST->Reset(CMD_ALLOC.Get(), nullptr);
 
-	GET_SINGLE(SceneManager)->LoadScene(L"TestScene");
+	uint32 objectCount = GET_SINGLE(SceneManager)->LoadScene(L"TestScene");
+	gEngine->BuildFrameResource(DEVICE, objectCount);
 
 	ThrowIfFailed(CMD_LIST->Close());
 	ID3D12CommandList* cmdsLists[] = { CMD_LIST.Get() };
@@ -41,11 +42,9 @@ LRESULT Game::OnProcessingWindowMessage(HWND hWnd, UINT message, WPARAM wParam, 
 	case WM_LBUTTONUP:
 	case WM_RBUTTONUP:
 	case WM_MOUSEMOVE:
-		//OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	case WM_KEYDOWN:
 	case WM_KEYUP:
-		//OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 		break;
 	}
 	return(0);

@@ -1,4 +1,6 @@
 #pragma once
+#include "Texture.h"
+#include "Material.h"
 
 enum NUMBER_CAMERA
 {
@@ -38,10 +40,20 @@ public:
 	void SetMainCamera(NUMBER_CAMERA cameraNum) { if (_cameraObjects[cameraNum]) _mainCamera = _cameraObjects[cameraNum]; }
 	const sptr<GameObject>& GetMainCamera() { return _mainCamera; }
 
+	unordered_map<string, sptr<Texture>>& GetTextures() { return _textures; }
+	unordered_map<string, sptr<Material>>& GetMaterials() { return _materials; }
+
+	void LoadTestTextures();
+	void BuildMaterials();
+
 private:
 	vector<sptr<GameObject>> _gameObjects;
 	array<sptr<GameObject>, CAMERA_COUNT> _cameraObjects;
 	Vec4 _ambientLight = { 0.1f, 0.1f, 0.1f, 1.f };
 	sptr<GameObject> _mainCamera;
+
+	//unordered_map<string, sptr<class Material>> _materials;
+	unordered_map<string, sptr<Texture>> _textures;
+	unordered_map<string, sptr<Material>> _materials;
 };
 

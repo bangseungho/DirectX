@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "FrameResource.h"
 
-FrameResource::FrameResource(ComPtr<ID3D12Device> device)
+FrameResource::FrameResource(ComPtr<ID3D12Device> device, uint32 objectCount, uint32 materialCount)
 {
     ThrowIfFailed(device->CreateCommandAllocator(
         D3D12_COMMAND_LIST_TYPE_DIRECT,
@@ -11,10 +11,10 @@ FrameResource::FrameResource(ComPtr<ID3D12Device> device)
     PassCB->Init(CBV_REGISTER::b0, sizeof(PassConstants), 1);
 
     ObjectCB = std::make_shared<ConstantBuffer>();
-    ObjectCB->Init(CBV_REGISTER::b1, sizeof(ObjectConstants), 256);
+    ObjectCB->Init(CBV_REGISTER::b1, sizeof(ObjectConstants), objectCount);
 
     MaterialCB = std::make_shared<ConstantBuffer>();
-    MaterialCB->Init(CBV_REGISTER::b2, sizeof(MaterialConstants), 256);
+    MaterialCB->Init(CBV_REGISTER::b2, sizeof(MaterialConstants), materialCount);
 }
 
 FrameResource::~FrameResource()

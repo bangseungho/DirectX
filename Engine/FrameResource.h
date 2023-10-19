@@ -4,7 +4,7 @@
 class FrameResource
 {
 public:
-    FrameResource(ComPtr<ID3D12Device> device);
+    FrameResource(ComPtr<ID3D12Device> device, uint32 objectCount, uint32 materialCount);
     ~FrameResource();
 
     sptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type);

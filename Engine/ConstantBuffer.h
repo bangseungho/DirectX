@@ -22,16 +22,15 @@ public:
 
 	void Init(CBV_REGISTER reg, uint32 size, uint32 count);
 
-	void Clear();
-	void PushData(void* buffer, uint32 size);
-	void PushPassData(void* buffer, uint32 size);
+	void CopyData(int elementIndex, void* buffer, size_t size);
 
-	D3D12_GPU_VIRTUAL_ADDRESS GetGpuVirtualAddress(uint32 index);
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCpuHandle(uint32 index);
+	ID3D12Resource* Resource()const
+	{
+		return _cbvBuffer.Get();
+	}
 
 private:
 	void CreateBuffer();
-	void CreateView();
 
 private:
 	ComPtr<ID3D12Resource>	_cbvBuffer;

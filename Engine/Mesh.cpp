@@ -24,8 +24,6 @@ void Mesh::Render()
 	CMD_LIST->IASetVertexBuffers(0, 1, &_vertexBufferView);
 	CMD_LIST->IASetIndexBuffer(&_indexBufferView);
 
-	gEngine->GetTableDescHeap()->CommitTable();
-
 	CMD_LIST->DrawIndexedInstanced(_indexCount, 1, 0, 0, 0);
 }
 

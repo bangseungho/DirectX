@@ -13,7 +13,6 @@ Texture::~Texture()
 void Texture::Init(const wstring& path, TEXTURE_TYPE textureType)
 {
 	CreateTexture(path);
-	CreateView(textureType);
 }
 
 void Texture::CreateTexture(const wstring& path)

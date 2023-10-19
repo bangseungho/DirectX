@@ -22,7 +22,7 @@ public:
 	void Init(const WindowInfo& info);
 	void Update();
 	void Render();
-	void BuildFrameResource(ComPtr<ID3D12Device> device);
+	void BuildFrameResource(ComPtr<ID3D12Device> device, uint32 objectCount);
 
 public:
 	sptr<Device> GetDevice() { return _device; }

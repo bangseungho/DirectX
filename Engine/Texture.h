@@ -16,6 +16,8 @@ public:
 public:
 	void Init(const wstring& path, TEXTURE_TYPE textureType = TEXTURE_TYPE::TEXTURE2D);
 
+	ComPtr<ID3D12Resource> Resource() { return _resource; }
+
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCpuHandle() { return _srvHandle; }
 
 public:
