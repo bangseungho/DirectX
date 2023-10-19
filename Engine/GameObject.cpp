@@ -5,10 +5,11 @@
 #include "Camera.h"
 #include "Light.h"
 #include "MonoBehaviour.h"
+#include "Collider.h"
 
 GameObject::GameObject() : Object(OBJECT_TYPE::GAMEOBJECT)
 {
-
+	_tag = L"Untagged";
 }
 
 GameObject::~GameObject()
@@ -134,6 +135,12 @@ sptr<Light> GameObject::GetLight()
 {
 	uint8 index = static_cast<uint8>(COMPONENT_TYPE::LIGHT);
 	return static_pointer_cast<Light>(_components[index]);
+}
+
+sptr<Collider> GameObject::GetCollider()
+{
+	uint8 index = static_cast<uint8>(COMPONENT_TYPE::COLLIDER);
+	return static_pointer_cast<Collider>(_components[index]);
 }
 
 void GameObject::AddComponent(sptr<Component> component)

@@ -13,8 +13,13 @@ public:
 	Camera();
 	virtual ~Camera();
 
+public:
 	virtual void FinalUpdate() override;
+
+public:
 	void Render();
+	void GenerateFrustum();
+	bool IsInFrustum(BoundingOrientedBox& boundsOOBB);
 
 private:
 	friend class Scene;
@@ -28,5 +33,8 @@ private:
 
 	Matrix _matView = {};
 	Matrix _matProjection = {};
+
+	BoundingFrustum _frustum;
 };
+
 

@@ -2,6 +2,8 @@
 #include "Transform.h"
 #include "Engine.h"
 #include "Camera.h"
+#include "GameObject.h"
+#include "Collider.h"
 
 Transform::Transform() : Component(COMPONENT_TYPE::TRANSFORM)
 {

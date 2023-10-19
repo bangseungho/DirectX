@@ -46,6 +46,14 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "dxguid")
 #pragma comment(lib, "d3dcompiler")
 
+#ifdef _DEBUG
+#ifdef UNICODE                                                                                      
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console") 
+#else                                                                                                    
+#pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")   
+#endif                                                                                                   
+#endif        
+
 inline void d3dSetDebugName(IDXGIObject* obj, const char* name)
 {
 	if (obj)

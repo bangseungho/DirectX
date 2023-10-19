@@ -12,8 +12,12 @@ public:
 
 	void SetMesh(sptr<Mesh> mesh) { _mesh = mesh; }
 	void SetMaterial(sptr<Material> material) { _material = material; }
+	BoundingOrientedBox& GetBoundingBox();
 
 	void Render();
+
+public:
+	virtual void Start() override;
 
 private:
 	sptr<Mesh> _mesh;

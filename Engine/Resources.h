@@ -97,3 +97,4 @@ inline OBJECT_TYPE Resources::GetObjectType()
 	else
 		return OBJECT_TYPE::NONE;
 }
+

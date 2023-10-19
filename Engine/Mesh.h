@@ -11,7 +11,7 @@ public:
 	void Init(const vector<Vertex>& vertexBuffer, const vector<uint32>& indexBuffer);
 	void Render();
 
-	void SetObjectConstant(const ObjectConstants& o) { _objectConstant = o; }
+	BoundingOrientedBox& GetBoundingBox() { return _boundingBox; }
 
 public:
 	void CreateVertexBuffer(const vector<Vertex>& buffer);
@@ -29,5 +29,7 @@ private:
 	uint32 _indexCount = 0;
 
 	ObjectConstants _objectConstant = {};
+
+	BoundingOrientedBox _boundingBox;
 };
 

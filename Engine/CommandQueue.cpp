@@ -51,7 +51,7 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
 		_swapChain->GetBackRTVBuffer().Get(),
 		D3D12_RESOURCE_STATE_PRESENT,
-		D3D12_RESOURCE_STATE_RENDER_TARGET); 
+		D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	_cmdList->SetGraphicsRootSignature(ROOT_SIGNATURE.Get());
 

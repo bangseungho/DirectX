@@ -26,6 +26,8 @@ void Camera::FinalUpdate()
 		_matProjection = ::XMMatrixPerspectiveFovLH(_fov, width / height, _near, _far);
 	else
 		_matProjection = ::XMMatrixOrthographicLH(width * _scale, height * _scale, _near, _far);
+
+	GenerateFrustum();
 }
 
 void Camera::Render()
@@ -40,6 +42,28 @@ void Camera::Render()
 		if (gameObject->GetMeshRenderer() == nullptr)
 			continue;
 
+		//BoundingOrientedBox boundingBox = gameObject->GetMeshRenderer()->GetBoundingBox();
+		//boundingBox.Transform(boundingBox, gameObject->GetTransform()->GetLocalToWorldMatrix());
+		//
+		//if (gameObject->GetCheckFrustum())
+		//	if (!IsInFrustum(boundingBox))
+		//		continue;
+
+		if (Vec3::Distance(GetTransform()->GetLocalPosition(), gameObject->GetTransform()->GetLocalPosition()) > 500.f )
+			continue;
+
 		gameObject->GetMeshRenderer()->Render();
 	}
+
+}
+
+void Camera::GenerateFrustum()
+{
+	_frustum.CreateFromMatrix(_frustum, _matProjection);
+	_frustum.Transform(_frustum, _matView.Invert());
+}
+
+bool Camera::IsInFrustum(BoundingOrientedBox& boundsOOBB)
+{
+	return _frustum.Intersects(boundsOOBB);
 }

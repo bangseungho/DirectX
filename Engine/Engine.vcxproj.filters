@@ -144,6 +144,9 @@
     <ClCompile Include="Rigidbody3D.cpp">
       <Filter>Object\Component</Filter>
     </ClCompile>
+    <ClCompile Include="Collider.cpp">
+      <Filter>Object\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -261,6 +264,9 @@
       <Filter>Object\Test</Filter>
     </ClInclude>
     <ClInclude Include="Rigidbody3D.h">
+      <Filter>Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="Collider.h">
       <Filter>Object\Component</Filter>
     </ClInclude>
   </ItemGroup>

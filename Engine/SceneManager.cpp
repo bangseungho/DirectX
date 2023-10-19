@@ -10,6 +10,7 @@
 #include "Camera.h"
 #include "Light.h"
 #include "Rigidbody3D.h"
+#include "Collider.h"
 
 #include "TestCameraScript.h"
 #include "TestRotationScript.h"
@@ -74,155 +75,156 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	scene->SetMainCamera(FIRST_CAMERA);
 #pragma endregion
 
-#pragma region Camera2
-	{
-		shared_ptr<GameObject> camera = make_shared<GameObject>();
-		camera->Init();
-		camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
-		camera->AddComponent(make_shared<TestCameraScript>());
-		camera->GetTransform()->SetLocalPosition(Vec3(100.f, 100.f, 0.f));
-		scene->AddCameraObject(SECOND_CAMERA, camera);
-	}
-#pragma endregion
+//#pragma region Camera2
+//	{
+//		shared_ptr<GameObject> camera = make_shared<GameObject>();
+//		camera->Init();
+//		camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
+//		camera->AddComponent(make_shared<TestCameraScript>());
+//		camera->GetTransform()->SetLocalPosition(Vec3(100.f, 100.f, 0.f));
+//		scene->AddCameraObject(SECOND_CAMERA, camera);
+//	}
+//#pragma endregion
 
-#pragma region SkyBox
-	{
-		shared_ptr<GameObject> skybox = make_shared<GameObject>();
-		skybox->Init();
+//#pragma region SkyBox
+//	{
+//		shared_ptr<GameObject> skybox = make_shared<GameObject>();
+//		skybox->Init();
+//
+//		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+//		{
+//			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
+//			meshRenderer->SetMesh(mesh);
+//		}
+//		{
+//			shared_ptr<Shader> shader = make_shared<Shader>();
+//			shared_ptr<Texture> texture = make_shared<Texture>();
+//			shader->Init(L"..\\Resources\\Shader\\Sky.hlsl", { RASTERIGER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::LESS_EQUAL });
+//			texture->Init(L"..\\Resources\\Texture\\Sky.dds", TEXTURE_TYPE::TEXTURECUBE);
+//			shared_ptr<Material> material = make_shared<Material>();
+//			material->SetShader(shader);
+//			material->SetTexture(3, texture);
+//			meshRenderer->SetMaterial(material);
+//		}
+//		skybox->AddComponent(meshRenderer);
+//		scene->AddGameObject(skybox);
+//	}
+//#pragma endregion
 
-		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-		{
-			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
-			meshRenderer->SetMesh(mesh);
-		}
-		{
-			shared_ptr<Shader> shader = make_shared<Shader>();
-			shared_ptr<Texture> texture = make_shared<Texture>();
-			shader->Init(L"..\\Resources\\Shader\\Sky.hlsl", { RASTERIGER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::LESS_EQUAL });
-			texture->Init(L"..\\Resources\\Texture\\Sky.dds", TEXTURE_TYPE::TEXTURECUBE);
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(shader);
-			material->SetTexture(3, texture);
-			meshRenderer->SetMaterial(material);
-		}
-		skybox->AddComponent(meshRenderer);
-		scene->AddGameObject(skybox);
-	}
-#pragma endregion
+
+//#pragma region Grid
+//	{
+//		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+//		gameObject->Init();
+//
+//		shared_ptr<Transform> transform = gameObject->GetTransform();
+//		transform->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
+//
+//		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+//		{
+//			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadGridMesh();
+//			meshRenderer->SetMesh(mesh);
+//		}
+//		{
+//			shared_ptr<Shader> shader = make_shared<Shader>();
+//			shared_ptr<Texture> texture = make_shared<Texture>();
+//			shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
+//			texture->Init(L"..\\Resources\\Texture\\grid.dds");
+//			shared_ptr<Material> material = make_shared<Material>();
+//			material->SetShader(shader);
+//			material->SetMatTransform(Matrix::CreateScale(100.f));
+//			material->SetTexture(0, texture);
+//			meshRenderer->SetMaterial(material);
+//		}
+//		gameObject->AddComponent(meshRenderer);
+//		scene->AddGameObject(gameObject);
+//	}
+//#pragma endregion
+
+//#pragma region Cube
+//	{
+//		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+//		gameObject->Init();
+//
+//		shared_ptr<Transform> transform = gameObject->GetTransform();
+//		transform->SetLocalPosition(Vec3(-150.f, 50.f, 200.f));
+//		transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+//
+//		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+//		{
+//			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
+//			meshRenderer->SetMesh(mesh);
+//		}
+//		{
+//			shared_ptr<Shader> shader = make_shared<Shader>();
+//			shared_ptr<Texture> texture = make_shared<Texture>();
+//			shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
+//			texture->Init(L"..\\Resources\\Texture\\newjeans3.dds");
+//			shared_ptr<Material> material = make_shared<Material>();
+//			material->SetShader(shader);
+//			material->SetTexture(0, texture);
+//			meshRenderer->SetMaterial(material);
+//		}
+//		gameObject->AddComponent(meshRenderer);
+//		gameObject->AddComponent(make_shared<TestAutoMoveScript>(transform->GetLocalPosition().x));
+//		sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
+//		rigid->SetMass(200.f);
+//		gameObject->AddComponent(rigid);
+//		gameObject->AddComponent(make_shared<Collider>());
+//
+//		scene->AddGameObject(gameObject);
+//	}
+//#pragma endregion
 
 
-#pragma region Grid
-	{
-		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
-		gameObject->Init();
+//#pragma region NormalCube
+//{
+//	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+//	gameObject->Init();
+//
+//	shared_ptr<Transform> transform = gameObject->GetTransform();
+//	transform->SetLocalPosition(Vec3(150.f, 100.f, -220.f));
+//	transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
+//
+//	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+//	{
+//		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
+//		meshRenderer->SetMesh(mesh);
+//	}
+//	{
+//		shared_ptr<Shader> shader = make_shared<Shader>();
+//		shared_ptr<Texture> texture = make_shared<Texture>();
+//		shared_ptr<Texture> textureNormal = make_shared<Texture>();
+//		shared_ptr<Texture> textureRoughness = make_shared<Texture>();
+//		shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
+//		texture->Init(L"..\\Resources\\Texture\\Leather.dds");
+//		textureNormal->Init(L"..\\Resources\\Texture\\Leather_Normal_BC7.dds");
+//		textureRoughness->Init(L"..\\Resources\\Texture\\Leather_Weave_004_roughness.dds");
+//		shared_ptr<Material> material = make_shared<Material>();
+//		material->SetShader(shader);
+//		material->SetFresnel(Vec3(0.8f, 0.8f, 0.8f));
+//		material->SetTexture(0, texture);
+//		material->SetTexture(1, textureNormal);
+//		material->SetTexture(2, textureRoughness);
+//		material->SetNormalMapping(NORMAL_MAPPING_ON);
+//		meshRenderer->SetMaterial(material);
+//	}
+//	sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
+//	rigid->SetMass(300.f);
+//	gameObject->AddComponent(rigid);
+//
+//	gameObject->AddComponent(meshRenderer);
+//	scene->AddGameObject(gameObject);
+//	}
+//#pragma endregion
 
-		shared_ptr<Transform> transform = gameObject->GetTransform();
-		transform->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
 
-		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-		{
-			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadGridMesh();
-			meshRenderer->SetMesh(mesh);
-		}
-		{
-			shared_ptr<Shader> shader = make_shared<Shader>();
-			shared_ptr<Texture> texture = make_shared<Texture>();
-			shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
-			texture->Init(L"..\\Resources\\Texture\\grid.dds");
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(shader);
-			material->SetMatTransform(Matrix::CreateScale(100.f));
-			material->SetTexture(0, texture);
-			meshRenderer->SetMaterial(material);
-		}
-		gameObject->AddComponent(meshRenderer);
-		scene->AddGameObject(gameObject);
-	}
-#pragma endregion
-
-#pragma region Cube
-	{
-		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
-		gameObject->Init();
-
-		shared_ptr<Transform> transform = gameObject->GetTransform();
-		transform->SetLocalPosition(Vec3(-150.f, 50.f, 200.f));
-		transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-
-		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-		{
-			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
-			meshRenderer->SetMesh(mesh);
-		}
-		{
-			shared_ptr<Shader> shader = make_shared<Shader>();
-			shared_ptr<Texture> texture = make_shared<Texture>();
-			shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
-			texture->Init(L"..\\Resources\\Texture\\newjeans3.dds");
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(shader);
-			material->SetTexture(0, texture);
-			meshRenderer->SetMaterial(material);
-		}
-		gameObject->AddComponent(meshRenderer);
-		gameObject->AddComponent(make_shared<TestAutoMoveScript>(transform->GetLocalPosition().x));
-		sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
-		rigid->SetMass(200.f);
-		gameObject->AddComponent(rigid);
-
-		scene->AddGameObject(gameObject);
-	}
-#pragma endregion
 
 #pragma region NormalCube
 	{
 		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
 		gameObject->Init();
-
-		shared_ptr<Transform> transform = gameObject->GetTransform();
-		transform->SetLocalPosition(Vec3(150.f, 100.f, -220.f));
-		transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
-
-		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-		{
-			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
-			meshRenderer->SetMesh(mesh);
-		}
-		{
-			shared_ptr<Shader> shader = make_shared<Shader>();
-			shared_ptr<Texture> texture = make_shared<Texture>();
-			shared_ptr<Texture> textureNormal = make_shared<Texture>();
-			shared_ptr<Texture> textureRoughness = make_shared<Texture>();
-			shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
-			texture->Init(L"..\\Resources\\Texture\\Leather.dds");
-			textureNormal->Init(L"..\\Resources\\Texture\\Leather_Normal_BC7.dds");
-			textureRoughness->Init(L"..\\Resources\\Texture\\Leather_Weave_004_roughness.dds");
-			shared_ptr<Material> material = make_shared<Material>();
-			material->SetShader(shader);
-			material->SetFresnel(Vec3(0.8f, 0.8f, 0.8f));
-			material->SetTexture(0, texture);
-			material->SetTexture(1, textureNormal);
-			material->SetTexture(2, textureRoughness);
-			material->SetNormalMapping(NORMAL_MAPPING_ON);
-			meshRenderer->SetMaterial(material);
-		}
-		//sptr<TestBillBoard> testBillBoard = make_shared<TestBillBoard>();
-		//testBillBoard->SetCamera(camera);
-		//gameObject->AddComponent(testBillBoard);
-
-		sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
-		rigid->SetMass(300.f);
-		gameObject->AddComponent(rigid);
-
-		gameObject->AddComponent(meshRenderer);
-		scene->AddGameObject(gameObject);
-	}
-#pragma endregion
-
-#pragma region NormalCube
-	{
-		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
-		gameObject->Init();
+		gameObject->SetTag(L"Cube");
 
 		shared_ptr<Transform> transform = gameObject->GetTransform();
 		transform->SetLocalPosition(Vec3(150.f, 100.f, 0.f));
@@ -259,14 +261,18 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	}
 #pragma endregion
 
+
 #pragma region Sphere
 	{
 		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
 		gameObject->Init();
+		gameObject->SetTag(L"Sphere");
 
 		shared_ptr<Transform> transform = gameObject->GetTransform();
 		transform->SetLocalPosition(Vec3(0.f, 100.f, 200.f));
 		transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+
+		gameObject->SetCheckFrustum(false);
 
 		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 		{

@@ -87,6 +87,12 @@ struct Vertex
 	Vec3 tangent;
 };
 
+struct MinMaxVert
+{
+	Vec3 min;
+	Vec3 max;
+};
+
 enum class LIGHT_TYPE : uint8
 {
 	DIRECTIONAL_LIGHT,

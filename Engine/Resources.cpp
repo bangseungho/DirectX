@@ -3,6 +3,34 @@
 
 DECLARE_SINGLE(Resources)
 
+inline MinMaxVert CalcMinMaxVertices(const vector<Vertex>& vec)
+{
+	Vec3 minPoint = Vec3(FLT_MAX);
+	Vec3 maxPoint = Vec3(-FLT_MAX);
+
+	for (const auto& v : vec)
+	{
+		minPoint.x = min(minPoint.x, v.pos.x);
+		minPoint.y = min(minPoint.y, v.pos.y);
+		minPoint.z = min(minPoint.z, v.pos.z);
+		maxPoint.x = max(maxPoint.x, v.pos.x);
+		maxPoint.y = max(maxPoint.y, v.pos.y);
+		maxPoint.z = max(maxPoint.z, v.pos.z);
+	}
+
+	return MinMaxVert{ minPoint, maxPoint };
+}
+
+void CreateBoundingBox(MinMaxVert minMaxVert, sptr<Mesh> mesh)
+{
+	Vec3 points[2] = {
+		minMaxVert.min,
+		minMaxVert.max
+	};
+
+	mesh->GetBoundingBox().CreateFromPoints(mesh->GetBoundingBox(), 2, points, sizeof(Vec3));
+}
+
 sptr<Mesh> Resources::LoadRectMesh()
 {
 	sptr<Mesh> findMesh = Get<Mesh>(L"Rectangle");
@@ -24,6 +52,7 @@ sptr<Mesh> Resources::LoadRectMesh()
 
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
+	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
 	Add<Mesh>(L"Rectangle", mesh);
 
 	return mesh;
@@ -72,6 +101,8 @@ shared_ptr<Mesh> Resources::LoadCubeMesh()
 	vec[22] = Vertex(Vec3(+w2, +h2, +d2), Vec2(1.0f, 0.0f), Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f));
 	vec[23] = Vertex(Vec3(+w2, -h2, +d2), Vec2(1.0f, 1.0f), Vec3(1.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f));
 
+
+
 	vector<uint32> idx(36);
 
 	// ¾Õ¸é
@@ -95,6 +126,7 @@ shared_ptr<Mesh> Resources::LoadCubeMesh()
 
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
+	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
 	Add<Mesh>(L"Cube", mesh);
 
 	return mesh;
@@ -213,6 +245,7 @@ shared_ptr<Mesh> Resources::LoadSphereMesh()
 
 	shared_ptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
+	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
 	Add(L"Sphere", mesh);
 
 	return mesh;
@@ -274,6 +307,7 @@ sptr<Mesh> Resources::LoadGridMesh()
 	
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
+	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
 	Add<Mesh>(L"Grid", mesh);
 
 	return mesh;
@@ -335,6 +369,7 @@ sptr<Mesh> Resources::LoadParticleMesh()
 
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
+	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
 	Add<Mesh>(L"Particle", mesh);
 
 	return mesh;
