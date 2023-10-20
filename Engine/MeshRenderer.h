@@ -11,7 +11,7 @@ public:
 	virtual ~MeshRenderer();
 
 	void SetMesh(sptr<Mesh> mesh) { _mesh = mesh; }
-	void SetMaterial(sptr<Material> material) { _material = material; }
+	void SetMaterial(sptr<Material> material); /* { _material = material; }*/
 	BoundingOrientedBox& GetBoundingBox();
 
 	void Render();

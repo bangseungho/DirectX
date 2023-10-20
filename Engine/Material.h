@@ -25,7 +25,13 @@ public:
 	void SetTexture(uint8 index, shared_ptr<class Texture> texture) { _textures[index] = texture; }
 
 	void SetMatCBIndex(uint32 index) { _matCBIndex = index; }
-	void SetDiffuseSrvHeapIndex(uint32 index) { _diffuseSrvHeapIndex = index; }
+	uint32 GetMatCBIndex() const { return _matCBIndex; }
+
+	void SetDiffuseSrvHeapIndex(TEXTURE2D_INDEX index) { _params.DiffuseMapIndex = static_cast<uint8>(index); }
+	void SetNormalSrvHeapIndex(TEXTURE2D_INDEX index) { _params.NormalMapIndex = static_cast<uint8>(index); }
+	void SetRoughnessSrvHeapIndex(TEXTURE2D_INDEX index) { _params.RoughnessMapIndex = static_cast<uint8>(index); }
+	
+	void SetDiffuseSrvHeapIndex(TEXTURECUBE_INDEX index) { _params.DiffuseMapIndex = static_cast<uint8>(index); }
 
 	void Update();
 
@@ -35,6 +41,5 @@ private:
 	array<shared_ptr<class Texture>, MATERIAL_TEXTURE_COUNT> _textures;
 
 	uint32 _matCBIndex = 0;
-	uint32 _diffuseSrvHeapIndex = -1;
 };
 

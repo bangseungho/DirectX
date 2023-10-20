@@ -1,12 +1,7 @@
 #ifndef _PARAMS_HLSL_
 #define _PARAMS_HLSL_
-#define MaxLights 200
-
-struct Temp
-{
-    float3 worldPos;
-    float curTime;
-};
+#define MAX_LIGHTS 200
+#define TEXTURE2D_COUNT 8
 
 struct LightInfo
 {
@@ -40,7 +35,7 @@ struct PassConstants
 	float4              ambientLight;
     int		            lightCount;
 	float3	            padding;
-	LightInfo	        lights[MaxLights];
+	LightInfo	        lights[MAX_LIGHTS];
 };
 
 struct ObjectConstants
@@ -57,19 +52,17 @@ struct MaterialData
     float               roughness;
     row_major float4x4  matTransform;
     float               normalMapping;
-    float3              padding;
+    uint                diffuseMapIndex;
+    uint                normalMapIndex;
+    uint                roughnessMapIndex;
 };
 
 ConstantBuffer<PassConstants> gPassConstants : register(b0);
 ConstantBuffer<ObjectConstants> gObjConstants : register(b1);
-
 StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
 
-Texture2D gDiffuseMap : register(t0);
-//Texture2D gNormalMap : register(t1);
-//Texture2D gRoughnessMap : register(t2);
-//TextureCube gCubeMap : register(t3);
-//StructuredBuffer<Temp> gData : register(t9);
+TextureCube gCubeMap : register(t0);
+Texture2D gTextureMaps[TEXTURE2D_COUNT] : register(t1);
 
 SamplerState gsamPointWrap        : register(s0);
 SamplerState gsamPointClamp       : register(s1);

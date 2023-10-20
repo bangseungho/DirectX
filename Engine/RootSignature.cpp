@@ -4,28 +4,22 @@
 
 void RootSignature::Init()
 {
-	CD3DX12_DESCRIPTOR_RANGE texTable;
-	texTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, 1, 0);
+	CD3DX12_DESCRIPTOR_RANGE texCubeTable;
+	texCubeTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURECUBE_COUNT, 0);
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
+	CD3DX12_DESCRIPTOR_RANGE tex2DTable;
+	tex2DTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURE2D_COUNT, 1);
+
+	CD3DX12_ROOT_PARAMETER slotRootParameter[5];
 	slotRootParameter[0].InitAsConstantBufferView(0);
 	slotRootParameter[1].InitAsConstantBufferView(1);
 	slotRootParameter[2].InitAsShaderResourceView(0, 1);
-	slotRootParameter[3].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
-
-	//CD3DX12_DESCRIPTOR_RANGE ranges[] =
-	//{
-	//	CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_CBV, CBV_REGISTER_COUNT - 1, 1), // b1~b4
-	//	CD3DX12_DESCRIPTOR_RANGE(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, SRV_REGISTER_COUNT, 0), // t0~t4
-	//};
-
-	//CD3DX12_ROOT_PARAMETER rootParameter[2];
-	//rootParameter[0].InitAsConstantBufferView(static_cast<uint32>(CBV_REGISTER::b0)); // b0
-	//rootParameter[1].InitAsDescriptorTable(_countof(ranges), ranges); // b1~b4, t0~t4
+	slotRootParameter[3].InitAsDescriptorTable(1, &texCubeTable, D3D12_SHADER_VISIBILITY_PIXEL);
+	slotRootParameter[4].InitAsDescriptorTable(1, &tex2DTable, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	auto staticSamplers = GetStaticSamplers();
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(4, slotRootParameter,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(5, slotRootParameter,
 		(UINT)STATIC_SAMPLER_COUNT, staticSamplers.data(),
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 

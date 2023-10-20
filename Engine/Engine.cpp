@@ -29,6 +29,7 @@ void Engine::Init(const WindowInfo& info)
 	_cmdQueue->Init(_device->GetDevice(), _swapChain);
 	_swapChain->Init(info, _device->GetDevice(), _device->GetDXGI(), _cmdQueue->GetCmdQueue());
 	_rootSignature->Init();
+	_tableDescHeap->Init();
 	_depthStencilBuffer->Init(_window);
 
 	ResizeWindow(info.width, info.height);
@@ -67,7 +68,7 @@ void Engine::BuildFrameResource(ComPtr<ID3D12Device> device, uint32 objectCount)
 {
 	for (int i = 0; i < FRAME_RESOURCE_COUNT; ++i)
 	{
-		mFrameResources[i] = std::make_unique<FrameResource>(device, objectCount, 3);
+		mFrameResources[i] = std::make_unique<FrameResource>(device, objectCount, TEXTURE_COUNT);
 	}
 }
 

@@ -63,6 +63,36 @@ enum
 	FRAME_RESOURCE_COUNT = 3
 };
 
+enum class TEXTURE2D_INDEX : uint8
+{
+	B_NEWJEANS,
+	B_NEWJEANS3,
+
+	B_LEATHER,
+	N_LEATHER,
+	R_LEATHER,
+
+	B_WALL,
+	N_WALL,
+	R_WALL,
+
+	END,
+};
+
+enum class TEXTURECUBE_INDEX : uint8
+{
+	SKYBOX = static_cast<uint8>(TEXTURE2D_INDEX::END),
+
+	END,
+};
+
+enum
+{
+	TEXTURE_COUNT = static_cast<uint8>(TEXTURECUBE_INDEX::END),
+	TEXTURE2D_COUNT = static_cast<uint8>(TEXTURE2D_INDEX::END),
+	TEXTURECUBE_COUNT = TEXTURE_COUNT - static_cast<uint8>(TEXTURE2D_INDEX::END),
+};
+
 struct WindowInfo
 {
 	HWND	hwnd; // 출력 윈도우
@@ -146,7 +176,9 @@ struct MaterialConstants
 	float Roughness = 0.25f;
 	Matrix MatTransform = MathHelper::Identity4x4();
 	float NormalMapping = NORMAL_MAPPING_OFF;
-	Vec3 padding;
+	uint32 DiffuseMapIndex = -1;
+	uint32 NormalMapIndex = -1;
+	uint32 RoughnessMapIndex = -1;
 };
 
 #define DEVICE					gEngine->GetDevice()->GetDevice()

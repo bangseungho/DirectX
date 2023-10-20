@@ -47,22 +47,26 @@ VS_OUT VS_Main(VS_IN vin)
 
 float4 PS_Main(VS_OUT pin) : SV_Target
 {
+    MaterialData matData = gMaterialData[gObjConstants.materialIndex];
+    float4 diffuseAlbedo = matData.diffuseAlbedo;
+    float3 fresnelR0 = matData.fresnelR0;
+    float roughness = matData.roughness;
+    uint diffuseMapIndex = matData.diffuseMapIndex;
+    uint normalMapIndex = matData.normalMapIndex;
+    uint roughnessMapIndex = matData.roughnessMapIndex;
+
     // 보간 과정에서 단위 벡터가 안될 수 있으므로 노말라이즈를 한다.
     pin.normalW = normalize(pin.normalW);
     
-    MaterialData matData = gMaterialData[gObjConstants.materialIndex];
-
     // 노멀 맵
-    //float4 normalMap = gNormalMap.Sample(gsamAnisotropicWrap, pin.uv);
-    //float3 bumpedNormalW = NormalToWorldSpace(normalMap.rgb, pin.normalW, pin.tangentW);
+    float4 normalMap = gTextureMaps[normalMapIndex].Sample(gsamAnisotropicWrap, pin.uv);
+    float3 bumpedNormalW = NormalToWorldSpace(normalMap.rgb, pin.normalW, pin.tangentW);
     
     // 거칠기 
-    //float roughness = gRoughnessMap.Sample(gsamAnisotropicWrap, pin.uv).x;
+    roughness *= gTextureMaps[roughnessMapIndex].Sample(gsamAnisotropicWrap, pin.uv).x;
 
-    
     // 베이스 컬러
-    float4 diffuseAlbedo = gDiffuseMap.Sample(gsamAnisotropicWrap, pin.uv) * matData.diffuseAlbedo;
-    clip(diffuseAlbedo.a - 0.1f);
+    diffuseAlbedo = gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.uv) * diffuseAlbedo;
     
     // 조명되는 점에서 눈으로의 벡터
     float3 toEyeW = normalize(gPassConstants.eyePosW.xyz - pin.posW);
@@ -71,20 +75,20 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     float4 ambient = gPassConstants.ambientLight * diffuseAlbedo;
     
     // 광택 : 거칠수록 광택이 떨어짐
-    //float shininess = 1.0f - roughness;
-    float shininess = 1.f - matData.roughness;
+    float shininess = 1.f - roughness;
     
-    //if (gMaterialConstants.normalMapping == 1.f)
-    //    shininess *= normalMap.a;
-    //else 
-	   // bumpedNormalW = pin.normalW;
+    // 노멀 매핑을 안한다면 일반 노말로
+    if (normalMapIndex == -1)
+        bumpedNormalW = pin.normalW;
+    else
+        shininess *= normalMap.a;
     
     // 조명을 입힐 최종 머티리얼
     float3 shadowFactor = 1.0f;
-    Material mat = { diffuseAlbedo, matData.fresnelR0, shininess };
+    Material mat = { diffuseAlbedo, fresnelR0, shininess };
     
     // 조명 계산
-    float4 directLight = ComputeLighting(mat, pin.posW, pin.normalW, toEyeW, shadowFactor);
+    float4 directLight = ComputeLighting(mat, pin.posW, bumpedNormalW, toEyeW, shadowFactor);
     
     float4 resColor = ambient + directLight;
     

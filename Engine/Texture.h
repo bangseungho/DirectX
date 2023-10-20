@@ -14,7 +14,7 @@ public:
 	virtual ~Texture();
 
 public:
-	void Init(const wstring& path, TEXTURE_TYPE textureType = TEXTURE_TYPE::TEXTURE2D);
+	void Init(const wstring& path);
 
 	ComPtr<ID3D12Resource> Resource() { return _resource; }
 
@@ -22,7 +22,6 @@ public:
 
 public:
 	void CreateTexture(const wstring& path);
-	void CreateView(TEXTURE_TYPE textureType);
 
 private:
 	ComPtr<ID3D12Resource>			_resource;
