@@ -187,6 +187,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
 	gameObject->Init();
 	gameObject->SetTag(L"WallCube");
+	gameObject->SetMatIndex(2);
 
 	shared_ptr<Transform> transform = gameObject->GetTransform();
 	transform->SetLocalPosition(Vec3(150.f, 100.f, -220.f));
@@ -212,6 +213,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
 	gameObject->Init();
 	gameObject->SetTag(L"Sphere");
+	gameObject->SetMatIndex(0);
 
 	shared_ptr<Transform> transform = gameObject->GetTransform();
 	transform->SetLocalPosition(Vec3(0.f, 100.f, 200.f));
@@ -237,6 +239,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
 	gameObject->Init();
 	gameObject->SetTag(L"LeatherCube");
+	gameObject->SetMatIndex(1);
 
 	shared_ptr<Transform> transform = gameObject->GetTransform();
 	transform->SetLocalPosition(Vec3(150.f, 100.f, 0.f));

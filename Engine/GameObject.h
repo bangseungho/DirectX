@@ -45,6 +45,9 @@ public:
 	void SetObjCBIndex(uint32 index) { _objCBIndex = index; }
 	uint32 GetObjCBIndex() const { return _objCBIndex; }
 
+	void SetMatIndex(uint32 index) { _matIndex = index; }
+	uint32 GetMatIndex() const { return _matIndex; }
+
 	static uint32 ObjCBIndex;
 
 private:
@@ -55,6 +58,6 @@ private:
 
 	bool _checkFrustum = true;
 	uint32 _objCBIndex = -1;
-
+	uint32 _matIndex = -1;
 };
 

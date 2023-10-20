@@ -37,6 +37,7 @@ void Transform::PushData()
 {
 	ObjectConstants objectConstants = {};
 	objectConstants.matWorld = _matWorld;
+	objectConstants.materialIndex = GetGameObject()->GetMatIndex();
 
 	uint32 objCBIndex = GetGameObject()->GetObjCBIndex();
 	OBJECT_CB->CopyData(objCBIndex, objectConstants);

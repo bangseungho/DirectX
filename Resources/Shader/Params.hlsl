@@ -45,10 +45,12 @@ struct PassConstants
 
 struct ObjectConstants
 {
-     row_major matrix world;
+    row_major matrix    world;
+    uint                materialIndex;
+    float3              padding;
 };
 
-struct MaterialConstants
+struct MaterialData
 {
     float4              diffuseAlbedo;
     float3              fresnelR0;
@@ -60,7 +62,8 @@ struct MaterialConstants
 
 ConstantBuffer<PassConstants> gPassConstants : register(b0);
 ConstantBuffer<ObjectConstants> gObjConstants : register(b1);
-ConstantBuffer<MaterialConstants> gMaterialConstants : register(b2);
+
+StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
 
 Texture2D gDiffuseMap : register(t0);
 //Texture2D gNormalMap : register(t1);

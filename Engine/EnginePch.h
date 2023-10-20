@@ -132,7 +132,9 @@ struct PassConstants
 
 struct ObjectConstants
 {
-	Matrix matWorld;
+	Matrix	matWorld;
+	uint32	materialIndex;
+	Vec3	padding;
 };
 
 #define NORMAL_MAPPING_ON	1.f

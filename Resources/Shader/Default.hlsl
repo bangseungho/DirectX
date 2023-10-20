@@ -25,6 +25,8 @@ VS_OUT VS_Main(VS_IN vin)
 {
     VS_OUT vout = (VS_OUT)0.f;
     
+    MaterialData matData = gMaterialData[gObjConstants.materialIndex];
+    
     // 세계 공간으로 변환
     float4 posW = mul(float4(vin.posL, 1.0f), gObjConstants.world);
     vout.posW = posW.xyz;
@@ -37,7 +39,7 @@ VS_OUT VS_Main(VS_IN vin)
     // 동차 절단 공간으로 변환
     vout.posH = mul(posW, gPassConstants.viewProj);
 
-    float4 uv = mul(float4(vin.uv, 0.f, 1.f), gMaterialConstants.matTransform);
+    float4 uv = mul(float4(vin.uv, 0.f, 1.f), matData.matTransform);
     vout.uv = uv.xy;
  
     return vout;
@@ -47,6 +49,8 @@ float4 PS_Main(VS_OUT pin) : SV_Target
 {
     // 보간 과정에서 단위 벡터가 안될 수 있으므로 노말라이즈를 한다.
     pin.normalW = normalize(pin.normalW);
+    
+    MaterialData matData = gMaterialData[gObjConstants.materialIndex];
 
     // 노멀 맵
     //float4 normalMap = gNormalMap.Sample(gsamAnisotropicWrap, pin.uv);
@@ -57,7 +61,7 @@ float4 PS_Main(VS_OUT pin) : SV_Target
 
     
     // 베이스 컬러
-    float4 diffuseAlbedo = gDiffuseMap.Sample(gsamAnisotropicWrap, pin.uv) * gMaterialConstants.diffuseAlbedo;
+    float4 diffuseAlbedo = gDiffuseMap.Sample(gsamAnisotropicWrap, pin.uv) * matData.diffuseAlbedo;
     clip(diffuseAlbedo.a - 0.1f);
     
     // 조명되는 점에서 눈으로의 벡터
@@ -68,7 +72,7 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     
     // 광택 : 거칠수록 광택이 떨어짐
     //float shininess = 1.0f - roughness;
-    float shininess = 1.f - gMaterialConstants.roughness;
+    float shininess = 1.f - matData.roughness;
     
     //if (gMaterialConstants.normalMapping == 1.f)
     //    shininess *= normalMap.a;
@@ -77,7 +81,7 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     
     // 조명을 입힐 최종 머티리얼
     float3 shadowFactor = 1.0f;
-    Material mat = { diffuseAlbedo, gMaterialConstants.fresnelR0, shininess };
+    Material mat = { diffuseAlbedo, matData.fresnelR0, shininess };
     
     // 조명 계산
     float4 directLight = ComputeLighting(mat, pin.posW, pin.normalW, toEyeW, shadowFactor);

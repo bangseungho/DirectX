@@ -61,6 +61,9 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	auto passCB = CURR_FRAMERESOURCE->PassCB->Resource();
 	_cmdList->SetGraphicsRootConstantBufferView(0, passCB->GetGPUVirtualAddress());
 
+	auto matData = MATERIAL_CB->Resource();
+	_cmdList->SetGraphicsRootShaderResourceView(2, matData->GetGPUVirtualAddress());
+
 	_cmdList->ResourceBarrier(1, &barrier);
 
 	_cmdList->RSSetViewports(1, vp);

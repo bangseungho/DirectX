@@ -10,7 +10,7 @@ void RootSignature::Init()
 	CD3DX12_ROOT_PARAMETER slotRootParameter[4];
 	slotRootParameter[0].InitAsConstantBufferView(0);
 	slotRootParameter[1].InitAsConstantBufferView(1);
-	slotRootParameter[2].InitAsConstantBufferView(2);
+	slotRootParameter[2].InitAsShaderResourceView(0, 1);
 	slotRootParameter[3].InitAsDescriptorTable(1, &texTable, D3D12_SHADER_VISIBILITY_PIXEL);
 
 	//CD3DX12_DESCRIPTOR_RANGE ranges[] =
