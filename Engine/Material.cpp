@@ -13,7 +13,9 @@ Material::~Material()
 
 void Material::Update()
 {
-	CB(CONSTANT_BUFFER_TYPE::MATERIAL)->CopyData(_matCBIndex, &_params, sizeof(MaterialConstants));
+	//CB(CONSTANT_BUFFER_TYPE::MATERIAL)->CopyData(_matCBIndex, &_params, sizeof(MaterialConstants));
+
+	MATERIAL_CB->CopyData(_matCBIndex, _params);
 
 	UINT matCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(MaterialConstants));
 	D3D12_GPU_VIRTUAL_ADDRESS matCBAddress = CURR_FRAMERESOURCE->MaterialCB->Resource()->GetGPUVirtualAddress() + _matCBIndex * matCBByteSize;

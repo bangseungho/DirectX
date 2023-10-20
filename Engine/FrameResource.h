@@ -7,15 +7,12 @@ public:
     FrameResource(ComPtr<ID3D12Device> device, uint32 objectCount, uint32 materialCount);
     ~FrameResource();
 
-    sptr<ConstantBuffer> GetConstantBuffer(CONSTANT_BUFFER_TYPE type);
-
 public:
     ComPtr<ID3D12CommandAllocator> CmdAlloc;
 
-    sptr<ConstantBuffer> PassCB;
-    sptr<ConstantBuffer> ObjectCB;
-    sptr<ConstantBuffer> MaterialCB;
+    sptr<UploadBuffer<PassConstants>> PassCB;
+    sptr<UploadBuffer<ObjectConstants>> ObjectCB;
+    sptr<UploadBuffer<MaterialConstants>> MaterialCB;
 
     uint64 Fence = 0;
 };
-

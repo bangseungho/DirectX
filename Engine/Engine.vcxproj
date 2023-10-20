@@ -255,7 +255,6 @@
     <ClCompile Include="SimpleMath.cpp" />
     <ClCompile Include="SwapChain.cpp" />
     <ClCompile Include="TableDescriptorHeap.cpp" />
-    <ClCompile Include="ConstantBuffer.cpp" />
     <ClCompile Include="TestAutoMoveScript.cpp" />
     <ClCompile Include="TestBillBoard.cpp" />
     <ClCompile Include="TestCameraScript.cpp" />

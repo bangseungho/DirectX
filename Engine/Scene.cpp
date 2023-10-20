@@ -125,8 +125,7 @@ void Scene::PushPassData()
 		passConstants.lightCount++;
 	}
 
-	CB(CONSTANT_BUFFER_TYPE::PASS)->CopyData(0, &passConstants, sizeof(passConstants));
-
+	PASS_CB->CopyData(0, passConstants);
 }
 
 void Scene::LoadTestTextures()

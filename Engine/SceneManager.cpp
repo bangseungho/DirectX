@@ -206,55 +206,55 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 }
 #pragma endregion
 
-//
-//#pragma region Sphere
-//{
-//	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
-//	gameObject->Init();
-//	gameObject->SetTag(L"Sphere");
-//
-//	shared_ptr<Transform> transform = gameObject->GetTransform();
-//	transform->SetLocalPosition(Vec3(0.f, 100.f, 200.f));
-//	transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-//
-//	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-//	{
-//		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
-//		meshRenderer->SetMesh(mesh);
-//		meshRenderer->SetMaterial(materialMap["newjeans"]);
-//	}
-//	gameObject->AddComponent(meshRenderer);
-//	sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
-//	rigid->SetMass(100.f);
-//	gameObject->AddComponent(rigid);
-//	gameObject->AddComponent(make_shared<TestRotationScript>());
-//	scene->AddGameObject(gameObject);
-//	}
-//#pragma endregion
-//
-//#pragma region NormalCube
-//{
-//	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
-//	gameObject->Init();
-//	gameObject->SetTag(L"LeatherCube");
-//
-//	shared_ptr<Transform> transform = gameObject->GetTransform();
-//	transform->SetLocalPosition(Vec3(150.f, 100.f, 0.f));
-//	transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
-//
-//	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-//	{
-//		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
-//		meshRenderer->SetMesh(mesh);
-//		meshRenderer->SetMaterial(materialMap["leather"]);
-//	}
-//	gameObject->AddComponent(meshRenderer);
-//	sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
-//	rigid->SetMass(500.f);
-//	gameObject->AddComponent(rigid);
-//	scene->AddGameObject(gameObject);
-//}
-//#pragma endregion
+
+#pragma region Sphere
+{
+	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+	gameObject->Init();
+	gameObject->SetTag(L"Sphere");
+
+	shared_ptr<Transform> transform = gameObject->GetTransform();
+	transform->SetLocalPosition(Vec3(0.f, 100.f, 200.f));
+	transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+
+	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	{
+		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
+		meshRenderer->SetMesh(mesh);
+		meshRenderer->SetMaterial(materialMap["newjeans"]);
+	}
+	gameObject->AddComponent(meshRenderer);
+	sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
+	rigid->SetMass(100.f);
+	gameObject->AddComponent(rigid);
+	gameObject->AddComponent(make_shared<TestRotationScript>());
+	scene->AddGameObject(gameObject);
+	}
+#pragma endregion
+
+#pragma region NormalCube
+{
+	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+	gameObject->Init();
+	gameObject->SetTag(L"LeatherCube");
+
+	shared_ptr<Transform> transform = gameObject->GetTransform();
+	transform->SetLocalPosition(Vec3(150.f, 100.f, 0.f));
+	transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
+
+	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	{
+		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
+		meshRenderer->SetMesh(mesh);
+		meshRenderer->SetMaterial(materialMap["leather"]);
+	}
+	gameObject->AddComponent(meshRenderer);
+	sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
+	rigid->SetMass(500.f);
+	gameObject->AddComponent(rigid);
+	scene->AddGameObject(gameObject);
+}
+#pragma endregion
 
 #pragma region Directional Light
 	{

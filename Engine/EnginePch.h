@@ -159,6 +159,9 @@ struct MaterialConstants
 #define CURR_OBJECT_CB			gEngine->GetCurrFrameResource()->ObjectCB
 #define ROOT_SIGNATURE			gEngine->GetRootSignature()->GetSignature()
 
-#define CB(type)				gEngine->GetCurrFrameResource()->GetConstantBuffer(type)
+//#define CB(type)				gEngine->GetCurrFrameResource()->GetConstantBuffer(type)
+#define OBJECT_CB gEngine->GetCurrFrameResource()->ObjectCB
+#define PASS_CB gEngine->GetCurrFrameResource()->PassCB
+#define MATERIAL_CB gEngine->GetCurrFrameResource()->MaterialCB
 
 extern unique_ptr<class Engine> gEngine;

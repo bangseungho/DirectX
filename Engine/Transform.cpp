@@ -39,11 +39,11 @@ void Transform::PushData()
 	objectConstants.matWorld = _matWorld;
 
 	uint32 objCBIndex = GetGameObject()->GetObjCBIndex();
-	CB(CONSTANT_BUFFER_TYPE::OBJECT)->CopyData(objCBIndex, &objectConstants, sizeof(ObjectConstants));
+	OBJECT_CB->CopyData(objCBIndex, objectConstants);
 
 	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
-	D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = CB(CONSTANT_BUFFER_TYPE::OBJECT)->Resource()->GetGPUVirtualAddress() + objCBIndex * objCBByteSize;
+	D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = OBJECT_CB->Resource()->GetGPUVirtualAddress() + objCBIndex * objCBByteSize;
 	CMD_LIST->SetGraphicsRootConstantBufferView(1, objCBAddress);
 }
 
