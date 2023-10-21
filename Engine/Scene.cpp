@@ -7,6 +7,7 @@
 #include "Light.h"
 #include "Transform.h"
 #include "Timer.h"
+#include "Resources.h"
 
 void Scene::Awake()
 {
@@ -24,6 +25,15 @@ void Scene::Render()
 	PushPassData();
 
 	_mainCamera->GetCamera()->Render();
+
+	// UI Camera 
+	for (auto& gameObject : _gameObjects)
+	{
+		if (gameObject->GetCamera() == nullptr)
+			continue;
+
+		gameObject->GetCamera()->Render();
+	}
 }
 
 void Scene::Start()
@@ -132,6 +142,7 @@ void Scene::LoadTestTextures()
 {
 	vector<string> texNames = {
 		"newjeans",
+		"newjeans2",
 		"newjeans3",
 
 		"leather",
@@ -141,10 +152,13 @@ void Scene::LoadTestTextures()
 		"wall",
 		"wall_normal",
 		"wall_roughness",
+
+		"skybox",
 	};
 
 	vector<wstring> texFileNames = {
 		L"..\\Resources\\Texture\\newjeans.dds",
+		L"..\\Resources\\Texture\\newjeans2.dds",
 		L"..\\Resources\\Texture\\newjeans3.dds",
 
 		L"..\\Resources\\Texture\\Leather.dds",
@@ -154,21 +168,20 @@ void Scene::LoadTestTextures()
 		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_basecolor.dds",
 		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_normal_BC7.dds",
 		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_roughness.dds",
+
+		L"..\\Resources\\Texture\\Sky.dds",
 	};
 
-	// texture2D
-	for (int i = 0; i < TEXTURE2D_COUNT; ++i) {
-		auto texMap = std::make_shared<Texture>();
-		texMap->Init(texFileNames[i]);
-		DESCHEAP->CreateSRV(texMap);
+	for (int i = 0; i < TEXTURE_COUNT; ++i) {
+		auto texMap = GET_SINGLE(Resources)->Load<Texture>(texNames[i], texFileNames[i]);
+
+		if (i == static_cast<uint8>(TEXTURECUBE_INDEX::SKYBOX))
+			DESCHEAP->CreateSRV(texMap, TEXTURE_TYPE::TEXTURECUBE);
+		else 
+			DESCHEAP->CreateSRV(texMap);
+
 		_textures[texNames[i]] = move(texMap);
 	}
-
-	// textureCube
-	auto skyMap = std::make_shared<Texture>();
-	skyMap->Init(L"..\\Resources\\Texture\\Sky.dds");
-	DESCHEAP->CreateSRV(skyMap, TEXTURE_TYPE::TEXTURECUBE);
-	_textures["skybox"] = move(skyMap);
 }
 
 void Scene::BuildMaterials()
@@ -179,8 +192,7 @@ void Scene::BuildMaterials()
 		newjeans->SetDiffuseSrvHeapIndex(TEXTURE2D_INDEX::B_NEWJEANS);
 		newjeans->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
 		newjeans->SetRoughness(0.125f);
-		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Default_vs.cso", L"..\\Output\\cso\\Default_ps.cso");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
 		newjeans->SetShader(shader);
 
 		_materials["newjeans"] = move(newjeans);
@@ -192,8 +204,7 @@ void Scene::BuildMaterials()
 		newjeans3->SetDiffuseSrvHeapIndex(TEXTURE2D_INDEX::B_NEWJEANS3);
 		newjeans3->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
 		newjeans3->SetRoughness(0.125f);
-		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Default_vs.cso", L"..\\Output\\cso\\Default_ps.cso");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
 		newjeans3->SetShader(shader);
 
 		_materials["newjeans3"] = move(newjeans3);
@@ -207,8 +218,7 @@ void Scene::BuildMaterials()
 		leather->SetRoughnessSrvHeapIndex(TEXTURE2D_INDEX::R_LEATHER);
 		leather->SetFresnel(Vec3(0.1f, 0.1f, 0.1f));
 		leather->SetRoughness(0.125f);
-		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Default_vs.cso", L"..\\Output\\cso\\Default_ps.cso");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
 		leather->SetShader(shader);
 
 		_materials["leather"] = move(leather);
@@ -222,8 +232,7 @@ void Scene::BuildMaterials()
 		wall->SetRoughnessSrvHeapIndex(TEXTURE2D_INDEX::R_WALL);
 		wall->SetFresnel(Vec3(0.5f, 0.5f, 0.5f));
 		wall->SetRoughness(0.5f);
-		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Default_vs.cso", L"..\\Output\\cso\\Default_ps.cso");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
 		wall->SetShader(shader);
 
 		_materials["wall"] = move(wall);
@@ -233,10 +242,21 @@ void Scene::BuildMaterials()
 		auto skybox = make_shared<Material>();
 		skybox->SetMatCBIndex(4);
 		skybox->SetDiffuseSrvHeapIndex(TEXTURECUBE_INDEX::SKYBOX);
-		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Sky_vs.cso", L"..\\Output\\cso\\Sky_ps.cso", { RASTERIGER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::LESS_EQUAL });
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("SkyBox");
 		skybox->SetShader(shader);
 
 		_materials["skybox"] = move(skybox);
+	}
+
+	{
+		auto newjeans2 = make_shared<Material>();
+		newjeans2->SetMatCBIndex(5);
+		newjeans2->SetDiffuseSrvHeapIndex(TEXTURE2D_INDEX::B_NEWJEANS2);
+		newjeans2->SetFresnel(Vec3(0.1f, 0.1f, 0.1f));
+		newjeans2->SetRoughness(0.125f);
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
+		newjeans2->SetShader(shader);
+
+		_materials["newjeans2"] = move(newjeans2);
 	}
 }

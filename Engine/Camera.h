@@ -18,8 +18,22 @@ public:
 
 public:
 	void Render();
-	void GenerateFrustum();
 	bool IsInFrustum(BoundingOrientedBox& boundsOOBB);
+
+	void SetProjectionType(PROJECTION_TYPE type) { _type = type; }
+	PROJECTION_TYPE GetProjectionType() const { return _type; }
+
+	void SetCullingMaskLayerOnOff(uint8 layer, bool on)
+	{
+		if (on)
+			_cullingMask |= (1 << layer);
+		else
+			_cullingMask &= ~(1 << layer);
+	}
+
+	void SetCullingMaskAll() { SetCullingMask(UINT32_MAX); }
+	void SetCullingMask(uint32 mask) { _cullingMask = mask; }
+	bool IsCulled(uint8 layer) { return (_cullingMask & (1 << layer)) != 0; }
 
 private:
 	friend class Scene;
@@ -35,6 +49,12 @@ private:
 	Matrix _matProjection = {};
 
 	BoundingFrustum _frustum;
+	
+	uint32 _cullingMask = 0;
+
+public:
+	static Matrix MatView;
+	static Matrix MatProjection;
 };
 
 

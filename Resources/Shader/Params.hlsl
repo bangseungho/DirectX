@@ -41,8 +41,10 @@ struct PassConstants
 struct ObjectConstants
 {
     row_major matrix    world;
+    row_major matrix    viewProj;
     uint                materialIndex;
-    float3              padding;
+    uint                isUI;
+    float2              padding;
 };
 
 struct MaterialData

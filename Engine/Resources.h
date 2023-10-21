@@ -11,14 +11,16 @@ class Resources
 	SINGLETON(Resources);
 
 public:
-	template<typename T>
-	sptr<T> Load(const wstring& key, const wstring& path);
+	void Init();
 
 	template<typename T>
-	bool Add(const wstring& key, sptr<T> object);
+	sptr<T> Load(const string& key, const wstring& path);
 
 	template<typename T>
-	sptr<T> Get(const wstring& Key);
+	bool Add(const string& key, sptr<T> object);
+
+	template<typename T>
+	sptr<T> Get(const string& Key);
 
 	template<typename T>
 	OBJECT_TYPE GetObjectType();
@@ -27,15 +29,18 @@ public:
 	sptr<Mesh> LoadCubeMesh();
 	sptr<Mesh> LoadSphereMesh();
 	sptr<Mesh> LoadGridMesh();
-	sptr<Mesh> LoadParticleMesh();
+	sptr<Mesh> LoadRectangleMesh();
 
 private:
-	using KeyObjMap = std::map<wstring, sptr<Object>>;
+	void CreateDefaultShader();
+
+private:
+	using KeyObjMap = std::map<string, sptr<Object>>;
 	array<KeyObjMap, OBJECT_TYPE_COUNT> _resources;
 };
 
 template<typename T>
-inline sptr<T> Resources::Load(const wstring& key, const wstring& path)
+inline sptr<T> Resources::Load(const string& key, const wstring& path)
 {
 	OBJECT_TYPE objectType = GetObjectType<T>();
 	KeyObjMap& keyObjMap = _resources[static_cast<uint8>(objectType)];
@@ -52,7 +57,7 @@ inline sptr<T> Resources::Load(const wstring& key, const wstring& path)
 }
 
 template<typename T>
-inline bool Resources::Add(const wstring& key, sptr<T> object)
+inline bool Resources::Add(const string& key, sptr<T> object)
 {
 	OBJECT_TYPE objectType = GetObjectType<T>();
 	KeyObjMap& keyObjMap = _resources[static_cast<uint8>(objectType)];
@@ -67,7 +72,7 @@ inline bool Resources::Add(const wstring& key, sptr<T> object)
 }
 
 template<typename T>
-inline sptr<T> Resources::Get(const wstring& key)
+inline sptr<T> Resources::Get(const string& key)
 {
 	OBJECT_TYPE objectType = GetObjectType<T>();
 	KeyObjMap& keyObjMap = _resources[static_cast<uint8>(objectType)];

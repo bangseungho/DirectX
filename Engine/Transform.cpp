@@ -37,7 +37,9 @@ void Transform::PushData()
 {
 	ObjectConstants objectConstants = {};
 	objectConstants.matWorld = _matWorld;
+	objectConstants.isUI = GetGameObject()->GetLayerIndex();
 	objectConstants.materialIndex = GetGameObject()->GetMatIndex();
+	objectConstants.matViewProj = Camera::MatView * Camera::MatProjection;
 
 	uint32 objCBIndex = GetGameObject()->GetObjCBIndex();
 	OBJECT_CB->CopyData(objCBIndex, objectConstants);

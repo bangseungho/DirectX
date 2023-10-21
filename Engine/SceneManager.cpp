@@ -63,37 +63,75 @@ uint32 SceneManager::LoadScene(wstring sceneName)
 	return objCount;
 }
 
+void SceneManager::SetLayerName(uint8 index, const wstring& name)
+{
+	const wstring prevName = _layerNames[index];
+	_layerIndex.erase(prevName);
+
+	_layerNames[index] = name;
+	_layerIndex[name] = index;
+}
+
+uint8 SceneManager::LayerNameToIndex(const wstring& name)
+{
+	auto findIt = _layerIndex.find(name);
+	if (findIt == _layerIndex.end())
+		return 0;
+
+	return findIt->second;
+}
+
 shared_ptr<Scene> SceneManager::LoadTestScene()
 {
+//============================================================================== LayerMask
+#pragma region LayerMask
+	SetLayerName(0, L"Default");
+	SetLayerName(1, L"UI");
+#pragma endregion
+//============================================================================== Scene
 	shared_ptr<Scene> scene = make_shared<Scene>();
-
 	scene->LoadTestTextures();
 	scene->BuildMaterials();
 	auto& textureMap = scene->GetTextures();
 	auto& materialMap = scene->GetMaterials();
-
 //============================================================================== Camera
-
-#pragma region Camera1
-	shared_ptr<GameObject> camera = make_shared<GameObject>();
-	camera->Init();
-	camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
-	camera->AddComponent(make_shared<TestCameraScript>());
-	camera->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 0.f));
-	scene->AddCameraObject(FIRST_CAMERA, camera);
+#pragma region MainCamera
+	shared_ptr<GameObject> mainCamera = make_shared<GameObject>();
+	mainCamera->Init();
+	mainCamera->SetName(L"Main_Camera");
+	mainCamera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
+	mainCamera->AddComponent(make_shared<TestCameraScript>());
+	mainCamera->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 0.f));
+	uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
+	mainCamera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, true);
+	scene->AddCameraObject(FIRST_CAMERA, mainCamera);
 	scene->SetMainCamera(FIRST_CAMERA);
 #pragma endregion
-#pragma region Camera2
+#pragma region SubCamera
 	{
 		shared_ptr<GameObject> camera = make_shared<GameObject>();
 		camera->Init();
-		camera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
+		camera->SetName(L"Sub_Camera");
+		camera->AddComponent(make_shared<Camera>());
 		camera->AddComponent(make_shared<TestCameraScript>());
 		camera->GetTransform()->SetLocalPosition(Vec3(100.f, 100.f, 0.f));
 		scene->AddCameraObject(SECOND_CAMERA, camera);
 	}
 #pragma endregion
-
+#pragma region UICamera
+	{
+		shared_ptr<GameObject> camera = make_shared<GameObject>();
+		camera->Init();
+		camera->SetName(L"UI_Camera");
+		camera->AddComponent(make_shared<Camera>());
+		camera->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
+		camera->GetCamera()->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
+		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
+		camera->GetCamera()->SetCullingMaskAll();
+		camera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, false);
+		scene->AddGameObject(camera);
+	}
+#pragma endregion
 //============================================================================== SkyBox
 #pragma region SkyBox
 	{
@@ -112,7 +150,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		scene->AddGameObject(skybox);
 	}
 #pragma endregion
-
 //============================================================================== Object
 #pragma region NewjeansCube
 	{
@@ -209,7 +246,25 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	scene->AddGameObject(gameObject);
 }
 #pragma endregion
-
+//============================================================================== UI
+#pragma region UITest
+	{
+		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+		gameObject->Init();
+		gameObject->SetCheckFrustum(false);
+		gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+		gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 500.f));
+		gameObject->GetTransform()->SetLocalScale(Vec3(200.f, 200.f, 200.f));
+		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		{
+			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+			meshRenderer->SetMesh(mesh);
+			meshRenderer->SetMaterial(materialMap["newjeans2"]);
+		}
+		gameObject->AddComponent(meshRenderer);
+		scene->AddGameObject(gameObject);
+	}
+#pragma endregion
 //============================================================================== Light
 #pragma region Directional Light
 	{
@@ -233,7 +288,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		light->GetLight()->SetFallOff(1.f, 1000.f);
 
 		sptr<TestLightMoveToCamera> moveTo = make_shared<TestLightMoveToCamera>();
-		moveTo->SetGameObject(camera);
+		moveTo->SetGameObject(mainCamera);
 		light->AddComponent(moveTo);
 
 		scene->AddGameObject(light);

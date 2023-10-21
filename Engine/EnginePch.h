@@ -66,6 +66,7 @@ enum
 enum class TEXTURE2D_INDEX : uint8
 {
 	B_NEWJEANS,
+	B_NEWJEANS2,
 	B_NEWJEANS3,
 
 	B_LEATHER,
@@ -162,9 +163,11 @@ struct PassConstants
 
 struct ObjectConstants
 {
-	Matrix	matWorld;
-	uint32	materialIndex;
-	Vec3	padding;
+	Matrix	matWorld = Matrix::Identity;
+	Matrix  matViewProj = Matrix::Identity;
+	uint32	materialIndex = 0;
+	uint32  isUI = 0;
+	Vec2	padding;
 };
 
 struct MaterialConstants
@@ -191,7 +194,6 @@ struct MaterialConstants
 #define CURR_OBJECT_CB			gEngine->GetCurrFrameResource()->ObjectCB
 #define ROOT_SIGNATURE			gEngine->GetRootSignature()->GetSignature()
 
-//#define CB(type)				gEngine->GetCurrFrameResource()->GetConstantBuffer(type)
 #define OBJECT_CB gEngine->GetCurrFrameResource()->ObjectCB
 #define PASS_CB gEngine->GetCurrFrameResource()->PassCB
 #define MATERIAL_CB gEngine->GetCurrFrameResource()->MaterialCB

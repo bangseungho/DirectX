@@ -30,9 +30,16 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     uint diffuseMapIndex = matData.textureMapIndex;
     uint normalMapIndex = matData.normalMapIndex;
     uint roughnessMapIndex = matData.roughnessMapIndex;
-
+    
     // 보간 과정에서 단위 벡터가 안될 수 있으므로 노말라이즈를 한다.
     pin.normalW = normalize(pin.normalW);
+    
+    // 베이스 컬러
+    diffuseAlbedo = gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.uv) * diffuseAlbedo;
+    
+    // UI일 경우 조명 계산을 하지 않는다.
+     if (gObjConstants.isUI)
+        return diffuseAlbedo;
     
     // 노멀 맵
     float4 normalMap = gTextureMaps[normalMapIndex].Sample(gsamAnisotropicWrap, pin.uv);
@@ -40,9 +47,6 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     
     // 거칠기 
     roughness *= gTextureMaps[roughnessMapIndex].Sample(gsamAnisotropicWrap, pin.uv).x;
-
-    // 베이스 컬러
-    diffuseAlbedo = gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.uv) * diffuseAlbedo;
     
     // 조명되는 점에서 눈으로의 벡터
     float3 toEyeW = normalize(gPassConstants.eyePosW.xyz - pin.posW);

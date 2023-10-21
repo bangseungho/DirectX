@@ -7,6 +7,9 @@
 #include "MeshRenderer.h"
 #include "Engine.h"
 
+Matrix Camera::MatView;
+Matrix Camera::MatProjection;
+
 Camera::Camera() : Component(COMPONENT_TYPE::CAMERA)
 {
 }
@@ -27,11 +30,16 @@ void Camera::FinalUpdate()
 	else
 		_matProjection = ::XMMatrixOrthographicLH(width * _scale, height * _scale, _near, _far);
 
-	GenerateFrustum();
+	// Regenerate Frutum
+	_frustum.CreateFromMatrix(_frustum, _matProjection);
+	_frustum.Transform(_frustum, _matView.Invert());
 }
 
 void Camera::Render()
 {
+	MatView = _matView;
+	MatProjection = _matProjection;
+
 	shared_ptr<Scene> scene = GET_SINGLE(SceneManager)->GetActiveScene();
 
 	// TODO : Layer ±¸ºÐ
@@ -42,21 +50,18 @@ void Camera::Render()
 		if (gameObject->GetMeshRenderer() == nullptr)
 			continue;
 
-		BoundingOrientedBox boundingBox = gameObject->GetMeshRenderer()->GetBoundingBox();
-		boundingBox.Transform(boundingBox, gameObject->GetTransform()->GetLocalToWorldMatrix());
+		if (IsCulled(gameObject->GetLayerIndex()))
+			continue;
 		
-		if (gameObject->GetCheckFrustum())
+		if (gameObject->GetCheckFrustum()) {
+			BoundingOrientedBox boundingBox = gameObject->GetMeshRenderer()->GetBoundingBox();
+			boundingBox.Transform(boundingBox, gameObject->GetTransform()->GetLocalToWorldMatrix());
 			if (!IsInFrustum(boundingBox))
 				continue;
+		}
 
 		gameObject->GetMeshRenderer()->Render();
 	}
-}
-
-void Camera::GenerateFrustum()
-{
-	_frustum.CreateFromMatrix(_frustum, _matProjection);
-	_frustum.Transform(_frustum, _matView.Invert());
 }
 
 bool Camera::IsInFrustum(BoundingOrientedBox& boundsOOBB)

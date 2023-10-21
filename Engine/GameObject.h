@@ -46,6 +46,9 @@ public:
 	void SetMatIndex(uint32 index) { _matIndex = index; }
 	uint32 GetMatIndex() const { return _matIndex; }
 
+	void SetLayerIndex(uint8 layer) { _layerIndex = layer; }
+	uint8 GetLayerIndex() { return _layerIndex; }
+
 	static uint32 ObjCBIndex;
 
 private:
@@ -56,5 +59,7 @@ private:
 	bool _checkFrustum = true;
 	uint32 _objCBIndex = -1;
 	uint32 _matIndex = -1;
+
+	uint8 _layerIndex = 0;
 };
 

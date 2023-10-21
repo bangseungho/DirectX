@@ -31,9 +31,14 @@ void CreateBoundingBox(MinMaxVert minMaxVert, sptr<Mesh> mesh)
 	mesh->GetBoundingBox().CreateFromPoints(mesh->GetBoundingBox(), 2, points, sizeof(Vec3));
 }
 
+void Resources::Init()
+{
+	CreateDefaultShader();
+}
+
 sptr<Mesh> Resources::LoadRectMesh()
 {
-	sptr<Mesh> findMesh = Get<Mesh>(L"Rectangle");
+	sptr<Mesh> findMesh = Get<Mesh>("Rectangle");
 	if (findMesh)
 		return findMesh;
 
@@ -53,14 +58,14 @@ sptr<Mesh> Resources::LoadRectMesh()
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
 	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
-	Add<Mesh>(L"Rectangle", mesh);
+	Add<Mesh>("Rectangle", mesh);
 
 	return mesh;
 }
 
 shared_ptr<Mesh> Resources::LoadCubeMesh()
 {
-	shared_ptr<Mesh> findMesh = Get<Mesh>(L"Cube");
+	shared_ptr<Mesh> findMesh = Get<Mesh>("Cube");
 	if (findMesh)
 		return findMesh;
 
@@ -127,14 +132,14 @@ shared_ptr<Mesh> Resources::LoadCubeMesh()
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
 	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
-	Add<Mesh>(L"Cube", mesh);
+	Add<Mesh>("Cube", mesh);
 
 	return mesh;
 }
 
 shared_ptr<Mesh> Resources::LoadSphereMesh()
 {
-	shared_ptr<Mesh> findMesh = Get<Mesh>(L"Sphere");
+	shared_ptr<Mesh> findMesh = Get<Mesh>("Sphere");
 	if (findMesh)
 		return findMesh;
 
@@ -246,14 +251,14 @@ shared_ptr<Mesh> Resources::LoadSphereMesh()
 	shared_ptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
 	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
-	Add(L"Sphere", mesh);
+	Add("Sphere", mesh);
 
 	return mesh;
 }
 
 sptr<Mesh> Resources::LoadGridMesh()
 {
-	sptr<Mesh> findMesh = Get<Mesh>(L"Gird");
+	sptr<Mesh> findMesh = Get<Mesh>("Gird");
 	if (findMesh)
 		return findMesh;
 
@@ -308,69 +313,63 @@ sptr<Mesh> Resources::LoadGridMesh()
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
 	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
-	Add<Mesh>(L"Grid", mesh);
+	Add<Mesh>("Grid", mesh);
 
 	return mesh;
 }
 
-sptr<Mesh> Resources::LoadParticleMesh()
+sptr<Mesh> Resources::LoadRectangleMesh()
 {
-	sptr<Mesh> findMesh = Get<Mesh>(L"Particle");
+	shared_ptr<Mesh> findMesh = Get<Mesh>("Rectangle");
 	if (findMesh)
 		return findMesh;
 
-	uint32 m = 2;
-	uint32 n = 2;
-	float width = 100.f;
-	float depth = 100.f;
+	float w2 = 0.5f;
+	float h2 = 0.5f;
 
-	uint32 vertexCount = m * n;
-	uint32 faceCount = (m - 1) * (n - 1) * 2;
+	vector<Vertex> vec(24);
 
-	float halfWidth = 0.5f * width;
-	float halfDepth = 0.5f * depth;
+	// 앞면
+	vec[0] = Vertex(Vec3(-w2, -h2, 0), Vec2(0.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
+	vec[1] = Vertex(Vec3(-w2, +h2, 0), Vec2(0.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
+	vec[2] = Vertex(Vec3(+w2, +h2, 0), Vec2(1.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
+	vec[3] = Vertex(Vec3(+w2, -h2, 0), Vec2(1.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
 
-	float dx = width / (n - 1);
-	float dz = depth / (m - 1);
+	vector<uint32> idx(6);
 
-	float du = 1.f / (n - 1);
-	float dv = 1.f / (m - 1);
-
-	vector<Vertex> vec(vertexCount);
-	for (uint32 i = 0; i < m; ++i) {
-		float z = -halfDepth + i * dz;
-		for (uint32 j = 0; j < n; ++j) {
-			float x = -halfWidth + j * dx;
-
-			vec[i * n + j].pos = Vec3(x, z, 0.f);
-			vec[i * n + j].normal = Vec3(0.f, 0.f, 1.f);
-			vec[i * n + j].tangent = Vec3(1.f, 0.f, 0.f);
-
-			vec[i * n + j].uv.x = j * du;
-			vec[i * n + j].uv.y = i * dv;
-		}
-	}
-
-	vector<uint32> idx(faceCount * 3);
-	uint32 k = 0;
-	for (uint32 i = 0; i < m - 1; ++i) {
-		for (uint32 j = 0; j < n - 1; ++j) {
-			idx[k] = i * n + j;
-			idx[k + 1] = i * n + j + 1;
-			idx[k + 2] = (i + 1) * n + j;
-
-			idx[k + 3] = (i + 1) * n + j;
-			idx[k + 4] = i * n + j + 1;
-			idx[k + 5] = (i + 1) * n + j + 1;
-
-			k += 6;
-		}
-	}
+	// 앞면
+	idx[0] = 0; idx[1] = 1; idx[2] = 2;
+	idx[3] = 0; idx[4] = 2; idx[5] = 3;
 
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
 	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
-	Add<Mesh>(L"Particle", mesh);
+	Add<Mesh>("Rectangle", mesh);
 
 	return mesh;
+}
+
+void Resources::CreateDefaultShader()
+{
+	// SkyBox
+	{
+		ShaderInfo info = {
+			RASTERIGER_TYPE::CULL_NONE,
+			DEPTH_STENCIL_TYPE::LESS_EQUAL
+		};
+
+		sptr<Shader> shader = make_shared<Shader>();
+		shader->Init(L"..\\Output\\cso\\Sky_vs.cso", L"..\\Output\\cso\\Sky_ps.cso", info);
+		Add<Shader>("SkyBox", shader);
+	}
+
+	// Forward
+	{
+		ShaderInfo info = {
+		};
+
+		sptr<Shader> shader = make_shared<Shader>();
+		shader->Init(L"..\\Output\\cso\\Default_vs.cso", L"..\\Output\\cso\\Default_ps.cso", info);
+		Add<Shader>("Forward", shader);
+	}
 }

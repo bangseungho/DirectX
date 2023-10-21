@@ -14,7 +14,7 @@ public:
 	virtual ~Texture();
 
 public:
-	void Init(const wstring& path);
+	virtual void Load(const wstring& path);
 
 	ComPtr<ID3D12Resource> Resource() { return _resource; }
 

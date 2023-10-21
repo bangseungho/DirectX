@@ -26,7 +26,7 @@ VS_OUT VS_Main(VS_IN vin)
     
     posW.xyz += gPassConstants.eyePosW;
     
-    vout.posH = mul(posW, gPassConstants.viewProj).xyww;
+    vout.posH = mul(posW, gObjConstants.viewProj).xyww;
  
     return vout;
 }

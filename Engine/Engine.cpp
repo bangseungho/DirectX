@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Engine.h"
 #include "SceneManager.h"
+#include "Resources.h"
 
 Engine::~Engine()
 {
@@ -11,9 +12,6 @@ Engine::~Engine()
 void Engine::Init(const WindowInfo& info)
 {
 	_window = info;
-
-	GET_SINGLE(InputManager)->Init(info);
-	GET_SINGLE(Timer)->Init(info);
 
 	_viewport = { 0, 0, static_cast<FLOAT>(info.width), static_cast<FLOAT>(info.height), 0.0f, 1.0f };
 	_scissorRect = CD3DX12_RECT(0, 0, info.width, info.height);
@@ -33,6 +31,10 @@ void Engine::Init(const WindowInfo& info)
 	_depthStencilBuffer->Init(_window);
 
 	ResizeWindow(info.width, info.height);
+
+	GET_SINGLE(InputManager)->Init(info);
+	GET_SINGLE(Timer)->Init(info);
+	GET_SINGLE(Resources)->Init();
 }
 
 void Engine::Update()
