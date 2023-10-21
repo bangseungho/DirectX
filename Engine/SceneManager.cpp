@@ -114,7 +114,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 
 //============================================================================== Object
-#pragma region Cube
+#pragma region NewjeansCube
 	{
 		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
 		gameObject->Init();
@@ -139,7 +139,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		scene->AddGameObject(gameObject);
 	}
 #pragma endregion
-#pragma region NormalCube
+#pragma region WallCube
 {
 	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
 	gameObject->Init();
@@ -162,7 +162,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	scene->AddGameObject(gameObject);
 }
 #pragma endregion
-#pragma region Sphere
+#pragma region NewjeansSphere
 {
 	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
 	gameObject->Init();
@@ -186,7 +186,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	scene->AddGameObject(gameObject);
 	}
 #pragma endregion
-#pragma region NormalCube
+#pragma region LeatherCube
 {
 	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
 	gameObject->Init();

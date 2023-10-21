@@ -3,7 +3,7 @@
 #include "GameObject.h"
 #include "Camera.h"
 #include "Engine.h"
-#include "ConstantBuffer.h"
+#include "UploadBuffer.h"
 #include "Light.h"
 #include "Transform.h"
 #include "Timer.h"
@@ -180,7 +180,7 @@ void Scene::BuildMaterials()
 		newjeans->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
 		newjeans->SetRoughness(0.125f);
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
+		shader->Init(L"..\\Output\\cso\\Default_vs.cso", L"..\\Output\\cso\\Default_ps.cso");
 		newjeans->SetShader(shader);
 
 		_materials["newjeans"] = move(newjeans);
@@ -193,7 +193,7 @@ void Scene::BuildMaterials()
 		newjeans3->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
 		newjeans3->SetRoughness(0.125f);
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
+		shader->Init(L"..\\Output\\cso\\Default_vs.cso", L"..\\Output\\cso\\Default_ps.cso");
 		newjeans3->SetShader(shader);
 
 		_materials["newjeans3"] = move(newjeans3);
@@ -208,7 +208,7 @@ void Scene::BuildMaterials()
 		leather->SetFresnel(Vec3(0.1f, 0.1f, 0.1f));
 		leather->SetRoughness(0.125f);
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
+		shader->Init(L"..\\Output\\cso\\Default_vs.cso", L"..\\Output\\cso\\Default_ps.cso");
 		leather->SetShader(shader);
 
 		_materials["leather"] = move(leather);
@@ -223,7 +223,7 @@ void Scene::BuildMaterials()
 		wall->SetFresnel(Vec3(0.5f, 0.5f, 0.5f));
 		wall->SetRoughness(0.5f);
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Resources\\Shader\\Default.hlsl");
+		shader->Init(L"..\\Output\\cso\\Default_vs.cso", L"..\\Output\\cso\\Default_ps.cso");
 		wall->SetShader(shader);
 
 		_materials["wall"] = move(wall);
@@ -234,7 +234,7 @@ void Scene::BuildMaterials()
 		skybox->SetMatCBIndex(4);
 		skybox->SetDiffuseSrvHeapIndex(TEXTURECUBE_INDEX::SKYBOX);
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Resources\\Shader\\Sky.hlsl", { RASTERIGER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::LESS_EQUAL });
+		shader->Init(L"..\\Output\\cso\\Sky_vs.cso", L"..\\Output\\cso\\Sky_ps.cso", { RASTERIGER_TYPE::CULL_NONE, DEPTH_STENCIL_TYPE::LESS_EQUAL });
 		skybox->SetShader(shader);
 
 		_materials["skybox"] = move(skybox);

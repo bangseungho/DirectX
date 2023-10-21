@@ -10,10 +10,10 @@ Shader::~Shader()
 {
 }
 
-void Shader::Init(const wstring& path, ShaderInfo info)
+void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info)
 {
-	CreateVertexShader(path, "VS_Main", "vs_5_1");
-	CreatePixelShader(path, "PS_Main", "ps_5_1");
+	ComPtr<ID3DBlob> _vsBlob = CreateVertexShader(vsPath, "vs", "vs_5_1");
+	ComPtr<ID3DBlob> _psBlob = CreatePixelShader(psPath, "ps", "ps_5_1");
 
 	D3D12_INPUT_ELEMENT_DESC desc[] =
 	{
@@ -25,7 +25,16 @@ void Shader::Init(const wstring& path, ShaderInfo info)
 
 	_pipelineDesc.InputLayout = { desc, _countof(desc) };
 	_pipelineDesc.pRootSignature = ROOT_SIGNATURE.Get();
-
+	_pipelineDesc.VS =
+	{
+		reinterpret_cast<BYTE*>(_vsBlob->GetBufferPointer()),
+		_vsBlob->GetBufferSize()
+	};
+	_pipelineDesc.PS =
+	{
+		reinterpret_cast<BYTE*>(_psBlob->GetBufferPointer()),
+		_psBlob->GetBufferSize()
+	};
 	_pipelineDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
 	_pipelineDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	_pipelineDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
@@ -90,28 +99,29 @@ void Shader::Update()
 	CMD_LIST->SetPipelineState(_pipelineState.Get());
 }
 
-void Shader::CreateShader(const wstring& path, const string& name, const string& version, ComPtr<ID3DBlob>& blob, D3D12_SHADER_BYTECODE& shaderByteCode)
+ComPtr<ID3DBlob> Shader::CreateShader(const wstring& path, const string& name, const string& version, D3D12_SHADER_BYTECODE& shaderByteCode)
 {
-	uint32 compileFlag = 0;
-#ifdef _DEBUG
-	compileFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#endif
+	ifstream in{ path, std::ios::binary | std::ios::ate };
 
-	if (FAILED(::D3DCompileFromFile(path.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE
-		, name.c_str(), version.c_str(), compileFlag, 0, &blob, &_errBlob)))
-	{
-		::MessageBoxA(nullptr, "Shader Create Failed !", nullptr, MB_OK);
-	}
+	in.seekg(0, ios_base::end);
+	ifstream::pos_type size = (int)in.tellg();
+	in.seekg(0, ios_base::beg);
 
-	shaderByteCode = { blob->GetBufferPointer(), blob->GetBufferSize() };
+	ComPtr<ID3DBlob> blob;
+	ThrowIfFailed(D3DCreateBlob(size, blob.GetAddressOf()));
+	
+	in.read((char*)blob->GetBufferPointer(), size);
+	in.close();
+
+	return blob;
 }
 
-void Shader::CreateVertexShader(const wstring& path, const string& name, const string& version)
+ComPtr<ID3DBlob> Shader::CreateVertexShader(const wstring& path, const string& name, const string& version)
 {
-	CreateShader(path, name, version, _vsBlob, _pipelineDesc.VS);
+	return CreateShader(path, name, version, _pipelineDesc.VS);
 }
 
-void Shader::CreatePixelShader(const wstring& path, const string& name, const string& version)
+ComPtr<ID3DBlob> Shader::CreatePixelShader(const wstring& path, const string& name, const string& version)
 {
-	CreateShader(path, name, version, _psBlob, _pipelineDesc.PS);
+	return CreateShader(path, name, version, _pipelineDesc.PS);
 }

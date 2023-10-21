@@ -20,18 +20,18 @@ private:
 	void CalculateFrameStats();
 
 private:
-	double mSecondsPerCount;
-	double mDeltaTime;
-	int64 mBaseTime;
-	int64 mPausedTime;
-	int64 mStopTime;
-	int64 mPrevTime;
-	int64 mCurrTime;
-	float mFps;
-	float mSpf;
-	bool mStopped;
+	double mSecondsPerCount = 0.0;
+	double mDeltaTime = -1.0;
+	int64 mBaseTime = 0;
+	int64 mPausedTime = 0;
+	int64 mStopTime = 0;
+	int64 mPrevTime = 0;
+	int64 mCurrTime = 0;
+	float mFps = 0.f;
+	float mSpf = 0.f;
+	bool mStopped = false;
 
-	WindowInfo mInfo;
+	WindowInfo mInfo = {};
 };
 
 #define DELTA_TIME GET_SINGLE(Timer)->DeltaTime()

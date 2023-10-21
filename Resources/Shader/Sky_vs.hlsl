@@ -1,5 +1,5 @@
-#ifndef _SKY_HLSLI_
-#define _SKY_HLSLI_
+#ifndef _SKY_HLSL_
+#define _SKY_HLSL_
 
 #include "Params.hlsl"
 
@@ -29,11 +29,6 @@ VS_OUT VS_Main(VS_IN vin)
     vout.posH = mul(posW, gPassConstants.viewProj).xyww;
  
     return vout;
-}
-
-float4 PS_Main(VS_OUT pin) : SV_Target
-{
-	return gCubeMap.Sample(gsamLinearWrap, pin.posL);
 }
 
 #endif

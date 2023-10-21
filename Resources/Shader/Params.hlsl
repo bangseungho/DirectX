@@ -51,10 +51,10 @@ struct MaterialData
     float3              fresnelR0;
     float               roughness;
     row_major float4x4  matTransform;
-    float               normalMapping;
-    uint                diffuseMapIndex;
+    uint                textureMapIndex;
     uint                normalMapIndex;
     uint                roughnessMapIndex;
+    uint                padding;
 };
 
 ConstantBuffer<PassConstants> gPassConstants : register(b0);

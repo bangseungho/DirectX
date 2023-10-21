@@ -30,13 +30,13 @@ public:
 	virtual ~Shader();
 
 public:
-	void Init(const wstring& path, ShaderInfo info = ShaderInfo());
+	void Init(const wstring& vsPath, const wstring& psPath, ShaderInfo info = ShaderInfo());
 	void Update();
 
 private:
-	void CreateShader(const wstring& path, const string& name, const string& version, ComPtr<ID3DBlob>& blob, D3D12_SHADER_BYTECODE& shaderByteCode);
-	void CreateVertexShader(const wstring& path, const string& name, const string& version);
-	void CreatePixelShader(const wstring& path, const string& name, const string& version);
+	ComPtr<ID3DBlob> CreateShader(const wstring& path, const string& name, const string& version, D3D12_SHADER_BYTECODE& shaderByteCode);
+	ComPtr<ID3DBlob> CreateVertexShader(const wstring& path, const string& name, const string& version);
+	ComPtr<ID3DBlob> CreatePixelShader(const wstring& path, const string& name, const string& version);
 
 private:
 	ComPtr<ID3DBlob>					_vsBlob;

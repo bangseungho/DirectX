@@ -1,5 +1,5 @@
 #pragma once
-#include "ConstantBuffer.h"
+#include "UploadBuffer.h"
 
 class FrameResource
 {

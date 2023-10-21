@@ -36,8 +36,6 @@ public:
 	
  	void AddComponent(sptr<Component> component);
 	void SetTag(wstring tag) { _tag = tag; }
-	void SetMinMaxVertices(MinMaxVert minMaxVertices) { _minMaxVertices = minMaxVertices; }
-	MinMaxVert GetMinMaxVertices() { return _minMaxVertices; }
 
 	void SetCheckFrustum(bool checkFrustum) { _checkFrustum = checkFrustum; }
 	bool GetCheckFrustum() { return _checkFrustum; }
@@ -54,7 +52,6 @@ private:
 	array<sptr<Component>, FIXED_COMPONENT_COUNT> _components;
 	vector<sptr<MonoBehaviour>> _scripts;
 	wstring _tag;
-	MinMaxVert _minMaxVertices;
 
 	bool _checkFrustum = true;
 	uint32 _objCBIndex = -1;

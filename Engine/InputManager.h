@@ -35,7 +35,7 @@ public:
 	}
 
 private:
-	WindowInfo _info;
+	WindowInfo _info = {};
 	std::unordered_map<int, KeyInfo> mKeys;
 	Vec2  mMousePos;
 	Vec2  mMousePrevPos;

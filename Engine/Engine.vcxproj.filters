@@ -28,6 +28,12 @@
     <Filter Include="Object\Test">
       <UniqueIdentifier>{bbe0823a-6747-460c-bf03-5c24b1a0ac61}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shader\Utils">
+      <UniqueIdentifier>{cb944b0e-31c4-46dd-b22f-9af53b18bbc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shader\HLSL">
+      <UniqueIdentifier>{62442e73-5f49-47e9-876e-9b1792f4ae20}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -185,7 +191,7 @@
     <ClInclude Include="d3dUtil.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="ConstantBuffer.h">
+    <ClInclude Include="UploadBuffer.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="TableDescriptorHeap.h">
@@ -268,25 +274,28 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\Resources\Shader\Default.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Resources\Shader\Utils.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Resources\Shader\Params.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Resources\Shader\GUI.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Resources\Shader\Sky.hlsl">
-      <Filter>Shader</Filter>
-    </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="SimpleMath.inl">
       <Filter>Utils</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Resources\Shader\Utils.hlsl">
+      <Filter>Shader\Utils</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Params.hlsl">
+      <Filter>Shader\Utils</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Default_vs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Default_ps.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Sky_vs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Sky_ps.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
