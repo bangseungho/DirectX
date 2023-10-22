@@ -31,6 +31,12 @@ public:
 	sptr<Mesh> LoadGridMesh();
 	sptr<Mesh> LoadRectangleMesh();
 
+	sptr<Texture> CreateTexture(const string& name, DXGI_FORMAT format, uint32 width, uint32 height,
+		const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType,
+		D3D12_RESOURCE_FLAGS resFlags = D3D12_RESOURCE_FLAG_NONE, Vec4 clearColor = Vec4());
+
+	sptr<Texture> CreateTextureFromResource(const string& name, ComPtr<ID3D12Resource> tex2D, RENDER_GROUP_TYPE groupType);
+
 private:
 	void CreateDefaultShader();
 

@@ -48,14 +48,16 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	cmdAlloc->Reset();
 	_cmdList->Reset(cmdAlloc.Get(), nullptr);
 
+	int8 backIndex = _swapChain->GetBackBufferIndex();
+
 	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		_swapChain->GetBackRTVBuffer().Get(),
+		gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->GetRTTexture(backIndex)->GetResource().Get(),
 		D3D12_RESOURCE_STATE_PRESENT,
 		D3D12_RESOURCE_STATE_RENDER_TARGET);
 
 	_cmdList->SetGraphicsRootSignature(ROOT_SIGNATURE.Get());
 
-	ID3D12DescriptorHeap* descHeap = gEngine->GetTableDescHeap()->GetDescriptorHeap().Get();
+	ID3D12DescriptorHeap* descHeap = gEngine->GetTableDescHeap()->GetSRV().Get();
 	_cmdList->SetDescriptorHeaps(1, &descHeap);
 
 	auto passCB = CURR_FRAMERESOURCE->PassCB->Resource();
@@ -64,30 +66,25 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	auto matData = MATERIAL_CB->Resource();
 	_cmdList->SetGraphicsRootShaderResourceView(2, matData->GetGPUVirtualAddress());
 
-	CD3DX12_GPU_DESCRIPTOR_HANDLE skyTexDescriptor(DESCHEAP->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
+	CD3DX12_GPU_DESCRIPTOR_HANDLE skyTexDescriptor(DESCHEAP->GetSRV()->GetGPUDescriptorHandleForHeapStart());
 	skyTexDescriptor.Offset(DESCHEAP->GetSkyTexHeapIndex(), DESCHEAP->GetCbvSrvDescriptorSize());
 	_cmdList->SetGraphicsRootDescriptorTable(3, skyTexDescriptor);
 
-	_cmdList->SetGraphicsRootDescriptorTable(4, DESCHEAP->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
+	_cmdList->SetGraphicsRootDescriptorTable(4, DESCHEAP->GetSRV()->GetGPUDescriptorHandleForHeapStart());
 
 	_cmdList->ResourceBarrier(1, &barrier);
 
 	_cmdList->RSSetViewports(1, vp);
 	_cmdList->RSSetScissorRects(1, rect);
-
-	D3D12_CPU_DESCRIPTOR_HANDLE backBufferView = _swapChain->GetBackRTV();
-	_cmdList->ClearRenderTargetView(backBufferView, Colors::Black, 0, nullptr);
-
-	D3D12_CPU_DESCRIPTOR_HANDLE depthStencilView = gEngine->GetDepthStencilBuffer()->GetDSVCpuHandle();
-	_cmdList->OMSetRenderTargets(1, &backBufferView, FALSE, &depthStencilView);
-
-	_cmdList->ClearDepthStencilView(depthStencilView, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
 
 void CommandQueue::RenderEnd()
 {
+	int8 backIndex = _swapChain->GetBackBufferIndex();
+
+
 	D3D12_RESOURCE_BARRIER barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-		_swapChain->GetBackRTVBuffer().Get(),
+		gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->GetRTTexture(backIndex)->GetResource().Get(),
 		D3D12_RESOURCE_STATE_RENDER_TARGET, 
 		D3D12_RESOURCE_STATE_PRESENT);
 

@@ -81,9 +81,6 @@
     <ClCompile Include="DDSTextureLoader.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="DepthStencilBuffer.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Material.cpp">
       <Filter>Object\Resource</Filter>
     </ClCompile>
@@ -150,6 +147,12 @@
     <ClCompile Include="Collider.cpp">
       <Filter>Object\Component</Filter>
     </ClCompile>
+    <ClCompile Include="MultipleRenderTarget.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="TestScript.cpp">
+      <Filter>Object\Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -202,9 +205,6 @@
     </ClInclude>
     <ClInclude Include="DDSTextureLoader.h">
       <Filter>Utils</Filter>
-    </ClInclude>
-    <ClInclude Include="DepthStencilBuffer.h">
-      <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Material.h">
       <Filter>Object\Resource</Filter>
@@ -272,6 +272,12 @@
     <ClInclude Include="Collider.h">
       <Filter>Object\Component</Filter>
     </ClInclude>
+    <ClInclude Include="MultipleRenderTarget.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="TestScript.h">
+      <Filter>Object\Test</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">
@@ -295,6 +301,12 @@
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="..\Resources\Shader\Sky_ps.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Deferred_vs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Deferred_ps.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
   </ItemGroup>

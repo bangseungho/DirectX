@@ -37,6 +37,7 @@ void Transform::PushData()
 {
 	ObjectConstants objectConstants = {};
 	objectConstants.matWorld = _matWorld;
+	objectConstants.texTransform = _texTransform;
 	objectConstants.isUI = GetGameObject()->GetLayerIndex();
 	objectConstants.materialIndex = GetGameObject()->GetMatIndex();
 	objectConstants.matViewProj = Camera::MatView * Camera::MatProjection;

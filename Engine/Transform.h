@@ -22,6 +22,9 @@ public:
 	const Matrix& GetLocalToWorldMatrix() { return _matWorld; }
 	Vec3 GetWorldPosition() { return _matWorld.Translation(); }
 
+	void SetTexTransform(Matrix transform) { _texTransform = transform; }
+	Matrix& GetTexTransform() { return _texTransform; }
+
 	Vec3 GetRight() { return _matWorld.Right(); }
 	Vec3 GetUp() { return _matWorld.Up(); }
 	Vec3 GetLook() { return _matWorld.Backward(); }
@@ -47,6 +50,7 @@ private:
 
 	Matrix _matLocal = {};
 	Matrix _matWorld = {};
+	Matrix _texTransform = {};
 
 	weak_ptr<Transform> _parent;
 };

@@ -12,6 +12,8 @@ Shader::~Shader()
 
 void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info)
 {
+	_info = info;
+
 	ComPtr<ID3DBlob> _vsBlob = CreateVertexShader(vsPath, "vs", "vs_5_1");
 	ComPtr<ID3DBlob> _psBlob = CreatePixelShader(psPath, "ps", "ps_5_1");
 
@@ -39,13 +41,30 @@ void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info
 	_pipelineDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	_pipelineDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	_pipelineDesc.SampleMask = UINT_MAX;
-	_pipelineDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	_pipelineDesc.PrimitiveTopologyType = info.topologyType;
 	_pipelineDesc.NumRenderTargets = 1;
 	_pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-	_pipelineDesc.DSVFormat = gEngine->GetDepthStencilBuffer()->GetDSVFormat();
 	_pipelineDesc.SampleDesc.Count = 1;
+	_pipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 
-	_pipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	switch (info.shaderType)
+	{
+	case SHADER_TYPE::FORWARD:
+		_pipelineDesc.NumRenderTargets = 1;
+		_pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		break;
+	case SHADER_TYPE::DEFERRED:
+		_pipelineDesc.NumRenderTargets = RENDER_TARGET_G_BUFFER_GROUP_COUNT;
+		_pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		//_pipelineDesc.RTVFormats[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		//_pipelineDesc.RTVFormats[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		//_pipelineDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		//_pipelineDesc.RTVFormats[4] = DXGI_FORMAT_R32_FLOAT;
+		break;
+	default:
+		break;
+	}
+
 
 	switch (info.rasterizerType)
 	{

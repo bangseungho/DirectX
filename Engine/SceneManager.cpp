@@ -17,6 +17,7 @@
 #include "TestAutoMoveScript.h"
 #include "TestLightMoveToCamera.h"
 #include "TestBillBoard.h"
+#include "TestScript.h"
 
 #include "Resources.h"
 
@@ -90,6 +91,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 //============================================================================== Scene
 	shared_ptr<Scene> scene = make_shared<Scene>();
+	scene->LoadTestTexturesFromResource();
 	scene->LoadTestTextures();
 	scene->BuildMaterials();
 	auto& textureMap = scene->GetTextures();
@@ -158,7 +160,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		gameObject->SetTag(L"NewjeansCube");
 
 		shared_ptr<Transform> transform = gameObject->GetTransform();
-		transform->SetLocalPosition(Vec3(-150.f, 50.f, 200.f));
+		transform->SetLocalPosition(Vec3(-150.f, 0.f, 200.f));
 		transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
 
 		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
@@ -183,7 +185,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	gameObject->SetTag(L"WallCube");
 
 	shared_ptr<Transform> transform = gameObject->GetTransform();
-	transform->SetLocalPosition(Vec3(150.f, 100.f, -220.f));
+	transform->SetLocalPosition(Vec3(150.f, 0.f, -220.f));
 	transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
 
 	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
@@ -206,7 +208,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	gameObject->SetTag(L"Sphere");
 
 	shared_ptr<Transform> transform = gameObject->GetTransform();
-	transform->SetLocalPosition(Vec3(0.f, 100.f, 200.f));
+	transform->SetLocalPosition(Vec3(0.f, 0.f, 200.f));
 	transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
 
 	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
@@ -230,7 +232,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	gameObject->SetTag(L"LeatherCube");
 
 	shared_ptr<Transform> transform = gameObject->GetTransform();
-	transform->SetLocalPosition(Vec3(150.f, 100.f, 0.f));
+	transform->SetLocalPosition(Vec3(150.f, 0.f, 0.f));
 	transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
 
 	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
@@ -248,65 +250,67 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 //============================================================================== UI
 #pragma region UITest
-	{
-		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+	for (int32 i = 0; i < 1; ++i) {
+		sptr<GameObject> gameObject = make_shared<GameObject>();
 		gameObject->Init();
 		gameObject->SetCheckFrustum(false);
 		gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
-		gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f, 250.f, 100.f));
 		gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f + (i * 160), 250.f, 500.f));
+		sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 		{
-			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 			meshRenderer->SetMesh(mesh);
-			meshRenderer->SetMaterial(materialMap["newjeans2"]);
+			meshRenderer->SetMaterial(materialMap["pos"]);
+			auto material = meshRenderer->GetMaterial();
 		}
+		//gameObject->AddComponent(make_shared<TestScript>());
 		gameObject->AddComponent(meshRenderer);
 		scene->AddGameObject(gameObject);
 	}
 #pragma endregion
 //============================================================================== Light
-#pragma region Directional Light
-	{
-		shared_ptr<GameObject> light = make_shared<GameObject>();
-		light->AddComponent(make_shared<Transform>());
-		light->AddComponent(make_shared<Light>());
-		light->GetLight()->SetLightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
-		light->GetLight()->SetLightDirection(Vec3(1.f, -1.f, 1.f));
-		light->GetLight()->SetLightStrenth(Vec3(0.5f, 0.5f, 0.5f));
-		scene->AddGameObject(light);
-	}
-#pragma endregion
-#pragma region PointLight
-	{
-		shared_ptr<GameObject> light = make_shared<GameObject>();
-		light->AddComponent(make_shared<Transform>());
-		light->AddComponent(make_shared<Light>());
-		light->GetLight()->SetLightType(LIGHT_TYPE::POINT_LIGHT);
-		light->GetLight()->SetLightStrenth(Vec3(0.9f, 0.9f, 0.9f));
-		light->GetTransform()->SetLocalPosition(Vec3(-200.f, 100.f, 100.f));
-		light->GetLight()->SetFallOff(1.f, 1000.f);
-
-		sptr<TestLightMoveToCamera> moveTo = make_shared<TestLightMoveToCamera>();
-		moveTo->SetGameObject(mainCamera);
-		light->AddComponent(moveTo);
-
-		scene->AddGameObject(light);
-	}
-#pragma endregion
-#pragma region SpotLight
-	{
-		shared_ptr<GameObject> light = make_shared<GameObject>();
-		light->AddComponent(make_shared<Transform>());
-		light->AddComponent(make_shared<Light>());
-		light->GetTransform()->SetLocalPosition(Vec3(-50.f, 200.f, 200.f));
-		light->GetLight()->SetLightType(LIGHT_TYPE::SPOT_LIGHT);
-		light->GetLight()->SetLightDirection(Vec3(0.f, -1.f, 0.f));
-		light->GetLight()->SetLightStrenth(Vec3(1.0f, 0.0f, 1.0f));
-		light->GetLight()->SetFallOff(1.f, 500.f);
-		scene->AddGameObject(light);
-	}
-#pragma endregion
+//#pragma region Directional Light
+//	{
+//		shared_ptr<GameObject> light = make_shared<GameObject>();
+//		light->AddComponent(make_shared<Transform>());
+//		light->AddComponent(make_shared<Light>());
+//		light->GetLight()->SetLightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
+//		light->GetLight()->SetLightDirection(Vec3(1.f, -1.f, 1.f));
+//		light->GetLight()->SetLightStrenth(Vec3(0.5f, 0.5f, 0.5f));
+//		scene->AddGameObject(light);
+//	}
+//#pragma endregion
+//#pragma region PointLight
+//	{
+//		shared_ptr<GameObject> light = make_shared<GameObject>();
+//		light->AddComponent(make_shared<Transform>());
+//		light->AddComponent(make_shared<Light>());
+//		light->GetLight()->SetLightType(LIGHT_TYPE::POINT_LIGHT);
+//		light->GetLight()->SetLightStrenth(Vec3(0.9f, 0.9f, 0.9f));
+//		light->GetTransform()->SetLocalPosition(Vec3(-200.f, 100.f, 100.f));
+//		light->GetLight()->SetFallOff(1.f, 1000.f);
+//
+//		sptr<TestLightMoveToCamera> moveTo = make_shared<TestLightMoveToCamera>();
+//		moveTo->SetGameObject(mainCamera);
+//		light->AddComponent(moveTo);
+//
+//		scene->AddGameObject(light);
+//	}
+//#pragma endregion
+//#pragma region SpotLight
+//	{
+//		shared_ptr<GameObject> light = make_shared<GameObject>();
+//		light->AddComponent(make_shared<Transform>());
+//		light->AddComponent(make_shared<Light>());
+//		light->GetTransform()->SetLocalPosition(Vec3(-50.f, 200.f, 200.f));
+//		light->GetLight()->SetLightType(LIGHT_TYPE::SPOT_LIGHT);
+//		light->GetLight()->SetLightDirection(Vec3(0.f, -1.f, 0.f));
+//		light->GetLight()->SetLightStrenth(Vec3(1.0f, 0.0f, 1.0f));
+//		light->GetLight()->SetFallOff(1.f, 500.f);
+//		scene->AddGameObject(light);
+//	}
+//#pragma endregion
 
 
 	return scene;

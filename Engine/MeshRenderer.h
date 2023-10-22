@@ -12,6 +12,7 @@ public:
 
 	void SetMesh(sptr<Mesh> mesh) { _mesh = mesh; }
 	void SetMaterial(sptr<Material> material); /* { _material = material; }*/
+	sptr<Material> GetMaterial() { return _material; }
 	BoundingOrientedBox& GetBoundingBox();
 
 	void Render();

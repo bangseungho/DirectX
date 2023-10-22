@@ -63,9 +63,20 @@ enum
 	FRAME_RESOURCE_COUNT = 3
 };
 
+enum class GBUFFER_TEXTURE_INDEX : uint8
+{
+	G_POSITION,
+	//G_NORMAL,
+	//G_DIFFUSEALBEDO,
+	//G_FRESNELR0,
+	//G_SHININESS,
+
+	END,
+};
+
 enum class TEXTURE2D_INDEX : uint8
 {
-	B_NEWJEANS,
+	B_NEWJEANS = static_cast<uint8>(GBUFFER_TEXTURE_INDEX::END),
 	B_NEWJEANS2,
 	B_NEWJEANS3,
 
@@ -79,6 +90,7 @@ enum class TEXTURE2D_INDEX : uint8
 
 	END,
 };
+
 
 enum class TEXTURECUBE_INDEX : uint8
 {
@@ -165,6 +177,7 @@ struct ObjectConstants
 {
 	Matrix	matWorld = Matrix::Identity;
 	Matrix  matViewProj = Matrix::Identity;
+	Matrix  texTransform = Matrix::Identity;
 	uint32	materialIndex = 0;
 	uint32  isUI = 0;
 	Vec2	padding;

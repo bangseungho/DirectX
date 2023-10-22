@@ -21,8 +21,18 @@ struct VS_OUT
     float2 uv : TEXCOORD;
 };
 
-float4 PS_Main(VS_OUT pin) : SV_Target
+struct PS_OUT
 {
+    float4  position : SV_Target0;
+    //float4 normal : SV_Target1;
+    //float4 diffuseAlbedo : SV_Target2;
+    //float4 fresnelR0 : SV_Target3;
+    //float shininess : SV_Target4;
+};
+
+PS_OUT PS_Main(VS_OUT pin)
+{
+    // 재질 정보 색인화
     MaterialData matData = gMaterialData[gObjConstants.materialIndex];
     float4 diffuseAlbedo = matData.diffuseAlbedo;
     float3 fresnelR0 = matData.fresnelR0;
@@ -37,22 +47,12 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     // 베이스 컬러
     diffuseAlbedo = gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.uv) * diffuseAlbedo;
     
-    // UI일 경우 조명 계산을 하지 않는다.
-    if (gObjConstants.isUI)
-        return diffuseAlbedo;
-    
     // 노멀 맵
     float4 normalMap = gTextureMaps[normalMapIndex].Sample(gsamAnisotropicWrap, pin.uv);
     float3 bumpedNormalW = NormalToWorldSpace(normalMap.rgb, pin.normalW, pin.tangentW);
     
     // 거칠기 
     roughness *= gTextureMaps[roughnessMapIndex].Sample(gsamAnisotropicWrap, pin.uv).x;
-    
-    // 조명되는 점에서 눈으로의 벡터
-    float3 toEyeW = normalize(gPassConstants.eyePosW.xyz - pin.posW);
-    
-    // 주변광
-    float4 ambient = gPassConstants.ambientLight * diffuseAlbedo;
     
     // 광택 : 거칠수록 광택이 떨어짐
     float shininess = 1.f - roughness;
@@ -62,20 +62,15 @@ float4 PS_Main(VS_OUT pin) : SV_Target
         bumpedNormalW = pin.normalW;
     else
         shininess *= normalMap.a;
+
+    PS_OUT pout = (PS_OUT)0;
+    pout.position = float4(pin.posW, 0.f);
+    //pout.normal = float4(bumpedNormalW, 0.f);
+    //pout.diffuseAlbedo = diffuseAlbedo;
+    //pout.shininess = shininess;
+    //pout.fresnelR0 = float4(fresnelR0, 0.f);
     
-    // 조명을 입힐 최종 머티리얼
-    float3 shadowFactor = 1.0f;
-    Material mat = { diffuseAlbedo, fresnelR0, shininess };
-    
-    // 조명 계산
-    float4 directLight = ComputeLighting(mat, pin.posW, bumpedNormalW, toEyeW, shadowFactor);
-    
-    float4 resColor = ambient + directLight;
-    
-    // 분산 재질에서 알파를 가져온다.
-    resColor.a = diffuseAlbedo.a;
-    
-    return resColor;
+    return pout;
 }
 
 #endif

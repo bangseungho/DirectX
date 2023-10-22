@@ -327,7 +327,7 @@ sptr<Mesh> Resources::LoadRectangleMesh()
 	float w2 = 0.5f;
 	float h2 = 0.5f;
 
-	vector<Vertex> vec(24);
+	vector<Vertex> vec(4);
 
 	// ¾Õ¸é
 	vec[0] = Vertex(Vec3(-w2, -h2, 0), Vec2(0.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
@@ -349,11 +349,30 @@ sptr<Mesh> Resources::LoadRectangleMesh()
 	return mesh;
 }
 
+sptr<Texture> Resources::CreateTexture(const string& name, DXGI_FORMAT format, uint32 width, uint32 height, const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType, D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor)
+{
+	sptr<Texture> texture = make_shared<Texture>();
+	texture->Create(format, width, height, heapProperty, heapFlags, groupType, resFlags, clearColor);
+	Add<Texture>(name, texture);
+
+	return texture;
+}
+
+sptr<Texture> Resources::CreateTextureFromResource(const string& name, ComPtr<ID3D12Resource> tex2D, RENDER_GROUP_TYPE groupType)
+{
+	shared_ptr<Texture> texture = make_shared<Texture>();
+	texture->CreateFromResource(tex2D, groupType);
+	Add<Texture>(name, texture);
+
+	return texture;
+}
+
 void Resources::CreateDefaultShader()
 {
 	// SkyBox
 	{
 		ShaderInfo info = {
+			SHADER_TYPE::FORWARD,
 			RASTERIGER_TYPE::CULL_NONE,
 			DEPTH_STENCIL_TYPE::LESS_EQUAL
 		};
@@ -366,10 +385,22 @@ void Resources::CreateDefaultShader()
 	// Forward
 	{
 		ShaderInfo info = {
+			SHADER_TYPE::FORWARD,
 		};
 
 		sptr<Shader> shader = make_shared<Shader>();
 		shader->Init(L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso", info);
 		Add<Shader>("Forward", shader);
+	}
+
+	// Deferred
+	{
+		ShaderInfo info = {
+			SHADER_TYPE::DEFERRED,
+		};
+
+		sptr<Shader> shader = make_shared<Shader>();
+		shader->Init(L"..\\Output\\cso\\Deferred_vs.cso", L"..\\Output\\cso\\Deferred_ps.cso", info);
+		Add<Shader>("Deferred", shader);
 	}
 }

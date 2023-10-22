@@ -44,6 +44,7 @@ public:
 	unordered_map<string, sptr<Material>>& GetMaterials() { return _materials; }
 
 	void LoadTestTextures();
+	void LoadTestTexturesFromResource();
 	void BuildMaterials();
 
 private:

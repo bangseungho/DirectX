@@ -9,9 +9,9 @@
 #include "TableDescriptorHeap.h"
 #include "FrameResource.h"
 #include "Texture.h"
-#include "DepthStencilBuffer.h"
 #include "InputManager.h"
 #include "Timer.h"
+#include "MultipleRenderTarget.h"
 
 class Engine
 {
@@ -30,15 +30,18 @@ public:
 	sptr<SwapChain> GetSwapChain() { return _swapChain; }
 	sptr<RootSignature> GetRootSignature() { return _rootSignature; }
 	sptr<TableDescriptorHeap> GetTableDescHeap() { return _tableDescHeap; }
-	sptr<DepthStencilBuffer> GetDepthStencilBuffer() { return _depthStencilBuffer; }
+	sptr<MultipleRenderTarget> GetMRT(RENDER_TARGET_GROUP_TYPE type) { return _mrt[static_cast<uint8>(type)]; }
+
 	FrameResource* GetCurrFrameResource() { return	mCurrFrameResource; }
 	WindowInfo GetWindow() const { return _window; }
 
 public:
 	void RenderBegin();
 	void RenderEnd();
-
 	void ResizeWindow(int32 width, int32 height);
+
+private:
+	void CreateMultipleRenderTarget();
 
 private:
 	// window size
@@ -51,7 +54,7 @@ private:
 	sptr<SwapChain> _swapChain;
 	sptr<RootSignature> _rootSignature;
 	sptr<TableDescriptorHeap> _tableDescHeap;
-	sptr<DepthStencilBuffer> _depthStencilBuffer;
+	array<sptr<MultipleRenderTarget>, RENDER_TARGET_GROUP_COUNT> _mrt;
 
 	std::array<uptr<FrameResource>, FRAME_RESOURCE_COUNT> mFrameResources;
 	FrameResource* mCurrFrameResource = nullptr;

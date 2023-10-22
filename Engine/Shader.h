@@ -1,7 +1,13 @@
 #pragma once
 #include "Object.h"
 
-enum class RASTERIGER_TYPE
+enum class SHADER_TYPE : uint8
+{
+	FORWARD,
+	DEFERRED,
+};
+
+enum class RASTERIGER_TYPE : uint8
 {
 	CULL_NONE,
 	CULL_FRONT,
@@ -9,7 +15,7 @@ enum class RASTERIGER_TYPE
 	WIREFRAME,
 };
 
-enum class DEPTH_STENCIL_TYPE
+enum class DEPTH_STENCIL_TYPE : uint8
 {
 	LESS,
 	LESS_EQUAL,
@@ -19,8 +25,10 @@ enum class DEPTH_STENCIL_TYPE
 
 struct ShaderInfo
 {
+	SHADER_TYPE shaderType = SHADER_TYPE::FORWARD;
 	RASTERIGER_TYPE rasterizerType = RASTERIGER_TYPE::CULL_BACK;
 	DEPTH_STENCIL_TYPE dpethStencilType = DEPTH_STENCIL_TYPE::LESS;
+	D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 };
 
 class Shader : public Object
@@ -33,12 +41,16 @@ public:
 	void Init(const wstring& vsPath, const wstring& psPath, ShaderInfo info = ShaderInfo());
 	void Update();
 
+	SHADER_TYPE GetShaderType() { return _info.shaderType; }
+
 private:
 	ComPtr<ID3DBlob> CreateShader(const wstring& path, const string& name, const string& version, D3D12_SHADER_BYTECODE& shaderByteCode);
 	ComPtr<ID3DBlob> CreateVertexShader(const wstring& path, const string& name, const string& version);
 	ComPtr<ID3DBlob> CreatePixelShader(const wstring& path, const string& name, const string& version);
 
 private:
+	ShaderInfo							_info;
+
 	ComPtr<ID3DBlob>					_vsBlob;
 	ComPtr<ID3DBlob>					_psBlob;
 	ComPtr<ID3DBlob>					_gsBlob;

@@ -23,6 +23,10 @@ public:
 	void SetProjectionType(PROJECTION_TYPE type) { _type = type; }
 	PROJECTION_TYPE GetProjectionType() const { return _type; }
 
+	void SortGameObject();
+	void Render_Deferred();
+	void Render_Forward();
+
 	void SetCullingMaskLayerOnOff(uint8 layer, bool on)
 	{
 		if (on)
@@ -41,9 +45,9 @@ private:
 	PROJECTION_TYPE _type = PROJECTION_TYPE::PERSPECTIVE;
 
 	float _near = 1.f;
-	float _far = 10000.f;
+	float _far = 2000.f;
 	float _fov = XM_PI / 4.f;
-	float _scale = 1.f;
+	float _scale = 1.0f;
 
 	Matrix _matView = {};
 	Matrix _matProjection = {};
@@ -51,6 +55,10 @@ private:
 	BoundingFrustum _frustum;
 	
 	uint32 _cullingMask = 0;
+
+private:
+	vector<shared_ptr<GameObject>>	_vecDeferred;
+	vector<shared_ptr<GameObject>>	_vecForward;
 
 public:
 	static Matrix MatView;

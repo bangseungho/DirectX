@@ -35,15 +35,47 @@ void Camera::FinalUpdate()
 	_frustum.Transform(_frustum, _matView.Invert());
 }
 
-void Camera::Render()
+//void Camera::Render()
+//{
+//	MatView = _matView;
+//	MatProjection = _matProjection;
+//
+//	shared_ptr<Scene> scene = GET_SINGLE(SceneManager)->GetActiveScene();
+//
+//	// TODO : Layer 구분
+//	const vector<shared_ptr<GameObject>>& gameObjects = scene->GetGameObjects();
+//
+//	for (auto& gameObject : gameObjects)
+//	{
+//		if (gameObject->GetMeshRenderer() == nullptr)
+//			continue;
+//
+//		if (IsCulled(gameObject->GetLayerIndex()))
+//			continue;
+//		
+//		if (gameObject->GetCheckFrustum()) {
+//			BoundingOrientedBox boundingBox = gameObject->GetMeshRenderer()->GetBoundingBox();
+//			boundingBox.Transform(boundingBox, gameObject->GetTransform()->GetLocalToWorldMatrix());
+//			if (!IsInFrustum(boundingBox))
+//				continue;
+//		}
+//
+//		gameObject->GetMeshRenderer()->Render();
+//	}
+//}
+
+bool Camera::IsInFrustum(BoundingOrientedBox& boundsOOBB)
 {
-	MatView = _matView;
-	MatProjection = _matProjection;
+	return _frustum.Intersects(boundsOOBB);
+}
 
+void Camera::SortGameObject()
+{
 	shared_ptr<Scene> scene = GET_SINGLE(SceneManager)->GetActiveScene();
-
-	// TODO : Layer 구분
 	const vector<shared_ptr<GameObject>>& gameObjects = scene->GetGameObjects();
+
+	_vecForward.clear();
+	_vecDeferred.clear();
 
 	for (auto& gameObject : gameObjects)
 	{
@@ -52,7 +84,7 @@ void Camera::Render()
 
 		if (IsCulled(gameObject->GetLayerIndex()))
 			continue;
-		
+
 		if (gameObject->GetCheckFrustum()) {
 			BoundingOrientedBox boundingBox = gameObject->GetMeshRenderer()->GetBoundingBox();
 			boundingBox.Transform(boundingBox, gameObject->GetTransform()->GetLocalToWorldMatrix());
@@ -60,11 +92,37 @@ void Camera::Render()
 				continue;
 		}
 
+		SHADER_TYPE shaderType = gameObject->GetMeshRenderer()->GetMaterial()->GetShader()->GetShaderType();
+		switch (shaderType)
+		{
+		case SHADER_TYPE::DEFERRED:
+			_vecDeferred.push_back(gameObject);
+			break;
+		case SHADER_TYPE::FORWARD:
+			_vecForward.push_back(gameObject);
+			break;
+		}
+	}
+}
+
+void Camera::Render_Deferred()
+{
+	MatView = _matView;
+	MatProjection = _matProjection;
+
+	for (auto& gameObject : _vecDeferred)
+	{
 		gameObject->GetMeshRenderer()->Render();
 	}
 }
 
-bool Camera::IsInFrustum(BoundingOrientedBox& boundsOOBB)
+void Camera::Render_Forward()
 {
-	return _frustum.Intersects(boundsOOBB);
+	MatView = _matView;
+	MatProjection = _matProjection;
+
+	for (auto& gameObject : _vecForward)
+	{
+		gameObject->GetMeshRenderer()->Render();
+	}
 }

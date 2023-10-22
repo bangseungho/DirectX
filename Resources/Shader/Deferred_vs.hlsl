@@ -28,19 +28,18 @@ VS_OUT VS_Main(VS_IN vin)
     
     // 세계 공간으로 변환
     float4 posW = mul(float4(vin.posL, 1.0f), gObjConstants.world);
-    
     vout.posW = posW.xyz;
     
     // 비균등 비례가 없을 경우 법선 변환 있다면 역전치 행렬을 사용
-    vout.normalW = mul(vin.normalL,  (float3x3)gObjConstants.world);
+    vout.normalW = mul(vin.normalL, (float3x3)gObjConstants.world);
     
     vout.tangentW = mul(vin.tangentU, (float3x3)gObjConstants.world);
 
     // 동차 절단 공간으로 변환
     vout.posH = mul(posW, gObjConstants.viewProj);
 
-    float4 uv = mul(float4(vin.uv, 0.f, 1.f), gObjConstants.texTransform);
-    vout.uv = mul(uv, matData.matTransform).xy;
+    float4 uv = mul(float4(vin.uv, 0.f, 1.f), matData.matTransform);
+    vout.uv = uv.xy;
  
     return vout;
 }

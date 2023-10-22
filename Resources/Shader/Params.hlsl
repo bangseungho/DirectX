@@ -1,7 +1,7 @@
 #ifndef _PARAMS_HLSL_
 #define _PARAMS_HLSL_
 #define MAX_LIGHTS 200
-#define TEXTURE2D_COUNT 8
+#define TEXTURE2D_COUNT 10
 
 struct LightInfo
 {
@@ -42,6 +42,7 @@ struct ObjectConstants
 {
     row_major matrix    world;
     row_major matrix    viewProj;
+    row_major matrix    texTransform;
     uint                materialIndex;
     uint                isUI;
     float2              padding;
