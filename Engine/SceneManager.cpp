@@ -253,8 +253,8 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		gameObject->Init();
 		gameObject->SetCheckFrustum(false);
 		gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
-		gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 500.f));
-		gameObject->GetTransform()->SetLocalScale(Vec3(200.f, 200.f, 200.f));
+		gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f, 250.f, 100.f));
+		gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
 		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 		{
 			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();

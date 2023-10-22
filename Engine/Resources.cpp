@@ -369,7 +369,7 @@ void Resources::CreateDefaultShader()
 		};
 
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Default_vs.cso", L"..\\Output\\cso\\Default_ps.cso", info);
+		shader->Init(L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso", info);
 		Add<Shader>("Forward", shader);
 	}
 }

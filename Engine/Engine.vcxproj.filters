@@ -285,10 +285,10 @@
     <FxCompile Include="..\Resources\Shader\Params.hlsl">
       <Filter>Shader\Utils</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shader\Default_vs.hlsl">
+    <FxCompile Include="..\Resources\Shader\Forward_vs.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shader\Default_ps.hlsl">
+    <FxCompile Include="..\Resources\Shader\Forward_ps.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="..\Resources\Shader\Sky_vs.hlsl">

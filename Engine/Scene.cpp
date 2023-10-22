@@ -199,8 +199,20 @@ void Scene::BuildMaterials()
 	}
 
 	{
+		auto newjeans2 = make_shared<Material>();
+		newjeans2->SetMatCBIndex(1);
+		newjeans2->SetDiffuseSrvHeapIndex(TEXTURE2D_INDEX::B_NEWJEANS2);
+		newjeans2->SetFresnel(Vec3(0.1f, 0.1f, 0.1f));
+		newjeans2->SetRoughness(0.125f);
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
+		newjeans2->SetShader(shader);
+
+		_materials["newjeans2"] = move(newjeans2);
+	}
+
+	{
 		auto newjeans3 = make_shared<Material>();
-		newjeans3->SetMatCBIndex(1);
+		newjeans3->SetMatCBIndex(2);
 		newjeans3->SetDiffuseSrvHeapIndex(TEXTURE2D_INDEX::B_NEWJEANS3);
 		newjeans3->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
 		newjeans3->SetRoughness(0.125f);
@@ -212,7 +224,7 @@ void Scene::BuildMaterials()
 
 	{
 		auto leather = make_shared<Material>();
-		leather->SetMatCBIndex(2);
+		leather->SetMatCBIndex(3);
 		leather->SetDiffuseSrvHeapIndex(TEXTURE2D_INDEX::B_LEATHER);
 		leather->SetNormalSrvHeapIndex(TEXTURE2D_INDEX::N_LEATHER);
 		leather->SetRoughnessSrvHeapIndex(TEXTURE2D_INDEX::R_LEATHER);
@@ -226,7 +238,7 @@ void Scene::BuildMaterials()
 
 	{
 		auto wall = make_shared<Material>();
-		wall->SetMatCBIndex(3);
+		wall->SetMatCBIndex(4);
 		wall->SetDiffuseSrvHeapIndex(TEXTURE2D_INDEX::B_WALL);
 		wall->SetNormalSrvHeapIndex(TEXTURE2D_INDEX::N_WALL);
 		wall->SetRoughnessSrvHeapIndex(TEXTURE2D_INDEX::R_WALL);
@@ -240,23 +252,11 @@ void Scene::BuildMaterials()
 
 	{
 		auto skybox = make_shared<Material>();
-		skybox->SetMatCBIndex(4);
+		skybox->SetMatCBIndex(5);
 		skybox->SetDiffuseSrvHeapIndex(TEXTURECUBE_INDEX::SKYBOX);
 		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("SkyBox");
 		skybox->SetShader(shader);
 
 		_materials["skybox"] = move(skybox);
-	}
-
-	{
-		auto newjeans2 = make_shared<Material>();
-		newjeans2->SetMatCBIndex(5);
-		newjeans2->SetDiffuseSrvHeapIndex(TEXTURE2D_INDEX::B_NEWJEANS2);
-		newjeans2->SetFresnel(Vec3(0.1f, 0.1f, 0.1f));
-		newjeans2->SetRoughness(0.125f);
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
-		newjeans2->SetShader(shader);
-
-		_materials["newjeans2"] = move(newjeans2);
 	}
 }
