@@ -210,6 +210,9 @@ void Scene::LoadTestTextures()
 
 		_textures[texNames[i]] = texMap->GetTexHeapIndex();
 	}
+
+	// Get BackBuffer Texture
+	_textures["BackBufferTarget"] = Texture::TexHeapIndex;
 }
 
 void Scene::BuildMaterials()
@@ -333,44 +336,12 @@ void Scene::BuildMaterials()
 		_materials["skybox"] = move(skybox);
 	}
 
-
-	//{
-	//	auto normal = make_shared<Material>();
-	//	normal->SetMatCBIndex(7);
-	//	normal->SetDiffuseSrvHeapIndex(GBUFFER_TEXTURE_INDEX::G_NORMAL);
-	//	shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
-	//	normal->SetShader(shader);
-
-	//	_materials["normal"] = move(normal);
-	//}
-
-	//{
-	//	auto diffuseAlbedo = make_shared<Material>();
-	//	diffuseAlbedo->SetMatCBIndex(8);
-	//	diffuseAlbedo->SetDiffuseSrvHeapIndex(GBUFFER_TEXTURE_INDEX::G_DIFFUSEALBEDO);
-	//	shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
-	//	diffuseAlbedo->SetShader(shader);
-
-	//	_materials["diffuseAlbedo"] = move(diffuseAlbedo);
-	//}
-
-	//{
-	//	auto fresnelR0 = make_shared<Material>();
-	//	fresnelR0->SetMatCBIndex(9);
-	//	fresnelR0->SetDiffuseSrvHeapIndex(GBUFFER_TEXTURE_INDEX::G_FRESNELR0);
-	//	shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
-	//	fresnelR0->SetShader(shader);
-
-	//	_materials["fresnelR0"] = move(fresnelR0);
-	//}
-
-	//{
-	//	auto shininess = make_shared<Material>();
-	//	shininess->SetMatCBIndex(10);
-	//	shininess->SetDiffuseSrvHeapIndex(GBUFFER_TEXTURE_INDEX::G_SHININESS);
-	//	shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
-	//	shininess->SetShader(shader);
-
-	//	_materials["shininess"] = move(shininess);
-	//}
+	{
+		auto backBuffer = make_shared<Material>();
+		backBuffer->SetMatCBIndex(11);
+		backBuffer->SetDiffuseSrvHeapIndex(_textures["BackBufferTarget"]);
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
+		backBuffer->SetShader(shader);
+		_materials["backBuffer"] = move(backBuffer);
+	}
 }

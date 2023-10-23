@@ -32,11 +32,11 @@ public:
 	ComPtr<ID3D12DescriptorHeap> GetSRV() { return _srvHeap; }
 	ComPtr<ID3D12DescriptorHeap> GetRTV() { return _rtvHeap; }
 	ComPtr<ID3D12DescriptorHeap> GetDSV() { return _dsvHeap; }
-
+	
+	CD3DX12_CPU_DESCRIPTOR_HANDLE GetSRVHandle() const { return _srvHeapBegin; }
 	TEXTURE_TYPE GetTextureType() const { return _type; }
-
-	void SetTexHeapIndex(uint32 index) { _texHeapIndex = index; }
 	uint32 GetTexHeapIndex() const { return _texHeapIndex; }
+	void SetTexHeapIndex(uint32 index) { _texHeapIndex = index; }
 
 private:
 	ComPtr<ID3D12Resource>			_resource;

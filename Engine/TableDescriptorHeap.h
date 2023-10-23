@@ -14,6 +14,8 @@ public:
 
 	uint32 GetCbvSrvDescriptorSize() { return _cbvSrvDescriptorSize; }
 
+	void Update(uint8 currBackIndex);
+
 private:
 	ComPtr<ID3D12DescriptorHeap> _srvHeap;
 	CD3DX12_CPU_DESCRIPTOR_HANDLE _srvHeapBegin = {};
