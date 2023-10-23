@@ -34,17 +34,14 @@ public:
 	ComPtr<ID3D12DescriptorHeap> GetDSV() { return _dsvHeap; }
 
 	TEXTURE_TYPE GetTextureType() const { return _type; }
-	//RENDER_GROUP_TYPE GetGroupType() const { return _groupType; }
-	//void SetGroupType(RENDER_GROUP_TYPE type) { _groupType = type; }
 
 	void SetTexHeapIndex(uint32 index) { _texHeapIndex = index; }
-	uint32 GetTexHeapIndex(uint32 index) const { return _texHeapIndex; }
+	uint32 GetTexHeapIndex() const { return _texHeapIndex; }
 
 private:
 	ComPtr<ID3D12Resource>			_resource;
 	ComPtr<ID3D12Resource>			_uploadHeap;
 	TEXTURE_TYPE					_type;
-	//RENDER_GROUP_TYPE				_groupType = RENDER_GROUP_TYPE::SWAP_CHAIN;
 	uint32							_texHeapIndex = 0;
 
 	ComPtr<ID3D12DescriptorHeap>	_srvHeap;

@@ -26,11 +26,9 @@ public:
 	void SetMatCBIndex(uint32 index) { _matCBIndex = index; }
 	uint32 GetMatCBIndex() const { return _matCBIndex; }
 
-	void SetDiffuseSrvHeapIndex(TEXTURE2D_INDEX index) { _params.TextureMapIndex = static_cast<uint8>(index); }
-	void SetNormalSrvHeapIndex(TEXTURE2D_INDEX index) { _params.NormalMapIndex = static_cast<uint8>(index); }
-	void SetRoughnessSrvHeapIndex(TEXTURE2D_INDEX index) { _params.RoughnessMapIndex = static_cast<uint8>(index); }
-	void SetDiffuseSrvHeapIndex(TEXTURECUBE_INDEX index) { _params.TextureMapIndex = static_cast<uint8>(index); }
-	void SetDiffuseSrvHeapIndex(G_BUFFER_INDEX index) { _params.TextureMapIndex = static_cast<uint8>(index); }
+	void SetDiffuseSrvHeapIndex(uint8 index) { _params.TextureMapIndex = index; }
+	void SetNormalSrvHeapIndex(uint8 index) { _params.NormalMapIndex = static_cast<uint8>(index); }
+	void SetRoughnessSrvHeapIndex(uint8 index) { _params.RoughnessMapIndex = static_cast<uint8>(index); }
 
 	void Update();
 
