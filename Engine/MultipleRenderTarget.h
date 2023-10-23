@@ -1,19 +1,6 @@
 #pragma once
 #include "Texture.h"
 
-enum class RENDER_TARGET_GROUP_TYPE : uint8
-{
-	SWAP_CHAIN, // BACK_BUFFER, FRONT_BUFFER
-	G_BUFFER, // POSITION, NORMAL, DIFFUSEALBEDO, SHINESS, FRESNELR0
-	END,
-};
-
-enum
-{
-	RENDER_TARGET_G_BUFFER_GROUP_COUNT = 1,
-	RENDER_TARGET_GROUP_COUNT = static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::END)
-};
-
 struct RenderTarget
 {
 	sptr<Texture> target;

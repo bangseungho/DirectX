@@ -56,10 +56,10 @@ void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info
 	case SHADER_TYPE::DEFERRED:
 		_pipelineDesc.NumRenderTargets = RENDER_TARGET_G_BUFFER_GROUP_COUNT;
 		_pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		//_pipelineDesc.RTVFormats[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		//_pipelineDesc.RTVFormats[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		//_pipelineDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		//_pipelineDesc.RTVFormats[4] = DXGI_FORMAT_R32_FLOAT;
+		_pipelineDesc.RTVFormats[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		_pipelineDesc.RTVFormats[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		_pipelineDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		_pipelineDesc.RTVFormats[4] = /*DXGI_FORMAT_R32_FLOAT;*/ DXGI_FORMAT_R8_UNORM;
 		break;
 	default:
 		break;

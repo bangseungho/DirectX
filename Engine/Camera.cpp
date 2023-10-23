@@ -35,35 +35,6 @@ void Camera::FinalUpdate()
 	_frustum.Transform(_frustum, _matView.Invert());
 }
 
-//void Camera::Render()
-//{
-//	MatView = _matView;
-//	MatProjection = _matProjection;
-//
-//	shared_ptr<Scene> scene = GET_SINGLE(SceneManager)->GetActiveScene();
-//
-//	// TODO : Layer ±¸ºÐ
-//	const vector<shared_ptr<GameObject>>& gameObjects = scene->GetGameObjects();
-//
-//	for (auto& gameObject : gameObjects)
-//	{
-//		if (gameObject->GetMeshRenderer() == nullptr)
-//			continue;
-//
-//		if (IsCulled(gameObject->GetLayerIndex()))
-//			continue;
-//		
-//		if (gameObject->GetCheckFrustum()) {
-//			BoundingOrientedBox boundingBox = gameObject->GetMeshRenderer()->GetBoundingBox();
-//			boundingBox.Transform(boundingBox, gameObject->GetTransform()->GetLocalToWorldMatrix());
-//			if (!IsInFrustum(boundingBox))
-//				continue;
-//		}
-//
-//		gameObject->GetMeshRenderer()->Render();
-//	}
-//}
-
 bool Camera::IsInFrustum(BoundingOrientedBox& boundsOOBB)
 {
 	return _frustum.Intersects(boundsOOBB);

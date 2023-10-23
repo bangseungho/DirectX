@@ -249,25 +249,100 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 }
 #pragma endregion
 //============================================================================== UI
-#pragma region UITest
-	for (int32 i = 0; i < 1; ++i) {
-		sptr<GameObject> gameObject = make_shared<GameObject>();
-		gameObject->Init();
-		gameObject->SetCheckFrustum(false);
-		gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
-		gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-		gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f + (i * 160), 250.f, 500.f));
-		sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-		{
-			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
-			meshRenderer->SetMesh(mesh);
-			meshRenderer->SetMaterial(materialMap["pos"]);
-			auto material = meshRenderer->GetMaterial();
-		}
-		//gameObject->AddComponent(make_shared<TestScript>());
-		gameObject->AddComponent(meshRenderer);
-		scene->AddGameObject(gameObject);
+#pragma region UIPos
+{
+	sptr<GameObject> gameObject = make_shared<GameObject>();
+	gameObject->Init();
+	gameObject->SetCheckFrustum(false);
+	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+	gameObject->GetTransform()->SetLocalScale(Vec3(150.f, 150.f, 150.f));
+	gameObject->GetTransform()->SetLocalPosition(Vec3(-325.f + (0 * 150), 225.f, 500.f));
+	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	{
+		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+		meshRenderer->SetMaterial(materialMap["position"]);
+		auto material = meshRenderer->GetMaterial();
 	}
+	gameObject->AddComponent(meshRenderer);
+	scene->AddGameObject(gameObject);
+}
+#pragma endregion
+#pragma region UINormal
+{
+	sptr<GameObject> gameObject = make_shared<GameObject>();
+	gameObject->Init();
+	gameObject->SetCheckFrustum(false);
+	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+	gameObject->GetTransform()->SetLocalScale(Vec3(150.f, 150.f, 150.f));
+	gameObject->GetTransform()->SetLocalPosition(Vec3(-325.f + (1 * 150), 225.f, 500.f));
+	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	{
+		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+		meshRenderer->SetMaterial(materialMap["normal"]);
+		auto material = meshRenderer->GetMaterial();
+	}
+	gameObject->AddComponent(meshRenderer);
+	scene->AddGameObject(gameObject);
+}
+#pragma endregion
+#pragma region UIDiffuse
+{
+	sptr<GameObject> gameObject = make_shared<GameObject>();
+	gameObject->Init();
+	gameObject->SetCheckFrustum(false);
+	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+	gameObject->GetTransform()->SetLocalScale(Vec3(150.f, 150.f, 150.f));
+	gameObject->GetTransform()->SetLocalPosition(Vec3(-325.f + (2 * 150), 225.f, 500.f));
+	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	{
+		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+		meshRenderer->SetMaterial(materialMap["diffuse"]);
+		auto material = meshRenderer->GetMaterial();
+	}
+	gameObject->AddComponent(meshRenderer);
+	scene->AddGameObject(gameObject);
+}
+#pragma endregion
+#pragma region UIFresnel
+{
+	sptr<GameObject> gameObject = make_shared<GameObject>();
+	gameObject->Init();
+	gameObject->SetCheckFrustum(false);
+	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+	gameObject->GetTransform()->SetLocalScale(Vec3(150.f, 150.f, 150.f));
+	gameObject->GetTransform()->SetLocalPosition(Vec3(-325.f + (3 * 150), 225.f, 500.f));
+	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	{
+		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+		meshRenderer->SetMaterial(materialMap["fresnel"]);
+		auto material = meshRenderer->GetMaterial();
+	}
+	gameObject->AddComponent(meshRenderer);
+	scene->AddGameObject(gameObject);
+}
+#pragma endregion
+#pragma region UIShininess
+{
+	sptr<GameObject> gameObject = make_shared<GameObject>();
+	gameObject->Init();
+	gameObject->SetCheckFrustum(false);
+	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+	gameObject->GetTransform()->SetLocalScale(Vec3(150.f, 150.f, 150.f));
+	gameObject->GetTransform()->SetLocalPosition(Vec3(-325.f + (4 * 150), 225.f, 500.f));
+	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	{
+		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+		meshRenderer->SetMaterial(materialMap["shininess"]);
+		auto material = meshRenderer->GetMaterial();
+	}
+	gameObject->AddComponent(meshRenderer);
+	scene->AddGameObject(gameObject);
+}
 #pragma endregion
 //============================================================================== Light
 //#pragma region Directional Light

@@ -2,6 +2,8 @@
 #include "Texture.h"
 #include "Engine.h"
 
+uint32 Texture::TexHeapIndex = 0;
+
 Texture::Texture() : Object(OBJECT_TYPE::TEXTURE)
 {
 }
@@ -104,7 +106,7 @@ void Texture::CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_T
 		}
 			break;
 		case RENDER_GROUP_TYPE::G_BUFFER:
-			CreateSRV(TEXTURE_TYPE::TEXTURE2D);
+			CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURE2D);
 			break;
 		default:
 			break;
@@ -114,9 +116,10 @@ void Texture::CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_T
 	}
 }
 
-void Texture::CreateSRV(TEXTURE_TYPE type)
+void Texture::CreateSRVFromDescHeap(TEXTURE_TYPE type)
 {
 	_type = type;
+	_texHeapIndex = TexHeapIndex++;
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;

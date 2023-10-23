@@ -30,7 +30,7 @@ public:
 	void SetNormalSrvHeapIndex(TEXTURE2D_INDEX index) { _params.NormalMapIndex = static_cast<uint8>(index); }
 	void SetRoughnessSrvHeapIndex(TEXTURE2D_INDEX index) { _params.RoughnessMapIndex = static_cast<uint8>(index); }
 	void SetDiffuseSrvHeapIndex(TEXTURECUBE_INDEX index) { _params.TextureMapIndex = static_cast<uint8>(index); }
-	void SetDiffuseSrvHeapIndex(GBUFFER_TEXTURE_INDEX index) { _params.TextureMapIndex = static_cast<uint8>(index); }
+	void SetDiffuseSrvHeapIndex(G_BUFFER_INDEX index) { _params.TextureMapIndex = static_cast<uint8>(index); }
 
 	void Update();
 

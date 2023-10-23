@@ -25,7 +25,7 @@ public:
 	void Create(DXGI_FORMAT format, uint32 width, uint32 height, const D3D12_HEAP_PROPERTIES& property,
 		D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType, D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor = Vec4());
 	void CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_TYPE groupType);
-	void CreateSRV(TEXTURE_TYPE type = TEXTURE_TYPE::TEXTURE2D);
+	void CreateSRVFromDescHeap(TEXTURE_TYPE type = TEXTURE_TYPE::TEXTURE2D);
 
 public:
 	ComPtr<ID3D12Resource> GetResource() { return _resource; }
@@ -52,4 +52,6 @@ private:
 	ComPtr<ID3D12DescriptorHeap>	_dsvHeap;
 	CD3DX12_CPU_DESCRIPTOR_HANDLE	_srvHeapBegin = {};
 
+public:
+	static uint32 TexHeapIndex;
 };

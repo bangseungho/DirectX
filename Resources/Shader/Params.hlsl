@@ -1,7 +1,7 @@
 #ifndef _PARAMS_HLSL_
 #define _PARAMS_HLSL_
 #define MAX_LIGHTS 200
-#define TEXTURE2D_COUNT 10
+#define TEXTURE2D_COUNT 11
 
 struct LightInfo
 {

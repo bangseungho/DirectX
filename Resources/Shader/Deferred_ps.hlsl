@@ -24,10 +24,10 @@ struct VS_OUT
 struct PS_OUT
 {
     float4  position : SV_Target0;
-    //float4 normal : SV_Target1;
-    //float4 diffuseAlbedo : SV_Target2;
-    //float4 fresnelR0 : SV_Target3;
-    //float shininess : SV_Target4;
+    float4 normal : SV_Target1;
+    float4 diffuseAlbedo : SV_Target2;
+    float4 fresnelR0 : SV_Target3;
+    float shininess : SV_Target4;
 };
 
 PS_OUT PS_Main(VS_OUT pin)
@@ -65,10 +65,10 @@ PS_OUT PS_Main(VS_OUT pin)
 
     PS_OUT pout = (PS_OUT)0;
     pout.position = float4(pin.posW, 0.f);
-    //pout.normal = float4(bumpedNormalW, 0.f);
-    //pout.diffuseAlbedo = diffuseAlbedo;
-    //pout.shininess = shininess;
-    //pout.fresnelR0 = float4(fresnelR0, 0.f);
+    pout.normal = float4(bumpedNormalW, 0.f);
+    pout.diffuseAlbedo = diffuseAlbedo;
+    pout.fresnelR0 = float4(fresnelR0, 0.f);
+    pout.shininess = shininess;
     
     return pout;
 }
