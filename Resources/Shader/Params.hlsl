@@ -44,8 +44,7 @@ struct ObjectConstants
     row_major matrix    viewProj;
     row_major matrix    texTransform;
     uint                materialIndex;
-    uint                isUI;
-    float2              padding;
+    float3              padding;
 };
 
 struct MaterialData

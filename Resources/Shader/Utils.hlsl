@@ -30,7 +30,7 @@ float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 t
 
     specAlbedo = specAlbedo / (specAlbedo + 1.0f);
 
-    return (mat.diffuseAlbedo.rgb + specAlbedo) * lightStrength;
+    return (/*mat.diffuseAlbedo.rgb +*/ specAlbedo) * lightStrength;
 }
 
 float3 ComputeDirectionalLight(LightInfo L, Material mat, float3 normal, float3 toEye)

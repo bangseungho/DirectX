@@ -194,8 +194,7 @@ struct ObjectConstants
 	Matrix  matViewProj = Matrix::Identity;
 	Matrix  texTransform = Matrix::Identity;
 	uint32	materialIndex = 0;
-	uint32  isUI = 0;
-	Vec2	padding;
+	Vec3	padding;
 };
 
 struct MaterialConstants

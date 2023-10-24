@@ -382,6 +382,18 @@ void Resources::CreateDefaultShader()
 		Add<Shader>("SkyBox", shader);
 	}
 
+	// Tex
+	{
+		ShaderInfo info = {
+			SHADER_TYPE::FORWARD,
+			RASTERIGER_TYPE::CULL_NONE,
+		};
+
+		sptr<Shader> shader = make_shared<Shader>();
+		shader->Init(L"..\\Output\\cso\\Tex_vs.cso", L"..\\Output\\cso\\Tex_ps.cso", info);
+		Add<Shader>("Tex", shader);
+	}
+
 	// Forward
 	{
 		ShaderInfo info = {

@@ -37,10 +37,6 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     // 베이스 컬러
     diffuseAlbedo = gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.uv) * diffuseAlbedo;
     
-    // UI일 경우 조명 계산을 하지 않는다.
-    if (gObjConstants.isUI)
-        return diffuseAlbedo;
-    
     // 노멀 맵
     float4 normalMap = gTextureMaps[normalMapIndex].Sample(gsamAnisotropicWrap, pin.uv);
     float3 bumpedNormalW = NormalToWorldSpace(normalMap.rgb, pin.normalW, pin.tangentW);

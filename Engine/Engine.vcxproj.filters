@@ -309,5 +309,17 @@
     <FxCompile Include="..\Resources\Shader\Deferred_ps.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Tex_vs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Tex_ps.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Lighting_ps.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Lighting_vs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

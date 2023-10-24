@@ -31,6 +31,7 @@ void Scene::Render()
 	_mainCamera->GetCamera()->SortGameObject();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->OMSetRenderTargets();
 	_mainCamera->GetCamera()->Render_Deferred();
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->WaitTargetToResource();
 
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets(1, backIndex);
 	_mainCamera->GetCamera()->Render_Forward();
@@ -221,7 +222,7 @@ void Scene::BuildMaterials()
 		auto pos = make_shared<Material>();
 		pos->SetMatCBIndex(0);
 		pos->SetDiffuseSrvHeapIndex(_textures["PositionTarget"]);
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Tex");
 		pos->SetShader(shader);
 		_materials["position"] = move(pos);
 	}
@@ -230,7 +231,7 @@ void Scene::BuildMaterials()
 		auto norm = make_shared<Material>();
 		norm->SetMatCBIndex(1);
 		norm->SetDiffuseSrvHeapIndex(_textures["NormalTarget"]);
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Tex");
 		norm->SetShader(shader);
 		_materials["normal"] = move(norm);
 	}
@@ -239,7 +240,7 @@ void Scene::BuildMaterials()
 		auto diffuse = make_shared<Material>();
 		diffuse->SetMatCBIndex(2);
 		diffuse->SetDiffuseSrvHeapIndex(_textures["DiffuseTarget"]);
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Tex");
 		diffuse->SetShader(shader);
 		_materials["diffuse"] = move(diffuse);
 	}
@@ -248,7 +249,7 @@ void Scene::BuildMaterials()
 		auto fresnel = make_shared<Material>();
 		fresnel->SetMatCBIndex(3);
 		fresnel->SetDiffuseSrvHeapIndex(_textures["FresnelTarget"]);
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Tex");
 		fresnel->SetShader(shader);
 		_materials["fresnel"] = move(fresnel);
 	}
@@ -257,7 +258,7 @@ void Scene::BuildMaterials()
 		auto shininess = make_shared<Material>();
 		shininess->SetMatCBIndex(4);
 		shininess->SetDiffuseSrvHeapIndex(_textures["ShininessTarget"]);
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Tex");
 		shininess->SetShader(shader);
 		_materials["shininess"] = move(shininess);
 	}
