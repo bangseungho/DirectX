@@ -21,6 +21,7 @@ enum class DEPTH_STENCIL_TYPE : uint8
 	LESS_EQUAL,
 	GREATER,
 	GREATER_EQUAL,
+	NO_DEPTH_TEST_NO_WRITE, // 깊이 테스트(X) + 깊이 기록(X)
 };
 
 struct ShaderInfo

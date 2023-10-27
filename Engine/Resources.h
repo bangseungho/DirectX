@@ -39,6 +39,8 @@ public:
 
 private:
 	void CreateDefaultShader();
+	void CreateDefaultTexture();
+	void CreateDefaultMaterial();
 
 private:
 	using KeyObjMap = std::map<string, sptr<Object>>;

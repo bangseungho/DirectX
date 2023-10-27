@@ -3,11 +3,11 @@
 #include "Engine.h"
 #include "Material.h"
 #include "SceneManager.h"
+#include "Resources.h"
 
 void Game::Init(const WindowInfo& info)
 {
 	gEngine->Init(info);
-	CMD_LIST->Reset(CMD_ALLOC.Get(), nullptr);
 
 	uint32 objectCount = GET_SINGLE(SceneManager)->LoadScene(L"TestScene");
 	gEngine->BuildFrameResource(DEVICE, objectCount);

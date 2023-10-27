@@ -34,6 +34,8 @@ void CreateBoundingBox(MinMaxVert minMaxVert, sptr<Mesh> mesh)
 void Resources::Init()
 {
 	CreateDefaultShader();
+	CreateDefaultTexture();
+	CreateDefaultMaterial();
 }
 
 sptr<Mesh> Resources::LoadRectMesh()
@@ -387,6 +389,7 @@ void Resources::CreateDefaultShader()
 		ShaderInfo info = {
 			SHADER_TYPE::FORWARD,
 			RASTERIGER_TYPE::CULL_NONE,
+			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE
 		};
 
 		sptr<Shader> shader = make_shared<Shader>();
@@ -415,4 +418,190 @@ void Resources::CreateDefaultShader()
 		shader->Init(L"..\\Output\\cso\\Deferred_vs.cso", L"..\\Output\\cso\\Deferred_ps.cso", info);
 		Add<Shader>("Deferred", shader);
 	}
+}
+
+void Resources::CreateDefaultTexture()
+{
+	vector<string> texName = {
+		"PositionTarget",
+		"NormalTarget",
+		"DiffuseTarget",
+		"FresnelTarget",
+		"ShininessTarget",
+	};
+
+	for (int i = 0; i < RENDER_TARGET_G_BUFFER_GROUP_COUNT; ++i) {
+		auto texMap = GET_SINGLE(Resources)->Get<Texture>(texName[i]);
+	}
+
+	vector<string> texNames = {
+		"newjeans",
+		"newjeans2",
+		"newjeans3",
+
+		"leather",
+		"leather_normal",
+		"leather_roughness",
+
+		"wall",
+		"wall_normal",
+		"wall_roughness",
+
+		"skybox",
+	};
+
+	vector<wstring> texFileNames = {
+		L"..\\Resources\\Texture\\newjeans.dds",
+		L"..\\Resources\\Texture\\newjeans2.dds",
+		L"..\\Resources\\Texture\\newjeans3.dds",
+
+		L"..\\Resources\\Texture\\Leather.dds",
+		L"..\\Resources\\Texture\\Leather_Normal_BC7.dds",
+		L"..\\Resources\\Texture\\Leather_Weave_004_roughness.dds",
+
+		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_basecolor.dds",
+		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_normal_BC7.dds",
+		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_roughness.dds",
+
+		L"..\\Resources\\Texture\\Sky.dds",
+	};
+
+	for (int i = 0; i < TEXTUREFILE_COUNT; ++i) {
+		auto texMap = GET_SINGLE(Resources)->Load<Texture>(texNames[i], texFileNames[i]);
+
+		if (i == (TEXTUREFILE_COUNT - 1))
+			texMap->CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURECUBE);
+		else
+			texMap->CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURE2D);
+	}
+
+}
+
+void Resources::CreateDefaultMaterial()
+{
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		auto pos = make_shared<Material>();
+		pos->SetMatCBIndex(0);
+		pos->SetDiffuseSrvHeapIndex(Get<Texture>("PositionTarget")->GetTexHeapIndex());
+		pos->SetShader(shader);
+		Add<Material>("PositionTarget", move(pos));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		auto norm = make_shared<Material>();
+		norm->SetMatCBIndex(1);
+		norm->SetDiffuseSrvHeapIndex(Get<Texture>("NormalTarget")->GetTexHeapIndex());
+		norm->SetShader(shader);
+		Add<Material>("NormalTarget", move(norm));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		auto diffuse = make_shared<Material>();
+		diffuse->SetMatCBIndex(2);
+		diffuse->SetDiffuseSrvHeapIndex(Get<Texture>("DiffuseTarget")->GetTexHeapIndex());
+		diffuse->SetShader(shader);
+		Add<Material>("DiffuseTarget", move(diffuse));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		auto fresnel = make_shared<Material>();
+		fresnel->SetMatCBIndex(3);
+		fresnel->SetDiffuseSrvHeapIndex(Get<Texture>("FresnelTarget")->GetTexHeapIndex());
+		fresnel->SetShader(shader);
+		Add<Material>("FresnelTarget", move(fresnel));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		auto shininess = make_shared<Material>();
+		shininess->SetMatCBIndex(4);
+		shininess->SetDiffuseSrvHeapIndex(Get<Texture>("ShininessTarget")->GetTexHeapIndex());
+		shininess->SetShader(shader);
+		Add<Material>("ShininessTarget", move(shininess));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Deferred");
+		auto newjeans = make_shared<Material>();
+		newjeans->SetMatCBIndex(5);
+		newjeans->SetDiffuseSrvHeapIndex(Get<Texture>("newjeans")->GetTexHeapIndex());
+		newjeans->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
+		newjeans->SetRoughness(0.125f);
+		newjeans->SetShader(shader);
+		Add<Material>("newjeans", move(newjeans));
+
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Deferred");
+		auto newjeans2 = make_shared<Material>();
+		newjeans2->SetMatCBIndex(6);
+		newjeans2->SetDiffuseSrvHeapIndex(Get<Texture>("newjeans2")->GetTexHeapIndex());
+		newjeans2->SetFresnel(Vec3(0.1f, 0.1f, 0.1f));
+		newjeans2->SetRoughness(0.125f);
+		newjeans2->SetShader(shader);
+		Add<Material>("newjeans2", move(newjeans2));
+
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Deferred");
+		auto newjeans3 = make_shared<Material>();
+		newjeans3->SetMatCBIndex(7);
+		newjeans3->SetDiffuseSrvHeapIndex(Get<Texture>("newjeans3")->GetTexHeapIndex());
+		newjeans3->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
+		newjeans3->SetRoughness(0.125f);
+		newjeans3->SetShader(shader);
+		Add<Material>("newjeans3", move(newjeans3));
+
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Deferred");
+		auto leather = make_shared<Material>();
+		leather->SetMatCBIndex(8);
+		leather->SetDiffuseSrvHeapIndex(Get<Texture>("leather")->GetTexHeapIndex());
+		leather->SetNormalSrvHeapIndex(Get<Texture>("leather_normal")->GetTexHeapIndex());
+		leather->SetRoughnessSrvHeapIndex(Get<Texture>("leather_roughness")->GetTexHeapIndex());
+		leather->SetFresnel(Vec3(0.1f, 0.1f, 0.1f));
+		leather->SetRoughness(0.125f);
+		leather->SetShader(shader);
+		Add<Material>("leather", move(leather));
+
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Deferred");
+		auto wall = make_shared<Material>();
+		wall->SetMatCBIndex(9);
+		wall->SetDiffuseSrvHeapIndex(Get<Texture>("wall")->GetTexHeapIndex());
+		wall->SetNormalSrvHeapIndex(Get<Texture>("wall_normal")->GetTexHeapIndex());
+		wall->SetRoughnessSrvHeapIndex(Get<Texture>("wall_roughness")->GetTexHeapIndex());
+		wall->SetFresnel(Vec3(0.5f, 0.5f, 0.5f));
+		wall->SetRoughness(0.5f);
+		wall->SetShader(shader);
+		Add<Material>("wall", move(wall));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("SkyBox");
+		auto skybox = make_shared<Material>();
+		skybox->SetMatCBIndex(10);
+		skybox->SetDiffuseSrvHeapIndex(Get<Texture>("skybox")->GetTexHeapIndex());
+		skybox->SetShader(shader);
+		Add<Material>("skybox", move(skybox));
+
+	}
+
+	//{
+	//	shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
+	//	auto backBuffer = make_shared<Material>();
+	//	backBuffer->SetMatCBIndex(11);
+	//	backBuffer->SetDiffuseSrvHeapIndex(GET_SINGLE(Resources)->Get<Texture>("BackBufferTarget")->GetTexHeapIndex());
+	//	backBuffer->SetShader(shader);
+	//}
 }

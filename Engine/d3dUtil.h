@@ -217,18 +217,24 @@ struct MeshGeometry
 #define ReleaseCom(x) { if(x){ x->Release(); x = 0; } }
 #endif
 
-#define SINGLETON(type)							\
-private:										\
-	type() {}									\
-	~type() {}									\
-public:											\
-	static type* GetInstance()					\
-	{											\
-		if (!instance) instance = new type();	\
-		return instance;						\
-	}											\
-private:										\
-	static type* instance;						\
+#define SINGLETON(type)								\
+private:											\
+	type() {}										\
+	~type() {}										\
+public:												\
+	static type* GetInstance()						\
+	{												\
+		if (!instance) instance = new type();		\
+		return instance;							\
+	}												\
+	static void Destroy()							\
+	{												\
+		if (instance) instance = delete instance;	\
+		instance = nullptr;							\
+	}												\
+													\
+private:											\
+	static type* instance;							\
 
 #define GET_SINGLE(type)			type::GetInstance()
 #define DECLARE_SINGLE(type)		type* type::instance = nullptr;

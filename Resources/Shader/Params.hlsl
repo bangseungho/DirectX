@@ -56,7 +56,7 @@ struct MaterialData
     uint                textureMapIndex;
     uint                normalMapIndex;
     uint                roughnessMapIndex;
-    uint                padding;
+    uint                lightIndex;
 };
 
 ConstantBuffer<PassConstants> gPassConstants : register(b0);

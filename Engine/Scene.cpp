@@ -153,72 +153,72 @@ void Scene::PushPassData()
 
 void Scene::LoadTestTexturesFromResource()
 {
-	vector<string> texNames = {
-		"PositionTarget",
-		"NormalTarget",
-		"DiffuseTarget",
-		"FresnelTarget",
-		"ShininessTarget",
-	};
+	//vector<string> texNames = {
+	//	"PositionTarget",
+	//	"NormalTarget",
+	//	"DiffuseTarget",
+	//	"FresnelTarget",
+	//	"ShininessTarget",
+	//};
 
-	for (int i = 0; i < RENDER_TARGET_G_BUFFER_GROUP_COUNT; ++i) {
-		auto texMap = GET_SINGLE(Resources)->Get<Texture>(texNames[i]);
-		_textures[texNames[i]] = texMap->GetTexHeapIndex();
-	}
+	//for (int i = 0; i < RENDER_TARGET_G_BUFFER_GROUP_COUNT; ++i) {
+	//	auto texMap = GET_SINGLE(Resources)->Get<Texture>(texNames[i]);
+	//	_textures[texNames[i]] = texMap->GetTexHeapIndex();
+	//}
 }
 
 void Scene::LoadTestTextures()
 {
-	vector<string> texNames = {
-		"newjeans",
-		"newjeans2",
-		"newjeans3",
+	//vector<string> texNames = {
+	//	"newjeans",
+	//	"newjeans2",
+	//	"newjeans3",
 
-		"leather",
-		"leather_normal",
-		"leather_roughness",
+	//	"leather",
+	//	"leather_normal",
+	//	"leather_roughness",
 
-		"wall",
-		"wall_normal",
-		"wall_roughness",
+	//	"wall",
+	//	"wall_normal",
+	//	"wall_roughness",
 
-		"skybox",
-	};
+	//	"skybox",
+	//};
 
-	vector<wstring> texFileNames = {
-		L"..\\Resources\\Texture\\newjeans.dds",
-		L"..\\Resources\\Texture\\newjeans2.dds",
-		L"..\\Resources\\Texture\\newjeans3.dds",
+	//vector<wstring> texFileNames = {
+	//	L"..\\Resources\\Texture\\newjeans.dds",
+	//	L"..\\Resources\\Texture\\newjeans2.dds",
+	//	L"..\\Resources\\Texture\\newjeans3.dds",
 
-		L"..\\Resources\\Texture\\Leather.dds",
-		L"..\\Resources\\Texture\\Leather_Normal_BC7.dds",
-		L"..\\Resources\\Texture\\Leather_Weave_004_roughness.dds",
+	//	L"..\\Resources\\Texture\\Leather.dds",
+	//	L"..\\Resources\\Texture\\Leather_Normal_BC7.dds",
+	//	L"..\\Resources\\Texture\\Leather_Weave_004_roughness.dds",
 
-		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_basecolor.dds",
-		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_normal_BC7.dds",
-		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_roughness.dds",
+	//	L"..\\Resources\\Texture\\Sci-Fi_Wall_014_basecolor.dds",
+	//	L"..\\Resources\\Texture\\Sci-Fi_Wall_014_normal_BC7.dds",
+	//	L"..\\Resources\\Texture\\Sci-Fi_Wall_014_roughness.dds",
 
-		L"..\\Resources\\Texture\\Sky.dds",
-	};
+	//	L"..\\Resources\\Texture\\Sky.dds",
+	//};
 
-	for (int i = 0; i < TEXTUREFILE_COUNT; ++i) {
-		auto texMap = GET_SINGLE(Resources)->Load<Texture>(texNames[i], texFileNames[i]);
+	//for (int i = 0; i < TEXTUREFILE_COUNT; ++i) {
+	//	auto texMap = GET_SINGLE(Resources)->Load<Texture>(texNames[i], texFileNames[i]);
 
-		if (i == (TEXTUREFILE_COUNT - 1))
-			texMap->CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURECUBE);
-		else 
-			texMap->CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURE2D);
+	//	if (i == (TEXTUREFILE_COUNT - 1))
+	//		texMap->CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURECUBE);
+	//	else 
+	//		texMap->CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURE2D);
 
-		_textures[texNames[i]] = texMap->GetTexHeapIndex();
-	}
+	//	_textures[texNames[i]] = texMap->GetTexHeapIndex();
+	//}
 
 	// Get BackBuffer Texture
-	_textures["BackBufferTarget"] = Texture::TexHeapIndex;
+	//_textures["BackBufferTarget"] = Texture::TexHeapIndex;
 }
 
 void Scene::BuildMaterials()
 {
-	{
+	/*{
 		auto pos = make_shared<Material>();
 		pos->SetMatCBIndex(0);
 		pos->SetDiffuseSrvHeapIndex(_textures["PositionTarget"]);
@@ -344,5 +344,5 @@ void Scene::BuildMaterials()
 		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
 		backBuffer->SetShader(shader);
 		_materials["backBuffer"] = move(backBuffer);
-	}
+	}*/
 }

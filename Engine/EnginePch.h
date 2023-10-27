@@ -72,7 +72,7 @@ enum class RENDER_TARGET_GROUP_TYPE : uint8
 
 enum class SWAP_CHAIN_BUFFER_INDEX : uint8
 {
-	CURR_BACK_BUFFER,
+	//CURR_BACK_BUFFER,
 	END,
 };
 
@@ -203,10 +203,10 @@ struct MaterialConstants
 	Vec3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
 	float Roughness = 0.25f;
 	Matrix MatTransform = MathHelper::Identity4x4();
-	uint32 TextureMapIndex = -1;
-	uint32 NormalMapIndex = -1;
-	uint32 RoughnessMapIndex = -1;
-	uint32 padding;
+	int32 TextureMapIndex = -1;
+	int32 NormalMapIndex = -1;
+	int32 RoughnessMapIndex = -1;
+	int32 LightIndex = -1;
 };
 
 #define DEVICE					gEngine->GetDevice()->GetDevice()

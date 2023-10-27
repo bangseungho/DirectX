@@ -35,7 +35,6 @@ public:
 	sptr<Collider> GetCollider();
 	
  	void AddComponent(sptr<Component> component);
-	void SetTag(wstring tag) { _tag = tag; }
 
 	void SetCheckFrustum(bool checkFrustum) { _checkFrustum = checkFrustum; }
 	bool GetCheckFrustum() { return _checkFrustum; }
@@ -54,7 +53,6 @@ public:
 private:
 	array<sptr<Component>, FIXED_COMPONENT_COUNT> _components;
 	vector<sptr<MonoBehaviour>> _scripts;
-	wstring _tag;
 
 	bool _checkFrustum = true;
 	uint32 _objCBIndex = -1;

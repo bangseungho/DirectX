@@ -1,5 +1,5 @@
-#ifndef _LIGHTING_PS_HLSL_
-#define _LIGHTING_PS_HLSL_
+#ifndef _DIRLIGHTING_PS_HLSL_
+#define _DIRLIGHTING_PS_HLSL_
 
 #include "Params.hlsl"
 #include "Utils.hlsl"
@@ -23,7 +23,8 @@ PS_OUT PS_Main(VS_OUT pin)
     MaterialData matData = gMaterialData[gObjConstants.materialIndex];
     
     float3 posW = gTextureMaps[0].Sample(gsamAnisotropicWrap, pin.uv).xyz;
-    if (posW.z <= 0.f)
+    float4 posV = mul(float4(posW, 1.f), gPassConstants.view);
+    if (posV.z <= 0.f)
         clip(-1);
     
     float3 normalW = gTextureMaps[1].Sample(gsamAnisotropicWrap, pin.uv).xyz;
@@ -36,10 +37,12 @@ PS_OUT PS_Main(VS_OUT pin)
     
     float3 shadowFactor = 1.0f;
     Material mat = { diffuseAlbedo, fresnelR0, shininess };
-    float4 directLight = ComputeLighting(mat, posW, normalW, toEyeW, shadowFactor);
+    float3 directLight = ComputeDirectionalLight(gPassConstants.lights[matData.lightIndex], mat, normalW, toEyeW);
+    
+    ComputeLighting(mat, posW, normalW, toEyeW, shadowFactor);
     
     pout.diffuse = ambient;
-    pout.specular = directLight;
+    pout.specular = float4(directLight, 1.f);
     
     return pout;
 }

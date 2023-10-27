@@ -315,10 +315,13 @@
     <FxCompile Include="..\Resources\Shader\Tex_ps.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shader\Lighting_ps.hlsl">
+    <FxCompile Include="..\Resources\Shader\DirLighting_ps.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="..\Resources\Shader\Lighting_vs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Final_ps.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
   </ItemGroup>
