@@ -220,7 +220,6 @@ struct MeshGeometry
 #define SINGLETON(type)								\
 private:											\
 	type() {}										\
-	~type() {}										\
 public:												\
 	static type* GetInstance()						\
 	{												\
@@ -229,12 +228,14 @@ public:												\
 	}												\
 	static void Destroy()							\
 	{												\
-		if (instance) instance = delete instance;	\
+		if (instance) delete instance;				\
 		instance = nullptr;							\
 	}												\
 													\
 private:											\
 	static type* instance;							\
 
+
 #define GET_SINGLE(type)			type::GetInstance()
+#define DESTROY_SINGLE(type)		type::Destroy()
 #define DECLARE_SINGLE(type)		type* type::instance = nullptr;

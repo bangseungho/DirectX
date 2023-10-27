@@ -3,6 +3,9 @@
 class Game
 {
 public:
+	~Game();
+
+public:
 	void Init(const WindowInfo& info);
 	void Update();
 

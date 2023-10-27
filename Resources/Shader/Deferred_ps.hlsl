@@ -45,14 +45,19 @@ PS_OUT PS_Main(VS_OUT pin)
     pin.normalW = normalize(pin.normalW);
     
     // º£ÀÌ½º ÄÃ·¯
-    diffuseAlbedo = gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.uv) * diffuseAlbedo;
+    if (diffuseMapIndex != -1)
+        diffuseAlbedo = gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.uv) * diffuseAlbedo;
     
     // ³ë¸Ö ¸Ê
-    float4 normalMap = gTextureMaps[normalMapIndex].Sample(gsamAnisotropicWrap, pin.uv);
+    float4 normalMap = float4(pin.normalW, 0.f);
+    if (normalMapIndex != -1)
+        normalMap = gTextureMaps[normalMapIndex].Sample(gsamAnisotropicWrap, pin.uv);
+    
     float3 bumpedNormalW = NormalToWorldSpace(normalMap.rgb, pin.normalW, pin.tangentW);
     
     // °ÅÄ¥±â 
-    roughness *= gTextureMaps[roughnessMapIndex].Sample(gsamAnisotropicWrap, pin.uv).x;
+    if (roughness != -1)
+        roughness *= gTextureMaps[roughnessMapIndex].Sample(gsamAnisotropicWrap, pin.uv).x;
     
     // ±¤ÅÃ : °ÅÄ¥¼ö·Ï ±¤ÅÃÀÌ ¶³¾îÁü
     float shininess = 1.f - roughness;

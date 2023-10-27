@@ -4,6 +4,16 @@
 #include "Material.h"
 #include "SceneManager.h"
 #include "Resources.h"
+#include "Timer.h"
+#include "InputManager.h"
+
+Game::~Game()
+{
+	DESTROY_SINGLE(SceneManager);
+	DESTROY_SINGLE(Resources);
+	DESTROY_SINGLE(Timer);
+	DESTROY_SINGLE(InputManager);
+}
 
 void Game::Init(const WindowInfo& info)
 {
