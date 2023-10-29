@@ -21,7 +21,17 @@ enum class DEPTH_STENCIL_TYPE : uint8
 	LESS_EQUAL,
 	GREATER,
 	GREATER_EQUAL,
+	NO_DEPTH_TEST, // ±Ì¿Ã ≈◊Ω∫∆Æ(X) + ±Ì¿Ã ±‚∑œ(O)
 	NO_DEPTH_TEST_NO_WRITE, // ±Ì¿Ã ≈◊Ω∫∆Æ(X) + ±Ì¿Ã ±‚∑œ(X)
+	LESS_NO_WRITE, // ±Ì¿Ã ≈◊Ω∫∆Æ(O) + ±Ì¿Ã ±‚∑œ(X)
+};
+
+enum class BLEND_TYPE : uint8
+{
+	DEFAULT,
+	ALPHA_BLEND,
+	ONE_TO_ONE_BLEND,
+	END,
 };
 
 struct ShaderInfo
@@ -29,6 +39,7 @@ struct ShaderInfo
 	SHADER_TYPE shaderType = SHADER_TYPE::FORWARD;
 	RASTERIGER_TYPE rasterizerType = RASTERIGER_TYPE::CULL_BACK;
 	DEPTH_STENCIL_TYPE dpethStencilType = DEPTH_STENCIL_TYPE::LESS;
+	BLEND_TYPE blendType = BLEND_TYPE::DEFAULT;
 	D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 };
 
@@ -45,9 +56,9 @@ public:
 	SHADER_TYPE GetShaderType() { return _info.shaderType; }
 
 private:
-	ComPtr<ID3DBlob> CreateShader(const wstring& path, const string& name, const string& version, D3D12_SHADER_BYTECODE& shaderByteCode);
-	ComPtr<ID3DBlob> CreateVertexShader(const wstring& path, const string& name, const string& version);
-	ComPtr<ID3DBlob> CreatePixelShader(const wstring& path, const string& name, const string& version);
+	ComPtr<ID3DBlob> CreateShader(const wstring& path);
+	ComPtr<ID3DBlob> CreateVertexShader(const wstring& path);
+	ComPtr<ID3DBlob> CreatePixelShader(const wstring& path);
 
 private:
 	ShaderInfo							_info;

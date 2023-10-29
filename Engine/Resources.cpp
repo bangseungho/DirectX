@@ -596,12 +596,4 @@ void Resources::CreateDefaultMaterial()
 		Add<Material>("skybox", move(skybox));
 
 	}
-
-	//{
-	//	shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Forward");
-	//	auto backBuffer = make_shared<Material>();
-	//	backBuffer->SetMatCBIndex(11);
-	//	backBuffer->SetDiffuseSrvHeapIndex(GET_SINGLE(Resources)->Get<Texture>("BackBufferTarget")->GetTexHeapIndex());
-	//	backBuffer->SetShader(shader);
-	//}
 }

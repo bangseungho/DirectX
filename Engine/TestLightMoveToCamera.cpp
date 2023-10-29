@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "TestLightMoveToCamera.h"
 #include "Transform.h"
-#include "GameObject.h"
+#include "Camera.h"
 
 void TestLightMoveToCamera::LateUpdate()
 {

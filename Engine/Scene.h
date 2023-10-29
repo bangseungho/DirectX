@@ -1,19 +1,9 @@
 #pragma once
 #include "Texture.h"
 #include "Material.h"
+#include "Camera.h"
+#include "GameObject.h"
 
-enum NUMBER_CAMERA
-{
-	FIRST_CAMERA,
-	SECOND_CAMERA,
-	THIRD_CAMERA,
-	FOURTH_CAMERA,
-	FIFTH_CAMERA,
-
-	CAMERA_COUNT,
-};
-
-class GameObject;
 class Scene
 {
 public:
@@ -24,37 +14,25 @@ public:
 	void LateUpdate();
 	void FinalUpdate();
 
+public:
 	void Render();
-
-private:
 	void PushPassData();
 
 public:
 	void AddGameObject(sptr<GameObject> gameObject);
-	void AddCameraObject(NUMBER_CAMERA number, sptr<GameObject> gameObject);
-
 	void RemoveGameObject(sptr<GameObject> gameObject);
 
 	const vector<sptr<GameObject>>& GetGameObjects() { return _gameObjects; }
+	const vector<sptr<Camera>>& GetCameraObjects() { return _cameraObjects; }
+	sptr<Camera>& GetMainCamera() { return _mainCamera; }
 
-	void SetMainCamera(NUMBER_CAMERA cameraNum) { if (_cameraObjects[cameraNum]) _mainCamera = _cameraObjects[cameraNum]; }
-	const sptr<GameObject>& GetMainCamera() { return _mainCamera; }
-
-	unordered_map<string, uint8>& GetTextures() { return _textures; }
-	unordered_map<string, sptr<Material>>& GetMaterials() { return _materials; }
-
-	void LoadTestTextures();
-	void LoadTestTexturesFromResource();
-	void BuildMaterials();
+	void SetMainCamera(sptr<GameObject> camera) { _mainCamera = camera->GetCamera(); }
 
 private:
 	vector<sptr<GameObject>> _gameObjects;
-	array<sptr<GameObject>, CAMERA_COUNT> _cameraObjects;
 	Vec4 _ambientLight = { 0.1f, 0.1f, 0.1f, 1.f };
-	sptr<GameObject> _mainCamera;
 
-	//unordered_map<string, sptr<class Material>> _materials;
-	unordered_map<string, uint8> _textures;
-	unordered_map<string, sptr<Material>> _materials;
+	vector<sptr<Camera>> _cameraObjects;
+	sptr<Camera> _mainCamera;
 };
 

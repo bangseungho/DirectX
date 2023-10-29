@@ -28,11 +28,6 @@ void SceneManager::Update()
 	if (_activeScene == nullptr)
 		return;
 
-	if (KEY_PRESSED('1'))
-		_activeScene->SetMainCamera(FIRST_CAMERA);
-	if (KEY_PRESSED('2'))
-		_activeScene->SetMainCamera(SECOND_CAMERA);
-
 	_currTime += DELTA_TIME;
 	if (_currTime >= 0.01f) {
 		_activeScene->FixedUpdate();
@@ -91,33 +86,19 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 //============================================================================== Scene
 	shared_ptr<Scene> scene = make_shared<Scene>();
-	scene->LoadTestTexturesFromResource();
-	scene->LoadTestTextures();
-	scene->BuildMaterials();
-	auto& textureMap = scene->GetTextures();
-	auto& materialMap = scene->GetMaterials();
 //============================================================================== Camera
 #pragma region MainCamera
-	shared_ptr<GameObject> mainCamera = make_shared<GameObject>();
-	mainCamera->Init();
-	mainCamera->SetName(L"Main_Camera");
-	mainCamera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
-	mainCamera->AddComponent(make_shared<TestCameraScript>());
-	mainCamera->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 0.f));
-	uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
-	mainCamera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, true);
-	scene->AddCameraObject(FIRST_CAMERA, mainCamera);
-	scene->SetMainCamera(FIRST_CAMERA);
-#pragma endregion
-#pragma region SubCamera
 	{
-		shared_ptr<GameObject> camera = make_shared<GameObject>();
-		camera->Init();
-		camera->SetName(L"Sub_Camera");
-		camera->AddComponent(make_shared<Camera>());
-		camera->AddComponent(make_shared<TestCameraScript>());
-		camera->GetTransform()->SetLocalPosition(Vec3(100.f, 100.f, 0.f));
-		scene->AddCameraObject(SECOND_CAMERA, camera);
+		shared_ptr<GameObject> mainCamera = make_shared<GameObject>();
+		mainCamera->Init();
+		mainCamera->SetName(L"Main_Camera");
+		mainCamera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
+		mainCamera->AddComponent(make_shared<TestCameraScript>());
+		mainCamera->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 0.f));
+		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
+		mainCamera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, true);
+		scene->SetMainCamera(mainCamera);
+		scene->AddGameObject(mainCamera);
 	}
 #pragma endregion
 #pragma region UICamera
@@ -367,7 +348,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		light->GetLight()->SetFallOff(1.f, 1000.f);
 
 		sptr<TestLightMoveToCamera> moveTo = make_shared<TestLightMoveToCamera>();
-		moveTo->SetGameObject(mainCamera);
+		moveTo->SetGameObject(scene->GetMainCamera());
 		light->AddComponent(moveTo);
 
 		scene->AddGameObject(light);

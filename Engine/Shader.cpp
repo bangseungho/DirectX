@@ -14,8 +14,8 @@ void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info
 {
 	_info = info;
 
-	ComPtr<ID3DBlob> _vsBlob = CreateVertexShader(vsPath, "vs", "vs_5_1");
-	ComPtr<ID3DBlob> _psBlob = CreatePixelShader(psPath, "ps", "ps_5_1");
+	ComPtr<ID3DBlob> _vsBlob = CreateVertexShader(vsPath);
+	ComPtr<ID3DBlob> _psBlob = CreatePixelShader(psPath);
 
 	D3D12_INPUT_ELEMENT_DESC desc[] =
 	{
@@ -59,7 +59,7 @@ void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info
 		_pipelineDesc.RTVFormats[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
 		_pipelineDesc.RTVFormats[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		_pipelineDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		_pipelineDesc.RTVFormats[4] = /*DXGI_FORMAT_R32_FLOAT;*/ DXGI_FORMAT_R8_UNORM;
+		_pipelineDesc.RTVFormats[4] = DXGI_FORMAT_R8_UNORM;
 		break;
 	default:
 		break;
@@ -106,12 +106,47 @@ void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info
 		_pipelineDesc.DepthStencilState.DepthEnable = TRUE;
 		_pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_GREATER_EQUAL;
 		break;
+	case DEPTH_STENCIL_TYPE::NO_DEPTH_TEST:
+		_pipelineDesc.DepthStencilState.DepthEnable = FALSE;
+		_pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		break;
 	case DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE:
 		_pipelineDesc.DepthStencilState.DepthEnable = FALSE;
 		_pipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+		break;
+	case DEPTH_STENCIL_TYPE::LESS_NO_WRITE:
+		_pipelineDesc.DepthStencilState.DepthEnable = TRUE;
+		_pipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		_pipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+		break;
 	default:
 		break;
 	}
+
+	D3D12_RENDER_TARGET_BLEND_DESC& rt = _pipelineDesc.BlendState.RenderTarget[0];
+
+	switch (info.blendType)
+	{
+	case BLEND_TYPE::DEFAULT:
+		rt.BlendEnable = FALSE;
+		rt.LogicOpEnable = FALSE;
+		rt.SrcBlend = D3D12_BLEND_ONE;
+		rt.DestBlend = D3D12_BLEND_ZERO;
+		break;
+	case BLEND_TYPE::ALPHA_BLEND:
+		rt.BlendEnable = TRUE;
+		rt.LogicOpEnable = FALSE;
+		rt.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		rt.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+		break;
+	case BLEND_TYPE::ONE_TO_ONE_BLEND:
+		rt.BlendEnable = TRUE;
+		rt.LogicOpEnable = FALSE;
+		rt.SrcBlend = D3D12_BLEND_ONE;
+		rt.DestBlend = D3D12_BLEND_ONE;
+		break;
+	}
+
 
 	DEVICE->CreateGraphicsPipelineState(&_pipelineDesc, IID_PPV_ARGS(&_pipelineState));
 }
@@ -121,7 +156,7 @@ void Shader::Update()
 	CMD_LIST->SetPipelineState(_pipelineState.Get());
 }
 
-ComPtr<ID3DBlob> Shader::CreateShader(const wstring& path, const string& name, const string& version, D3D12_SHADER_BYTECODE& shaderByteCode)
+ComPtr<ID3DBlob> Shader::CreateShader(const wstring& path)
 {
 	ifstream in{ path, std::ios::binary | std::ios::ate };
 
@@ -138,12 +173,12 @@ ComPtr<ID3DBlob> Shader::CreateShader(const wstring& path, const string& name, c
 	return blob;
 }
 
-ComPtr<ID3DBlob> Shader::CreateVertexShader(const wstring& path, const string& name, const string& version)
+ComPtr<ID3DBlob> Shader::CreateVertexShader(const wstring& path)
 {
-	return CreateShader(path, name, version, _pipelineDesc.VS);
+	return CreateShader(path);
 }
 
-ComPtr<ID3DBlob> Shader::CreatePixelShader(const wstring& path, const string& name, const string& version)
+ComPtr<ID3DBlob> Shader::CreatePixelShader(const wstring& path)
 {
-	return CreateShader(path, name, version, _pipelineDesc.PS);
+	return CreateShader(path);
 }
