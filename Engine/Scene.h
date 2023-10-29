@@ -16,6 +16,8 @@ public:
 
 public:
 	void Render();
+	void RenderFinal();
+	void RenderLights();
 	void PushPassData();
 
 public:
@@ -34,5 +36,7 @@ private:
 
 	vector<sptr<Camera>> _cameraObjects;
 	sptr<Camera> _mainCamera;
+
+	vector<shared_ptr<class Light>> _lightObjects;
 };
 

@@ -11,7 +11,8 @@ enum class RENDER_GROUP_TYPE
 {
 	SWAP_CHAIN,
 	DEPTH_STENCIL,
-	G_BUFFER
+	G_BUFFER,
+	LIGHTING,
 };
 
 class Texture : public Object

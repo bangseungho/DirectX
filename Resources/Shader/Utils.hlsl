@@ -18,8 +18,10 @@ float3 SchlickFresnel(float3 R0, float3 normal, float3 lightVec)
     return reflectPercent;
 }
 
-float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 toEye, Material mat)
+LightColor BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 toEye, Material mat)
 {
+    LightColor color = (LightColor)0.f;
+    
     const float m = mat.shininess * 256.0f;
     float3 halfVec = normalize(toEye + lightVec);
 
@@ -30,10 +32,13 @@ float3 BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, float3 t
 
     specAlbedo = specAlbedo / (specAlbedo + 1.0f);
 
-    return (/*mat.diffuseAlbedo.rgb +*/ specAlbedo) * lightStrength;
+    color.diffuse = mat.diffuseAlbedo.rgb * lightStrength;
+    color.specular = specAlbedo * lightStrength;
+    
+    return color;
 }
 
-float3 ComputeDirectionalLight(LightInfo L, Material mat, float3 normal, float3 toEye)
+LightColor ComputeDirectionalLight(LightInfo L, Material mat, float3 normal, float3 toEye)
 {
     // 빛 벡터의 반대 방향 벡터
     float3 lightVec = -L.direction;
@@ -47,7 +52,7 @@ float3 ComputeDirectionalLight(LightInfo L, Material mat, float3 normal, float3 
     return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
 }
 
-float3 ComputePointLight(LightInfo L, Material mat, float3 pos, float3 normal, float3 toEye)
+LightColor ComputePointLight(LightInfo L, Material mat, float3 pos, float3 normal, float3 toEye)
 {
     // 점에서 광원으로의 벡터
     float3 lightVec = L.position - pos;
@@ -57,7 +62,7 @@ float3 ComputePointLight(LightInfo L, Material mat, float3 pos, float3 normal, f
 
     // 점에서 광원까지의 거리가 범위보다 크면 0리턴
     if(d > L.fallOffEnd)
-        return 0.0f;
+        return (LightColor)0.f;
 
     // 점에서 광원으로의 벡터 정규화
     lightVec /= d;
@@ -73,7 +78,7 @@ float3 ComputePointLight(LightInfo L, Material mat, float3 pos, float3 normal, f
     return BlinnPhong(lightStrength, lightVec, normal, toEye, mat);
 }
 
-float3 ComputeSpotLight(LightInfo L, Material mat, float3 pos, float3 normal, float3 toEye)
+LightColor ComputeSpotLight(LightInfo L, Material mat, float3 pos, float3 normal, float3 toEye)
 {
     // 점에서 광원으로의 벡터
     float3 lightVec = L.position - pos;
@@ -83,7 +88,7 @@ float3 ComputeSpotLight(LightInfo L, Material mat, float3 pos, float3 normal, fl
 
     // 점에서 광원까지의 거리가 범위보다 크면 0리턴
     if(d > L.fallOffEnd)
-        return 0.0f;
+        return (LightColor)0.f;
 
     // 점에서 광원으로의 벡터 정규화
     lightVec /= d;
@@ -121,21 +126,32 @@ float3 NormalToWorldSpace(float3 normalMapSample, float3 unitNormalW, float3 tan
 	return bumpedNormalW;
 }
 
-float4 ComputeLighting(Material mat, float3 pos, float3 normal, float3 toEye, float3 shadowFactor)
+LightColor ComputeLighting(Material mat, float3 pos, float3 normal, float3 toEye, float3 shadowFactor)
 {
-    float3 result = 0.0f;
+    LightColor result = (LightColor)0.f;
     
     for(int i = 0; i < gPassConstants.lightCount; ++i)
     {
-        if (gPassConstants.lights[i].lightType == 0)
-            result += shadowFactor[i] * ComputeDirectionalLight(gPassConstants.lights[i], mat, normal, toEye);
-        if (gPassConstants.lights[i].lightType == 1)
-            result += ComputePointLight(gPassConstants.lights[i], mat, pos, normal, toEye);
-        if (gPassConstants.lights[i].lightType == 2)
-            result += ComputeSpotLight(gPassConstants.lights[i], mat, pos, normal, toEye);
+        if(gPassConstants.lights[i].lightType == 0)
+        {
+            LightColor color = ComputeDirectionalLight(gPassConstants.lights[i], mat, normal, toEye);
+            result.diffuse += shadowFactor * color.diffuse;
+            result.specular += shadowFactor * color.specular;
+        }
+        if(gPassConstants.lights[i].lightType == 1)
+        {
+            LightColor color = ComputePointLight(gPassConstants.lights[i], mat, pos, normal, toEye);
+            result.diffuse += color.diffuse;
+            result.specular += color.specular;
+        }
+        if(gPassConstants.lights[i].lightType == 2)
+        {
+            LightColor color = ComputeSpotLight(gPassConstants.lights[i], mat, pos, normal, toEye);
+            result.diffuse += color.diffuse;
+            result.specular += color.specular;
+        }
     }
 
-    return float4(result, 0.0f);
+    return result;
 }
-
 #endif

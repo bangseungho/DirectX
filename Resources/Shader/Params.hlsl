@@ -3,6 +3,14 @@
 #define MAX_LIGHTS 200
 #define TEXTURE2D_COUNT 11
 
+#define POSITIONMAP_INDEX 0
+#define NORMALMAP_INDEX 1
+#define DIFFUSEMAP_INDEX 2
+#define FRESNELMAP_INDEX 3
+#define SHININESSMAP_INDEX 4
+#define DIFFUSELIGHT_INDEX 5
+#define SPECULARLIGHT_INDEX 6
+
 struct LightInfo
 {
     float3      strength;
@@ -22,6 +30,12 @@ struct Material
     float shininess;
 };
 
+struct LightColor
+{
+    float3 diffuse;
+    float3 specular;
+};
+
 struct PassConstants
 {
     row_major matrix    view;
@@ -30,11 +44,14 @@ struct PassConstants
     float4              eyePosW;
 	float               nearZ;
 	float               farZ;
+    float               width;
+    float               height;
 	float               totalTime;
 	float               deltaTime;
+	float2              padding2;
 	float4              ambientLight;
     int		            lightCount;
-	float3	            padding;
+	float3	            padding3;
 	LightInfo	        lights[MAX_LIGHTS];
 };
 
@@ -56,7 +73,7 @@ struct MaterialData
     uint                textureMapIndex;
     uint                normalMapIndex;
     uint                roughnessMapIndex;
-    uint                lightIndex;
+    int                 lightIndex;
 };
 
 ConstantBuffer<PassConstants> gPassConstants : register(b0);

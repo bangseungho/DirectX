@@ -12,11 +12,14 @@ struct VS_OUT
 
 float4 PS_Main(VS_OUT pin) : SV_Target
 {
-    MaterialData matData = gMaterialData[gObjConstants.materialIndex];
-    float4 diffuseAlbedo = matData.diffuseAlbedo;
-    uint diffuseMapIndex = matData.textureMapIndex;
+    float4 pout = (float4)0;
 
-    return gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.uv) * diffuseAlbedo;
+    float4 diffuse = gTextureMaps[DIFFUSELIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.uv);
+    float4 specular = gTextureMaps[SPECULARLIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.uv);
+    
+    pout = diffuse + specular;
+
+    return pout;
 }
 
 #endif

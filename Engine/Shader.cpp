@@ -61,6 +61,11 @@ void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info
 		_pipelineDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		_pipelineDesc.RTVFormats[4] = DXGI_FORMAT_R8_UNORM;
 		break;
+	case SHADER_TYPE::LIGHTING:
+		_pipelineDesc.NumRenderTargets = 2;
+		_pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		_pipelineDesc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		break;
 	default:
 		break;
 	}

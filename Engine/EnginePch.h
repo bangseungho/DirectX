@@ -65,6 +65,7 @@ enum class RENDER_TARGET_GROUP_TYPE : uint8
 {
 	SWAP_CHAIN, // BACK_BUFFER, FRONT_BUFFER
 	G_BUFFER, // POSITION, NORMAL, DIFFUSEALBEDO, SHINESS, FRESNELR0
+	LIGHTING, // DIFFUSE, SPECULAR
 
 	END,
 };
@@ -80,9 +81,17 @@ enum class G_BUFFER_INDEX : uint8
 	END,
 };
 
+enum class LIGHTING_INDEX : uint8
+{
+	DIFFUSE = static_cast<uint8>(G_BUFFER_INDEX::END),
+	SPECULAR,
+	
+	END,
+};
+
 enum class TEXTURE2D_INDEX : uint8
 {
-	B_NEWJEANS = static_cast<uint8>(G_BUFFER_INDEX::END),
+	B_NEWJEANS = static_cast<uint8>(LIGHTING_INDEX::END),
 	B_NEWJEANS2,
 	B_NEWJEANS3,
 
@@ -107,12 +116,13 @@ enum class TEXTURECUBE_INDEX : uint8
 enum
 {
 	RENDER_TARGET_G_BUFFER_GROUP_COUNT = static_cast<uint8>(G_BUFFER_INDEX::END),
+	RENDER_TARGET_LIGHTING_COUNT = static_cast<uint8>(LIGHTING_INDEX::END) - RENDER_TARGET_G_BUFFER_GROUP_COUNT,
 	RENDER_TARGET_GROUP_COUNT = static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::END),
 
 	TEXTURE_COUNT = static_cast<uint8>(TEXTURECUBE_INDEX::END),
 	TEXTURE2D_COUNT = static_cast<uint8>(TEXTURE2D_INDEX::END),
 	TEXTURECUBE_COUNT = TEXTURE_COUNT - TEXTURE2D_COUNT,
-	TEXTUREFILE_COUNT = TEXTURE_COUNT - RENDER_TARGET_G_BUFFER_GROUP_COUNT,
+	TEXTUREFILE_COUNT = TEXTURE_COUNT - static_cast<uint8>(LIGHTING_INDEX::END),
 };
 
 struct WindowInfo
@@ -172,13 +182,16 @@ struct PassConstants
 	Vec4 eyePosW = { 0.f, 0.f, 0.f, 0.f };
 	float nearZ = 0.f;
 	float farZ = 0.f;
+	float width = 0.f;
+	float height = 0.f;
 	float totalTime = 0.f;
 	float deltaTime = 0.f;
+	Vec2 padding2;
 
 	Vec4 ambientLight = { 0.f, 0.f, 0.f, 1.f };
 
 	uint32		lightCount;
-	Vec3		padding;
+	Vec3		padding3;
 	LightInfo	lights[MAX_LIGHTS];
 };
 

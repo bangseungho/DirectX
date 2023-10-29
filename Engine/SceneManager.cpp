@@ -287,7 +287,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	scene->AddGameObject(gameObject);
 }
 #pragma endregion
-#pragma region UIFresnel
+#pragma region UIDiffuseLight
 {
 	sptr<GameObject> gameObject = make_shared<GameObject>();
 	gameObject->Init();
@@ -299,14 +299,14 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("FresnelTarget");
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("DiffuseLightTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
 	scene->AddGameObject(gameObject);
 }
 #pragma endregion
-#pragma region UIShininess
+#pragma region UISpecularLight
 {
 	sptr<GameObject> gameObject = make_shared<GameObject>();
 	gameObject->Init();
@@ -318,7 +318,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("ShininessTarget");
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("SpecularLightTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -343,9 +343,8 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		light->AddComponent(make_shared<Transform>());
 		light->AddComponent(make_shared<Light>());
 		light->GetLight()->SetLightType(LIGHT_TYPE::POINT_LIGHT);
-		light->GetLight()->SetLightStrenth(Vec3(0.9f, 0.9f, 0.9f));
-		light->GetTransform()->SetLocalPosition(Vec3(-200.f, 100.f, 100.f));
-		light->GetLight()->SetFallOff(1.f, 1000.f);
+		light->GetLight()->SetLightStrenth(Vec3(0.0f, 0.9f, 0.0f));
+		light->GetLight()->SetFallOff(1.f, 200.f);
 
 		sptr<TestLightMoveToCamera> moveTo = make_shared<TestLightMoveToCamera>();
 		moveTo->SetGameObject(scene->GetMainCamera());
@@ -359,11 +358,13 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		shared_ptr<GameObject> light = make_shared<GameObject>();
 		light->AddComponent(make_shared<Transform>());
 		light->AddComponent(make_shared<Light>());
-		light->GetTransform()->SetLocalPosition(Vec3(-50.f, 200.f, 200.f));
+		light->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
 		light->GetLight()->SetLightType(LIGHT_TYPE::SPOT_LIGHT);
-		light->GetLight()->SetLightDirection(Vec3(0.f, -1.f, 0.f));
-		light->GetLight()->SetLightStrenth(Vec3(1.0f, 0.0f, 1.0f));
-		light->GetLight()->SetFallOff(1.f, 500.f);
+		light->GetLight()->SetLightDirection(Vec3(1.f, 0.f, 0.f));
+		light->GetLight()->SetLightStrenth(Vec3(10.0f, 0.0f, 10.0f));
+		light->GetLight()->SetFallOff(1.f, 200.f);
+		light->GetLight()->SetSpotPower(10.f);
+		
 		scene->AddGameObject(light);
 	}
 #pragma endregion

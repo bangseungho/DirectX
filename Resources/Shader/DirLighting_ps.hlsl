@@ -22,28 +22,28 @@ PS_OUT PS_Main(VS_OUT pin)
     
     MaterialData matData = gMaterialData[gObjConstants.materialIndex];
     
-    float3 posW = gTextureMaps[0].Sample(gsamAnisotropicWrap, pin.uv).xyz;
+    float3 posW = gTextureMaps[POSITIONMAP_INDEX].Sample(gsamAnisotropicWrap, pin.uv).xyz;
     float4 posV = mul(float4(posW, 1.f), gPassConstants.view);
-    if (posV.z <= 0.f)
+    if(posV.z <= 0.f)
         clip(-1);
     
-    float3 normalW = gTextureMaps[1].Sample(gsamAnisotropicWrap, pin.uv).xyz;
-    float4 diffuseAlbedo = gTextureMaps[2].Sample(gsamAnisotropicWrap, pin.uv);
-    float3 fresnelR0 = gTextureMaps[3].Sample(gsamAnisotropicWrap, pin.uv).xyz;
-    float shininess = gTextureMaps[4].Sample(gsamAnisotropicWrap, pin.uv).x;
-    
     float3 toEyeW = normalize(gPassConstants.eyePosW.xyz - posW);
+    if(length(toEyeW) > gPassConstants.lights[matData.lightIndex].fallOffEnd)
+        clip(-1);
+    
+    float3 normalW = gTextureMaps[NORMALMAP_INDEX].Sample(gsamAnisotropicWrap, pin.uv).xyz;
+    float4 diffuseAlbedo = gTextureMaps[DIFFUSEMAP_INDEX].Sample(gsamAnisotropicWrap, pin.uv);
+    float3 fresnelR0 = gTextureMaps[FRESNELMAP_INDEX].Sample(gsamAnisotropicWrap, pin.uv).xyz;
+    float shininess = gTextureMaps[SHININESSMAP_INDEX].Sample(gsamAnisotropicWrap, pin.uv).x;
+    
     float4 ambient = gPassConstants.ambientLight * diffuseAlbedo;
     
-    float3 shadowFactor = 1.0f;
     Material mat = { diffuseAlbedo, fresnelR0, shininess };
-    float3 directLight = ComputeDirectionalLight(gPassConstants.lights[matData.lightIndex], mat, normalW, toEyeW);
+    LightColor directLight = ComputeDirectionalLight(gPassConstants.lights[matData.lightIndex], mat, normalW, toEyeW);
     
-    ComputeLighting(mat, posW, normalW, toEyeW, shadowFactor);
-    
-    pout.diffuse = ambient;
-    pout.specular = float4(directLight, 1.f);
-    
+    pout.diffuse = float4(directLight.diffuse, 0.f) + ambient;
+    pout.specular = float4(directLight.specular, 0.f);
+
     return pout;
 }
 

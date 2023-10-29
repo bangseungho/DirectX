@@ -318,10 +318,25 @@
     <FxCompile Include="..\Resources\Shader\DirLighting_ps.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shader\Lighting_vs.hlsl">
+    <FxCompile Include="..\Resources\Shader\Final_ps.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shader\Final_ps.hlsl">
+    <FxCompile Include="..\Resources\Shader\DirLighting_vs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\PointLighting_ps.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\PointLighting_vs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\SpotLighting_vs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\SpotLighting_ps.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Final_vs.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
   </ItemGroup>

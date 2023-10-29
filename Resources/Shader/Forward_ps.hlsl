@@ -64,9 +64,9 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     Material mat = { diffuseAlbedo, fresnelR0, shininess };
     
     // 조명 계산
-    float4 directLight = ComputeLighting(mat, pin.posW, bumpedNormalW, toEyeW, shadowFactor);
+    LightColor directLight = ComputeLighting(mat, pin.posW, bumpedNormalW, toEyeW, shadowFactor);
     
-    float4 resColor = ambient + directLight;
+    float4 resColor = ambient + (float4(directLight.diffuse, 0.f) + float4(directLight.specular, 0.f));
     
     // 분산 재질에서 알파를 가져온다.
     resColor.a = diffuseAlbedo.a;

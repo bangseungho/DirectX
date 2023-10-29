@@ -5,6 +5,7 @@ enum class SHADER_TYPE : uint8
 {
 	FORWARD,
 	DEFERRED,
+	LIGHTING,
 };
 
 enum class RASTERIGER_TYPE : uint8

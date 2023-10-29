@@ -17,20 +17,22 @@ void Scene::Awake()
 
 void Scene::Render()
 {
-
 	PushPassData();
 
 	int8 backIndex = gEngine->GetSwapChain()->GetBackBufferIndex();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->ClearRenderTargetView(backIndex);
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->ClearRenderTargetView();
-
-	_mainCamera->SortGameObject();
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->ClearRenderTargetView();
 
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->OMSetRenderTargets();
+	_mainCamera->SortGameObject();
 	_mainCamera->Render_Deferred();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->WaitTargetToResource();
 
-	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets(1, backIndex);
+	RenderLights();
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->WaitTargetToResource();
+	RenderFinal();
+
 	_mainCamera->Render_Forward();
 
 	for (auto& camera : _cameraObjects) {
@@ -39,6 +41,25 @@ void Scene::Render()
 
 		camera->SortGameObject();
 		camera->Render_Forward();
+	}
+}
+
+void Scene::RenderFinal()
+{
+	int8 backIndex = gEngine->GetSwapChain()->GetBackBufferIndex();
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets(1, backIndex);
+
+	GET_SINGLE(Resources)->Get<Material>("Final")->Update();
+	GET_SINGLE(Resources)->Get<Mesh>("Rectangle")->Render();
+}
+
+void Scene::RenderLights()
+{
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->OMSetRenderTargets();
+
+	for (auto& light : _lightObjects)
+	{
+		light->Render();
 	}
 }
 
@@ -86,7 +107,10 @@ void Scene::AddGameObject(sptr<GameObject> gameObject)
 {
 	if (gameObject->GetCamera() != nullptr)
 		_cameraObjects.push_back(gameObject->GetCamera());
-	
+
+	else if (gameObject->GetLight() != nullptr)
+		_lightObjects.push_back(gameObject->GetLight());
+
 	_gameObjects.push_back(gameObject);
 }
 
@@ -97,6 +121,12 @@ void Scene::RemoveGameObject(sptr<GameObject> gameObject)
 		auto findIt = std::find(_cameraObjects.begin(), _cameraObjects.end(), gameObject->GetCamera());
 		if (findIt != _cameraObjects.end())
 			_cameraObjects.erase(findIt);
+	}
+	else if (gameObject->GetLight())
+	{
+		auto findIt = std::find(_lightObjects.begin(), _lightObjects.end(), gameObject->GetLight());
+		if (findIt != _lightObjects.end())
+			_lightObjects.erase(findIt);
 	}
 
 	auto findIt = std::find(_gameObjects.begin(), _gameObjects.end(), gameObject);
@@ -116,16 +146,16 @@ void Scene::PushPassData()
 	passConstants.eyePosW = _mainCamera->GetTransform()->GetLocalPosition();
 	passConstants.nearZ = _mainCamera->_near;
 	passConstants.farZ = _mainCamera->_far;
+	passConstants.width = gEngine->GetWindow().width;
+	passConstants.height = gEngine->GetWindow().height;
 	passConstants.totalTime = TOTAL_TIME;
 	passConstants.deltaTime = DELTA_TIME;
 	passConstants.ambientLight = _ambientLight;
 
-	for (auto& gameObject : _gameObjects)
-	{
-		if (gameObject->GetLight() == nullptr)
-			continue;
+	for (auto& light : _lightObjects) {
+		const LightInfo& lightInfo = light->GetLightInfo();
 
-		const LightInfo& lightInfo = gameObject->GetLight()->GetLightInfo();
+		light->SetLightIndex(passConstants.lightCount);
 
 		passConstants.lights[passConstants.lightCount] = lightInfo;
 		passConstants.lightCount++;

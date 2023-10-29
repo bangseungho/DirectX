@@ -17,7 +17,6 @@ public:
 	virtual void FinalUpdate() override;
 
 public:
-	void Render();
 	bool IsInFrustum(BoundingOrientedBox& boundsOOBB);
 
 	void SetProjectionType(PROJECTION_TYPE type) { _type = type; }

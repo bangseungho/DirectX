@@ -106,6 +106,7 @@ void Texture::CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_T
 		}
 			break;
 		case RENDER_GROUP_TYPE::G_BUFFER:
+		case RENDER_GROUP_TYPE::LIGHTING:
 			CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURE2D);
 			break;
 		default:

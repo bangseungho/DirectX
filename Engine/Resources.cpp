@@ -408,6 +408,19 @@ void Resources::CreateDefaultShader()
 		Add<Shader>("Forward", shader);
 	}
 
+
+	// Grid
+	{
+		ShaderInfo info = {
+			SHADER_TYPE::FORWARD,
+			RASTERIGER_TYPE::CULL_NONE,
+		};
+
+		sptr<Shader> shader = make_shared<Shader>();
+		shader->Init(L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso", info);
+		Add<Shader>("Grid", shader);
+	}
+
 	// Deferred
 	{
 		ShaderInfo info = {
@@ -418,22 +431,68 @@ void Resources::CreateDefaultShader()
 		shader->Init(L"..\\Output\\cso\\Deferred_vs.cso", L"..\\Output\\cso\\Deferred_ps.cso", info);
 		Add<Shader>("Deferred", shader);
 	}
+
+	// DirLight
+	{
+		ShaderInfo info = {
+			SHADER_TYPE::LIGHTING,
+			RASTERIGER_TYPE::CULL_NONE,
+			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE,
+			BLEND_TYPE::ONE_TO_ONE_BLEND,
+		};
+
+		sptr<Shader> shader = make_shared<Shader>();
+		shader->Init(L"..\\Output\\cso\\DirLighting_vs.cso", L"..\\Output\\cso\\DirLighting_ps.cso", info);
+		Add<Shader>("DirLight", shader);
+	}
+
+	// PointLight
+	{
+		ShaderInfo info =
+		{
+			SHADER_TYPE::LIGHTING,
+			RASTERIGER_TYPE::CULL_NONE,
+			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE,
+			BLEND_TYPE::ONE_TO_ONE_BLEND
+		};
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->Init(L"..\\Output\\cso\\PointLighting_vs.cso", L"..\\Output\\cso\\PointLighting_ps.cso", info);
+		Add<Shader>("PointLight", shader);
+	}
+
+	// SpotLight
+	{
+		ShaderInfo info =
+		{
+			SHADER_TYPE::LIGHTING,
+			RASTERIGER_TYPE::CULL_FRONT,
+			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE,
+			BLEND_TYPE::ONE_TO_ONE_BLEND
+		};
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->Init(L"..\\Output\\cso\\SpotLighting_vs.cso", L"..\\Output\\cso\\SpotLighting_ps.cso", info);
+		Add<Shader>("SpotLight", shader);
+	}
+
+	// Final
+	{
+		ShaderInfo info =
+		{
+			SHADER_TYPE::LIGHTING,
+			RASTERIGER_TYPE::CULL_BACK,
+			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE,
+		};
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->Init(L"..\\Output\\cso\\Final_vs.cso", L"..\\Output\\cso\\Final_ps.cso", info);
+		Add<Shader>("Final", shader);
+	}
 }
 
 void Resources::CreateDefaultTexture()
 {
-	vector<string> texName = {
-		"PositionTarget",
-		"NormalTarget",
-		"DiffuseTarget",
-		"FresnelTarget",
-		"ShininessTarget",
-	};
-
-	for (int i = 0; i < RENDER_TARGET_G_BUFFER_GROUP_COUNT; ++i) {
-		auto texMap = GET_SINGLE(Resources)->Get<Texture>(texName[i]);
-	}
-
 	vector<string> texNames = {
 		"newjeans",
 		"newjeans2",
@@ -595,5 +654,55 @@ void Resources::CreateDefaultMaterial()
 		skybox->SetShader(shader);
 		Add<Material>("skybox", move(skybox));
 
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("DirLight");
+		auto dirLight = make_shared<Material>();
+		dirLight->SetMatCBIndex(11);
+		dirLight->SetShader(shader);
+		Add<Material>("DirLight", move(dirLight));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("PointLight");
+		auto pointLight = make_shared<Material>();
+		pointLight->SetMatCBIndex(12);
+		pointLight->SetShader(shader);
+		Add<Material>("PointLight", pointLight);
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("SpotLight");
+		auto spotLight = make_shared<Material>();
+		spotLight->SetMatCBIndex(13);
+		spotLight->SetShader(shader);
+		Add<Material>("SpotLight", spotLight);
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		auto diffuseLight = make_shared<Material>();
+		diffuseLight->SetMatCBIndex(14);
+		diffuseLight->SetDiffuseSrvHeapIndex(Get<Texture>("DiffuseLightTarget")->GetTexHeapIndex());
+		diffuseLight->SetShader(shader);
+		Add<Material>("DiffuseLightTarget", move(diffuseLight));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		auto specLight = make_shared<Material>();
+		specLight->SetMatCBIndex(15);
+		specLight->SetDiffuseSrvHeapIndex(Get<Texture>("SpecularLightTarget")->GetTexHeapIndex());
+		specLight->SetShader(shader);
+		Add<Material>("SpecularLightTarget", move(specLight));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Final");
+		auto finalMaterial = make_shared<Material>();
+		finalMaterial->SetMatCBIndex(16);
+		finalMaterial->SetShader(shader);
+		Add<Material>("Final", move(finalMaterial));
 	}
 }

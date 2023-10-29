@@ -1,5 +1,5 @@
-#ifndef _FORWARD_VS_HLSL_
-#define _FORWARD_VS_HLSL_
+#ifndef _FINAL_VS_HLSL_
+#define _FINAL_VS_HLSL_
 
 #include "Params.hlsl"
 
