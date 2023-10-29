@@ -153,6 +153,9 @@
     <ClCompile Include="TestScript.cpp">
       <Filter>Object\Test</Filter>
     </ClCompile>
+    <ClCompile Include="FlashLightScript.cpp">
+      <Filter>Object\Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -276,6 +279,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="TestScript.h">
+      <Filter>Object\Test</Filter>
+    </ClInclude>
+    <ClInclude Include="FlashLightScript.h">
       <Filter>Object\Test</Filter>
     </ClInclude>
   </ItemGroup>

@@ -30,7 +30,7 @@ PS_OUT PS_Main(VS_OUT pin)
     float3 toEyeW = normalize(gPassConstants.eyePosW.xyz - posW);
     if(length(toEyeW) > gPassConstants.lights[matData.lightIndex].fallOffEnd)
         clip(-1);
-    
+
     float3 normalW = gTextureMaps[NORMALMAP_INDEX].Sample(gsamAnisotropicWrap, pin.uv).xyz;
     float4 diffuseAlbedo = gTextureMaps[DIFFUSEMAP_INDEX].Sample(gsamAnisotropicWrap, pin.uv);
     float3 fresnelR0 = gTextureMaps[FRESNELMAP_INDEX].Sample(gsamAnisotropicWrap, pin.uv).xyz;

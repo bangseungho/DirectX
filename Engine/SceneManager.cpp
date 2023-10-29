@@ -18,6 +18,7 @@
 #include "TestLightMoveToCamera.h"
 #include "TestBillBoard.h"
 #include "TestScript.h"
+#include "FlashLightScript.h"
 
 #include "Resources.h"
 
@@ -346,10 +347,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		light->GetLight()->SetLightStrenth(Vec3(0.0f, 0.9f, 0.0f));
 		light->GetLight()->SetFallOff(1.f, 200.f);
 
-		sptr<TestLightMoveToCamera> moveTo = make_shared<TestLightMoveToCamera>();
-		moveTo->SetGameObject(scene->GetMainCamera());
-		light->AddComponent(moveTo);
-
 		scene->AddGameObject(light);
 	}
 #pragma endregion
@@ -361,9 +358,13 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		light->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
 		light->GetLight()->SetLightType(LIGHT_TYPE::SPOT_LIGHT);
 		light->GetLight()->SetLightDirection(Vec3(1.f, 0.f, 0.f));
-		light->GetLight()->SetLightStrenth(Vec3(10.0f, 0.0f, 10.0f));
-		light->GetLight()->SetFallOff(1.f, 200.f);
-		light->GetLight()->SetSpotPower(10.f);
+		light->GetLight()->SetLightStrenth(Vec3(1.0f, 0.0f, 1.0f));
+		light->GetLight()->SetFallOff(1.f, 1000.f);
+		light->GetLight()->SetSpotPower(30.f);
+		auto flashLightScript = make_shared<FlashLightScript>();
+		flashLightScript->SetCameraObject(scene->GetMainCamera());
+		light->AddComponent(flashLightScript);
+		
 		
 		scene->AddGameObject(light);
 	}
