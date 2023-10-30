@@ -345,5 +345,8 @@
     <FxCompile Include="..\Resources\Shader\Final_vs.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Compute_cs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -17,7 +17,7 @@ void Engine::Init(const WindowInfo& info)
 	_scissorRect = CD3DX12_RECT(0, 0, info.width, info.height);
 
 	_device = make_shared<Device>();
-	_cmdQueue = make_shared<CommandQueue>();
+	_cmdQueue = make_shared<GraphicsCommandQueue>();
 	_swapChain = make_shared<SwapChain>();
 	_rootSignature = make_shared<RootSignature>();
 	_tableDescHeap = make_shared<TableDescriptorHeap>();

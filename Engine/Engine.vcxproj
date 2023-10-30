@@ -288,6 +288,12 @@
     <None Include="SimpleMath.inl" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Resources\Shader\Compute_cs.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CS_Main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CS_Main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+    </FxCompile>
     <FxCompile Include="..\Resources\Shader\Deferred_ps.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">PS_Main</EntryPointName>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PS_Main</EntryPointName>

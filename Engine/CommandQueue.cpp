@@ -3,12 +3,12 @@
 #include "SwapChain.h"
 #include "Engine.h"
 
-CommandQueue::~CommandQueue()
+GraphicsCommandQueue::~GraphicsCommandQueue()
 {
 	::CloseHandle(_fenceEvent);
 }
 
-void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapChain)
+void GraphicsCommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapChain)
 {
 	_swapChain = swapChain;
 
@@ -25,7 +25,7 @@ void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapC
 	_fenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
 }
 
-void CommandQueue::WaitSync()
+void GraphicsCommandQueue::WaitSync()
 {
 	_fenceValue++;
 
@@ -40,7 +40,7 @@ void CommandQueue::WaitSync()
 }
 
 
-void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
+void GraphicsCommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 {
 	auto cmdAlloc = CURR_FRAMERESOURCE->CmdAlloc;
 
@@ -79,7 +79,7 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	_cmdList->RSSetScissorRects(1, rect);
 }
 
-void CommandQueue::RenderEnd()
+void GraphicsCommandQueue::RenderEnd()
 {
 	int8 backIndex = _swapChain->GetBackBufferIndex();
 

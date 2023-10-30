@@ -408,7 +408,6 @@ void Resources::CreateDefaultShader()
 		Add<Shader>("Forward", shader);
 	}
 
-
 	// Grid
 	{
 		ShaderInfo info = {
@@ -451,7 +450,7 @@ void Resources::CreateDefaultShader()
 		ShaderInfo info =
 		{
 			SHADER_TYPE::LIGHTING,
-			RASTERIGER_TYPE::CULL_NONE,
+			RASTERIGER_TYPE::CULL_FRONT,
 			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE,
 			BLEND_TYPE::ONE_TO_ONE_BLEND
 		};

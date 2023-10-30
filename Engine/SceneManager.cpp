@@ -237,8 +237,8 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	gameObject->Init();
 	gameObject->SetCheckFrustum(false);
 	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
-	gameObject->GetTransform()->SetLocalScale(Vec3(150.f, 150.f, 150.f));
-	gameObject->GetTransform()->SetLocalPosition(Vec3(-325.f + (0 * 150), 225.f, 500.f));
+	gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+	gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f + (0 * 100), 250.f, 500.f));
 	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
@@ -256,8 +256,8 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	gameObject->Init();
 	gameObject->SetCheckFrustum(false);
 	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
-	gameObject->GetTransform()->SetLocalScale(Vec3(150.f, 150.f, 150.f));
-	gameObject->GetTransform()->SetLocalPosition(Vec3(-325.f + (1 * 150), 225.f, 500.f));
+	gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+	gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f + (1 * 100), 250.f, 500.f));
 	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
@@ -275,8 +275,8 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	gameObject->Init();
 	gameObject->SetCheckFrustum(false);
 	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
-	gameObject->GetTransform()->SetLocalScale(Vec3(150.f, 150.f, 150.f));
-	gameObject->GetTransform()->SetLocalPosition(Vec3(-325.f + (2 * 150), 225.f, 500.f));
+	gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+	gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f + (2 * 100), 250.f, 500.f));
 	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
@@ -294,8 +294,8 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	gameObject->Init();
 	gameObject->SetCheckFrustum(false);
 	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
-	gameObject->GetTransform()->SetLocalScale(Vec3(150.f, 150.f, 150.f));
-	gameObject->GetTransform()->SetLocalPosition(Vec3(-325.f + (3 * 150), 225.f, 500.f));
+	gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+	gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f + (3 * 100), 250.f, 500.f));
 	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
@@ -313,8 +313,8 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	gameObject->Init();
 	gameObject->SetCheckFrustum(false);
 	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
-	gameObject->GetTransform()->SetLocalScale(Vec3(150.f, 150.f, 150.f));
-	gameObject->GetTransform()->SetLocalPosition(Vec3(-325.f + (4 * 150), 225.f, 500.f));
+	gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+	gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f + (4 * 100), 250.f, 500.f));
 	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
