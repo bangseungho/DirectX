@@ -47,7 +47,7 @@ void Transform::PushData()
 	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
 
 	D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = OBJECT_CB->Resource()->GetGPUVirtualAddress() + objCBIndex * objCBByteSize;
-	CMD_LIST->SetGraphicsRootConstantBufferView(1, objCBAddress);
+	GRAPHICS_CMD_LIST->SetGraphicsRootConstantBufferView(1, objCBAddress);
 }
 
 

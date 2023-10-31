@@ -146,8 +146,8 @@ void Scene::PushPassData()
 	passConstants.eyePosW = _mainCamera->GetTransform()->GetLocalPosition();
 	passConstants.nearZ = _mainCamera->_near;
 	passConstants.farZ = _mainCamera->_far;
-	passConstants.width = gEngine->GetWindow().width;
-	passConstants.height = gEngine->GetWindow().height;
+	passConstants.width = static_cast<float>(gEngine->GetWindow().width);
+	passConstants.height = static_cast<float>(gEngine->GetWindow().height);
 	passConstants.totalTime = TOTAL_TIME;
 	passConstants.deltaTime = DELTA_TIME;
 	passConstants.ambientLight = _ambientLight;

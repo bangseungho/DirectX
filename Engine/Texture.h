@@ -13,6 +13,7 @@ enum class RENDER_GROUP_TYPE
 	DEPTH_STENCIL,
 	G_BUFFER,
 	LIGHTING,
+	COMPUTE,
 };
 
 class Texture : public Object
@@ -27,6 +28,7 @@ public:
 		D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType, D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor = Vec4());
 	void CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_TYPE groupType);
 	void CreateSRVFromDescHeap(TEXTURE_TYPE type = TEXTURE_TYPE::TEXTURE2D);
+	void CreateUAVFromDescHeap();
 
 public:
 	ComPtr<ID3D12Resource> GetResource() { return _resource; }
@@ -36,20 +38,20 @@ public:
 	
 	CD3DX12_CPU_DESCRIPTOR_HANDLE GetSRVHandle() const { return _srvHeapBegin; }
 	TEXTURE_TYPE GetTextureType() const { return _type; }
+
 	uint32 GetTexHeapIndex() const { return _texHeapIndex; }
-	void SetTexHeapIndex(uint32 index) { _texHeapIndex = index; }
+	uint32 GetUavHeapIndex() const { return _uavHeapIndex; }
 
 private:
 	ComPtr<ID3D12Resource>			_resource;
 	ComPtr<ID3D12Resource>			_uploadHeap;
-	TEXTURE_TYPE					_type;
+	TEXTURE_TYPE					_type; 
+
 	uint32							_texHeapIndex = 0;
+	uint32							_uavHeapIndex = 0;
 
 	ComPtr<ID3D12DescriptorHeap>	_srvHeap;
 	ComPtr<ID3D12DescriptorHeap>	_rtvHeap;
 	ComPtr<ID3D12DescriptorHeap>	_dsvHeap;
 	CD3DX12_CPU_DESCRIPTOR_HANDLE	_srvHeapBegin = {};
-
-public:
-	static uint32 TexHeapIndex;
 };

@@ -488,6 +488,13 @@ void Resources::CreateDefaultShader()
 		shader->Init(L"..\\Output\\cso\\Final_vs.cso", L"..\\Output\\cso\\Final_ps.cso", info);
 		Add<Shader>("Final", shader);
 	}
+
+	// Compute Shader
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->Init(L"..\\Output\\cso\\Compute_cs.cso");
+		Add<Shader>("Compute", shader);
+	}
 }
 
 void Resources::CreateDefaultTexture()
@@ -533,6 +540,11 @@ void Resources::CreateDefaultTexture()
 			texMap->CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURE2D);
 	}
 
+	sptr<Texture> texture = GET_SINGLE(Resources)->CreateTexture("UAVTexture",
+		DXGI_FORMAT_R8G8B8A8_UNORM, 1024, 1024,
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::COMPUTE,
+		D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 }
 
 void Resources::CreateDefaultMaterial()
@@ -703,5 +715,18 @@ void Resources::CreateDefaultMaterial()
 		finalMaterial->SetMatCBIndex(16);
 		finalMaterial->SetShader(shader);
 		Add<Material>("Final", move(finalMaterial));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Compute");
+		auto material = make_shared<Material>();
+		material->SetShader(shader);
+		material->Dispatch(1, 1024, 1);
+
+		shared_ptr<Shader> tex = Get<Shader>("Tex");
+		material->SetShader(tex);
+		material->SetDiffuseSrvHeapIndex(Get<Texture>("UAVTexture")->GetTexHeapIndex());
+		material->SetMatCBIndex(17);
+		Add<Material>("Compute", move(material));
 	}
 }

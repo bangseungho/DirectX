@@ -24,7 +24,10 @@ public:
 	void SetNormalSrvHeapIndex(uint8 index) { _params.NormalMapIndex = static_cast<uint8>(index); }
 	void SetRoughnessSrvHeapIndex(uint8 index) { _params.RoughnessMapIndex = static_cast<uint8>(index); }
 
+	void Dispatch(uint32 x, uint32 y, uint32 z);
+
 	void Update();
+	void PushComputeData();
 
 private:
 	shared_ptr<class Shader> _shader;

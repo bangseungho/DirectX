@@ -13,7 +13,6 @@ void CS_Main(int3 threadIndex : SV_DispatchThreadID)
         gRwTex0[threadIndex.xy] = float4(1.f, 0.f, 0.f, 1.f);
     else 
         gRwTex0[threadIndex.xy] = float4(0.f, 1.f, 0.f, 1.f);
-    
 }
 
 #endif

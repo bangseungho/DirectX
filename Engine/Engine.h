@@ -26,7 +26,8 @@ public:
 
 public:
 	sptr<Device> GetDevice() { return _device; }
-	sptr<GraphicsCommandQueue> GetCmdQueue() { return _cmdQueue; }
+	sptr<GraphicsCommandQueue> GetGraphicsCmdQueue() { return _graphicsCmdQueue; }
+	sptr<ComputeCommandQueue> GetComputeCmdQueue() { return _computeCmdQueue; }
 	sptr<SwapChain> GetSwapChain() { return _swapChain; }
 	sptr<RootSignature> GetRootSignature() { return _rootSignature; }
 	sptr<TableDescriptorHeap> GetTableDescHeap() { return _tableDescHeap; }
@@ -50,7 +51,8 @@ private:
 	D3D12_RECT		_scissorRect = {};
 
 	sptr<Device> _device;
-	sptr<GraphicsCommandQueue> _cmdQueue;
+	sptr<GraphicsCommandQueue> _graphicsCmdQueue;
+	sptr<ComputeCommandQueue> _computeCmdQueue;
 	sptr<SwapChain> _swapChain;
 	sptr<RootSignature> _rootSignature;
 	sptr<TableDescriptorHeap> _tableDescHeap;

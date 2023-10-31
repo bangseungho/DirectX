@@ -22,10 +22,10 @@ void Game::Init(const WindowInfo& info)
 	uint32 objectCount = GET_SINGLE(SceneManager)->LoadScene(L"TestScene");
 	gEngine->BuildFrameResource(DEVICE, objectCount);
 
-	ThrowIfFailed(CMD_LIST->Close());
-	ID3D12CommandList* cmdsLists[] = { CMD_LIST.Get() };
-	CMD_QUEUE->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
-	gEngine->GetCmdQueue()->WaitSync();
+	ThrowIfFailed(GRAPHICS_CMD_LIST->Close());
+	ID3D12CommandList* cmdsLists[] = { GRAPHICS_CMD_LIST.Get() };
+	GRAPHICS_CMD_QUEUE->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+	gEngine->GetGraphicsCmdQueue()->WaitSync();
 }
 
 void Game::Update()

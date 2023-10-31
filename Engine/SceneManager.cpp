@@ -85,6 +85,9 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	SetLayerName(0, L"Default");
 	SetLayerName(1, L"UI");
 #pragma endregion
+
+
+
 //============================================================================== Scene
 	shared_ptr<Scene> scene = make_shared<Scene>();
 //============================================================================== Camera
@@ -320,6 +323,25 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
 		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("SpecularLightTarget");
+		meshRenderer->SetMaterial(material);
+	}
+	gameObject->AddComponent(meshRenderer);
+	scene->AddGameObject(gameObject);
+}
+#pragma endregion
+#pragma region UICompute
+{
+	sptr<GameObject> gameObject = make_shared<GameObject>();
+	gameObject->Init();
+	gameObject->SetCheckFrustum(false);
+	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+	gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+	gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f + (5 * 100), 250.f, 500.f));
+	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	{
+		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Compute");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);

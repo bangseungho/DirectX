@@ -3,6 +3,8 @@
 #include "SwapChain.h"
 #include "Engine.h"
 
+//===================================================================GraphicsCommandQueue
+
 GraphicsCommandQueue::~GraphicsCommandQueue()
 {
 	::CloseHandle(_fenceEvent);
@@ -15,7 +17,6 @@ void GraphicsCommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChai
 	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
 	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-
 	device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&_cmdQueue));
 
 	device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&_cmdAlloc));
@@ -54,7 +55,7 @@ void GraphicsCommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_REC
 		D3D12_RESOURCE_STATE_PRESENT,
 		D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-	_cmdList->SetGraphicsRootSignature(ROOT_SIGNATURE.Get());
+	_cmdList->SetGraphicsRootSignature(GRAPHICS_ROOT_SIGNATURE.Get());
 
 	//DESCHEAP->Update(backIndex);
 
@@ -68,7 +69,7 @@ void GraphicsCommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_REC
 	_cmdList->SetGraphicsRootShaderResourceView(2, matData->GetGPUVirtualAddress());
 
 	CD3DX12_GPU_DESCRIPTOR_HANDLE skyTexDescriptor(DESCHEAP->GetSRV()->GetGPUDescriptorHandleForHeapStart());
-	skyTexDescriptor.Offset(DESCHEAP->GetSkyTexHeapIndex(), DESCHEAP->GetCbvSrvDescriptorSize());
+	skyTexDescriptor.Offset(DESCHEAP->GetSkyTexHeapIndex(), DESCHEAP->GetCbvSrvUavDescriptorSize());
 	_cmdList->SetGraphicsRootDescriptorTable(3, skyTexDescriptor);
 
 	_cmdList->SetGraphicsRootDescriptorTable(4, DESCHEAP->GetSRV()->GetGPUDescriptorHandleForHeapStart());
@@ -100,4 +101,55 @@ void GraphicsCommandQueue::RenderEnd()
 
 	CURR_FRAMERESOURCE->Fence = ++_fenceValue;
 	_cmdQueue->Signal(_fence.Get(), _fenceValue);
+}
+
+//=================================================================== ComputeCommandQueue
+
+ComputeCommandQueue::~ComputeCommandQueue()
+{
+	::CloseHandle(_fenceEvent);
+}
+
+void ComputeCommandQueue::Init(ComPtr<ID3D12Device> device)
+{
+	D3D12_COMMAND_QUEUE_DESC queueDesc = {};
+	queueDesc.Type = D3D12_COMMAND_LIST_TYPE_COMPUTE;
+	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+	device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&_cmdQueue));
+
+	device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_COMPUTE, IID_PPV_ARGS(&_cmdAlloc));
+	device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COMPUTE, _cmdAlloc.Get(), nullptr, IID_PPV_ARGS(&_cmdList));
+
+	device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&_fence));
+	_fenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
+}
+
+
+void ComputeCommandQueue::WaitSync()
+{
+	_fenceValue++;
+
+	_cmdQueue->Signal(_fence.Get(), _fenceValue);
+
+	if (_fence->GetCompletedValue() < _fenceValue)
+	{
+		_fence->SetEventOnCompletion(_fenceValue, _fenceEvent);
+		::WaitForSingleObject(_fenceEvent, INFINITE);
+	}
+}
+
+void ComputeCommandQueue::FlushComputeCommandQueue()
+{
+	_cmdList->Close();
+
+	ID3D12CommandList* cmdListArr[] = { _cmdList.Get() };
+	auto t = _countof(cmdListArr);
+	_cmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
+
+	WaitSync();
+
+	_cmdAlloc->Reset();
+	_cmdList->Reset(_cmdAlloc.Get(), nullptr);
+
+	_cmdList->SetComputeRootSignature(COMPUTE_ROOT_SIGNATURE.Get());
 }

@@ -4,11 +4,17 @@
 
 void RootSignature::Init()
 {
+	CreateGraphicsRootSignature();
+	CreateComputeRootSignature();
+}
+
+void RootSignature::CreateGraphicsRootSignature()
+{
 	CD3DX12_DESCRIPTOR_RANGE texCubeTable;
 	texCubeTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURECUBE_COUNT, 0);
 
 	CD3DX12_DESCRIPTOR_RANGE tex2DTable;
-	tex2DTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURE2D_COUNT, 1);
+	tex2DTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURE2D_COUNT + 1, 1);
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[5];
 	slotRootParameter[0].InitAsConstantBufferView(0);
@@ -32,7 +38,36 @@ void RootSignature::Init()
 	}
 	ThrowIfFailed(hr);
 
-	ThrowIfFailed(DEVICE->CreateRootSignature(0, blobSignature->GetBufferPointer(), blobSignature->GetBufferSize(), IID_PPV_ARGS(&_signature)))
+	ThrowIfFailed(DEVICE->CreateRootSignature(0, blobSignature->GetBufferPointer(), blobSignature->GetBufferSize(), IID_PPV_ARGS(&_graphicsRootSignature)))
+}
+
+void RootSignature::CreateComputeRootSignature()
+{
+	//CD3DX12_DESCRIPTOR_RANGE srvTable;
+	//srvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURE2D_COUNT + 1, 0);
+
+	CD3DX12_DESCRIPTOR_RANGE uavTable;
+	uavTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
+
+	CD3DX12_ROOT_PARAMETER slotRootParameter[1];
+	//slotRootParameter[0].InitAsDescriptorTable(1, &srvTable);
+	slotRootParameter[0].InitAsDescriptorTable(1, &uavTable);
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, slotRootParameter,
+		0, nullptr,
+		D3D12_ROOT_SIGNATURE_FLAG_NONE);
+
+	ComPtr<ID3DBlob> blobSignature = nullptr;
+	ComPtr<ID3DBlob> blobError = nullptr;
+	HRESULT hr = D3D12SerializeRootSignature(&rootSigDesc, D3D_ROOT_SIGNATURE_VERSION_1, &blobSignature, &blobError);
+
+	if (blobError != nullptr) {
+		::OutputDebugStringA((char*)blobError->GetBufferPointer());
+	}
+	ThrowIfFailed(hr);
+
+	ThrowIfFailed(DEVICE->CreateRootSignature(0, blobSignature->GetBufferPointer(), blobSignature->GetBufferSize(), IID_PPV_ARGS(&_computeRootSignature)));
+	COMPUTE_CMD_LIST->SetComputeRootSignature(_computeRootSignature.Get());
 }
 
 array<const CD3DX12_STATIC_SAMPLER_DESC, STATIC_SAMPLER_COUNT> RootSignature::GetStaticSamplers()

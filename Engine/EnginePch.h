@@ -216,17 +216,21 @@ struct MaterialConstants
 	int32 LightIndex = -1;
 };
 
-#define DEVICE					gEngine->GetDevice()->GetDevice()
+#define DEVICE							gEngine->GetDevice()->GetDevice()
 
-#define DESCHEAP				gEngine->GetTableDescHeap()
+#define DESCHEAP						gEngine->GetTableDescHeap()
 
-#define CMD_QUEUE				gEngine->GetCmdQueue()->GetCmdQueue()
-#define CMD_LIST				gEngine->GetCmdQueue()->GetCmdList()
-#define CMD_ALLOC				gEngine->GetCmdQueue()->GetCmdAlloc()
+#define GRAPHICS_CMD_QUEUE				gEngine->GetGraphicsCmdQueue()->GetCmdQueue()
+#define GRAPHICS_CMD_LIST				gEngine->GetGraphicsCmdQueue()->GetCmdList()
+#define GRAPHICS_CMD_ALLOC				gEngine->GetGraphicsCmdQueue()->GetCmdAlloc()
 
-#define CURR_FRAMERESOURCE		gEngine->GetCurrFrameResource()
-#define CURR_OBJECT_CB			gEngine->GetCurrFrameResource()->ObjectCB
-#define ROOT_SIGNATURE			gEngine->GetRootSignature()->GetSignature()
+#define COMPUTE_CMD_LIST				gEngine->GetComputeCmdQueue()->GetCmdList()
+
+#define CURR_FRAMERESOURCE				gEngine->GetCurrFrameResource()
+#define CURR_OBJECT_CB					gEngine->GetCurrFrameResource()->ObjectCB
+
+#define GRAPHICS_ROOT_SIGNATURE			gEngine->GetRootSignature()->GetGraphicsRootSignature()
+#define COMPUTE_ROOT_SIGNATURE			gEngine->GetRootSignature()->GetComputeRootSignature()
 
 #define OBJECT_CB gEngine->GetCurrFrameResource()->ObjectCB
 #define PASS_CB gEngine->GetCurrFrameResource()->PassCB

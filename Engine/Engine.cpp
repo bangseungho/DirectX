@@ -6,7 +6,7 @@
 Engine::~Engine()
 {
 	if (_device != nullptr)
-		_cmdQueue->WaitSync();
+		_graphicsCmdQueue->WaitSync();
 }
 
 void Engine::Init(const WindowInfo& info)
@@ -17,14 +17,16 @@ void Engine::Init(const WindowInfo& info)
 	_scissorRect = CD3DX12_RECT(0, 0, info.width, info.height);
 
 	_device = make_shared<Device>();
-	_cmdQueue = make_shared<GraphicsCommandQueue>();
+	_graphicsCmdQueue = make_shared<GraphicsCommandQueue>();
+	_computeCmdQueue = make_shared<ComputeCommandQueue>();
 	_swapChain = make_shared<SwapChain>();
 	_rootSignature = make_shared<RootSignature>();
 	_tableDescHeap = make_shared<TableDescriptorHeap>();
 
 	_device->Init();
-	_cmdQueue->Init(_device->GetDevice(), _swapChain);
-	_swapChain->Init(info, _device->GetDevice(), _device->GetDXGI(), _cmdQueue->GetCmdQueue());
+	_graphicsCmdQueue->Init(_device->GetDevice(), _swapChain);
+	_computeCmdQueue->Init(_device->GetDevice());
+	_swapChain->Init(info, _device->GetDevice(), _device->GetDXGI(), _graphicsCmdQueue->GetCmdQueue());
 	_rootSignature->Init();
 	_tableDescHeap->Init();
 
@@ -42,10 +44,10 @@ void Engine::Update()
 	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % FRAME_RESOURCE_COUNT;
 	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
 
-	if (mCurrFrameResource->Fence != 0 && _cmdQueue->GetFence()->GetCompletedValue() < mCurrFrameResource->Fence)
+	if (mCurrFrameResource->Fence != 0 && _graphicsCmdQueue->GetFence()->GetCompletedValue() < mCurrFrameResource->Fence)
 	{
 		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
-		ThrowIfFailed(_cmdQueue->GetFence()->SetEventOnCompletion(mCurrFrameResource->Fence, eventHandle));
+		ThrowIfFailed(_graphicsCmdQueue->GetFence()->SetEventOnCompletion(mCurrFrameResource->Fence, eventHandle));
 		WaitForSingleObject(eventHandle, INFINITE);
 		CloseHandle(eventHandle);
 	}
@@ -76,12 +78,12 @@ void Engine::BuildFrameResource(ComPtr<ID3D12Device> device, uint32 objectCount)
 
 void Engine::RenderBegin()
 {
-	_cmdQueue->RenderBegin(&_viewport, &_scissorRect);
+	_graphicsCmdQueue->RenderBegin(&_viewport, &_scissorRect);
 }
 
 void Engine::RenderEnd()
 {
-	_cmdQueue->RenderEnd();
+	_graphicsCmdQueue->RenderEnd();
 }
 
 void Engine::ResizeWindow(int32 width, int32 height)
