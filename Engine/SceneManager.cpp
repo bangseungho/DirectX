@@ -223,7 +223,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("leather");
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("particle");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);

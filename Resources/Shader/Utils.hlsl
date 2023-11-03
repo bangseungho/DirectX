@@ -32,7 +32,7 @@ LightColor BlinnPhong(float3 lightStrength, float3 lightVec, float3 normal, floa
 
     specAlbedo = specAlbedo / (specAlbedo + 1.0f);
 
-    color.diffuse = mat.diffuseAlbedo.rgb * lightStrength;
+    color.diffuse =  lightStrength;
     color.specular = specAlbedo * lightStrength;
     
     return color;

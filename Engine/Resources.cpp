@@ -380,7 +380,7 @@ void Resources::CreateDefaultShader()
 		};
 
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Sky_vs.cso", L"..\\Output\\cso\\Sky_ps.cso", info);
+		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Sky_vs.cso", L"..\\Output\\cso\\Sky_ps.cso");
 		Add<Shader>("SkyBox", shader);
 	}
 
@@ -393,7 +393,7 @@ void Resources::CreateDefaultShader()
 		};
 
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Tex_vs.cso", L"..\\Output\\cso\\Tex_ps.cso", info);
+		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Tex_vs.cso", L"..\\Output\\cso\\Tex_ps.cso");
 		Add<Shader>("Tex", shader);
 	}
 
@@ -404,7 +404,7 @@ void Resources::CreateDefaultShader()
 		};
 
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso", info);
+		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso");
 		Add<Shader>("Forward", shader);
 	}
 
@@ -416,7 +416,7 @@ void Resources::CreateDefaultShader()
 		};
 
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso", info);
+		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso");
 		Add<Shader>("Grid", shader);
 	}
 
@@ -427,7 +427,7 @@ void Resources::CreateDefaultShader()
 		};
 
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Deferred_vs.cso", L"..\\Output\\cso\\Deferred_ps.cso", info);
+		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Deferred_vs.cso", L"..\\Output\\cso\\Deferred_ps.cso");
 		Add<Shader>("Deferred", shader);
 	}
 
@@ -441,7 +441,7 @@ void Resources::CreateDefaultShader()
 		};
 
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\DirLighting_vs.cso", L"..\\Output\\cso\\DirLighting_ps.cso", info);
+		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\DirLighting_vs.cso", L"..\\Output\\cso\\DirLighting_ps.cso");
 		Add<Shader>("DirLight", shader);
 	}
 
@@ -456,7 +456,7 @@ void Resources::CreateDefaultShader()
 		};
 
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\PointLighting_vs.cso", L"..\\Output\\cso\\PointLighting_ps.cso", info);
+		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\PointLighting_vs.cso", L"..\\Output\\cso\\PointLighting_ps.cso");
 		Add<Shader>("PointLight", shader);
 	}
 
@@ -471,8 +471,30 @@ void Resources::CreateDefaultShader()
 		};
 
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\SpotLighting_vs.cso", L"..\\Output\\cso\\SpotLighting_ps.cso", info);
+		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\SpotLighting_vs.cso", L"..\\Output\\cso\\SpotLighting_ps.cso");
 		Add<Shader>("SpotLight", shader);
+	}
+
+	// Particle
+	{
+		ShaderInfo info =
+		{
+			SHADER_TYPE::FORWARD,
+			RASTERIGER_TYPE::CULL_NONE,
+			DEPTH_STENCIL_TYPE::LESS_NO_WRITE,
+			BLEND_TYPE::ALPHA_BLEND,
+		};
+
+		const D3D_SHADER_MACRO defines[] =
+		{
+			"NO_LIGHTING", "1",
+			NULL, NULL
+		};
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->CompileGraphicsShader(info, defines, L"..\\Resources\\Shader\\Forward_vs.hlsl", L"Resources\\Shader\\Forward_ps.hlsl");
+		//shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso");
+		Add<Shader>("Particle", shader);
 	}
 
 	// Final
@@ -485,14 +507,14 @@ void Resources::CreateDefaultShader()
 		};
 
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Final_vs.cso", L"..\\Output\\cso\\Final_ps.cso", info);
+		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Final_vs.cso", L"..\\Output\\cso\\Final_ps.cso");
 		Add<Shader>("Final", shader);
 	}
 
 	// Compute Shader
 	{
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->Init(L"..\\Output\\cso\\Compute_cs.cso");
+		shader->LoadComputeShader(L"..\\Output\\cso\\Compute_cs.cso");
 		Add<Shader>("Compute", shader);
 	}
 }
@@ -512,6 +534,8 @@ void Resources::CreateDefaultTexture()
 		"wall_normal",
 		"wall_roughness",
 
+		"particle",
+
 		"skybox",
 	};
 
@@ -527,6 +551,8 @@ void Resources::CreateDefaultTexture()
 		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_basecolor.dds",
 		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_normal_BC7.dds",
 		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_roughness.dds",
+
+		L"..\\Resources\\Texture\\particle.dds",
 
 		L"..\\Resources\\Texture\\Sky.dds",
 	};
@@ -641,7 +667,6 @@ void Resources::CreateDefaultMaterial()
 		leather->SetRoughness(0.125f);
 		leather->SetShader(shader);
 		Add<Material>("leather", move(leather));
-
 	}
 
 	{
@@ -728,5 +753,15 @@ void Resources::CreateDefaultMaterial()
 		material->SetDiffuseSrvHeapIndex(Get<Texture>("UAVTexture")->GetTexHeapIndex());
 		material->SetMatCBIndex(17);
 		Add<Material>("Compute", move(material));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Particle");
+		auto particle = make_shared<Material>();
+		//particle->SetDiffuse(Vec4(1.f, 1.f, 1.f, 0.5f));
+		particle->SetMatCBIndex(18);
+		particle->SetDiffuseSrvHeapIndex(Get<Texture>("particle")->GetTexHeapIndex());
+		particle->SetShader(shader);
+		Add<Material>("particle", move(particle));
 	}
 }

@@ -14,7 +14,7 @@ void RootSignature::CreateGraphicsRootSignature()
 	texCubeTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURECUBE_COUNT, 0);
 
 	CD3DX12_DESCRIPTOR_RANGE tex2DTable;
-	tex2DTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURE2D_COUNT + 1, 1);
+	tex2DTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURE2D_COUNT + COMPUTE_TEXTURE_COUNT, 1);
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[5];
 	slotRootParameter[0].InitAsConstantBufferView(0);
@@ -43,14 +43,10 @@ void RootSignature::CreateGraphicsRootSignature()
 
 void RootSignature::CreateComputeRootSignature()
 {
-	//CD3DX12_DESCRIPTOR_RANGE srvTable;
-	//srvTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURE2D_COUNT + 1, 0);
-
 	CD3DX12_DESCRIPTOR_RANGE uavTable;
-	uavTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
+	uavTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, COMPUTE_TEXTURE_COUNT, 0);
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[1];
-	//slotRootParameter[0].InitAsDescriptorTable(1, &srvTable);
 	slotRootParameter[0].InitAsDescriptorTable(1, &uavTable);
 
 	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, slotRootParameter,

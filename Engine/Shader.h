@@ -52,16 +52,18 @@ public:
 	virtual ~Shader();
 
 public:
-	void Init(const wstring& vsPath, const wstring& psPath, ShaderInfo info = ShaderInfo());
-	void Init(const wstring& csPath);
+	void LoadGraphicsShader(ShaderInfo info, const wstring& vs = L"", const wstring& ps = L"", const wstring& gs = L"");
+	void CompileGraphicsShader(ShaderInfo info, const D3D_SHADER_MACRO* define = nullptr, const wstring& vs = L"", const wstring& ps = L"", const wstring& gs = L"");
+	void LoadComputeShader(const wstring& cs = L"");
+	void CompileComputeShader(const wstring& cs = L"");
+
 	void Update();
 
 	SHADER_TYPE GetShaderType() { return _info.shaderType; }
 
 private:
-	ComPtr<ID3DBlob> CreateShader(const wstring& path);
-	ComPtr<ID3DBlob> CreateVertexShader(const wstring& path);
-	ComPtr<ID3DBlob> CreatePixelShader(const wstring& path);
+	void CreateComputeShader();
+	void CreateGraphicsShader();
 
 private:
 	ShaderInfo							_info;

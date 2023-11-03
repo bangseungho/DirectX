@@ -14,10 +14,12 @@ float4 PS_Main(VS_OUT pin) : SV_Target
 {
     float4 pout = (float4)0;
 
-    float4 diffuse = gTextureMaps[DIFFUSELIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.uv);
+    float4 diffuseAlbedo = gTextureMaps[DIFFUSEMAP_INDEX].Sample(gsamAnisotropicWrap, pin.uv);
+    float4 diffuseLight = gTextureMaps[DIFFUSELIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.uv);
     float4 specular = gTextureMaps[SPECULARLIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.uv);
     
-    pout = diffuse + specular;
+    
+    pout = diffuseLight * diffuseAlbedo + specular;
 
     return pout;
 }

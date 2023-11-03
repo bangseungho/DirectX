@@ -71,7 +71,7 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     // 분산 재질에서 알파를 가져온다.
     resColor.a = diffuseAlbedo.a;
     
-    return resColor;
+    return diffuseAlbedo;
 }
 
 #endif

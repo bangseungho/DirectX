@@ -10,13 +10,56 @@ Shader::~Shader()
 {
 }
 
-void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info)
+void Shader::LoadGraphicsShader(ShaderInfo info, const wstring& vs, const wstring& ps, const wstring& gs)
 {
 	_info = info;
 
-	_vsBlob = CreateVertexShader(vsPath);
-	_psBlob = CreatePixelShader(psPath);
+	if (!vs.empty())
+		_vsBlob = d3dUtil::LoadBinary(vs);
 
+	if (!ps.empty())
+		_psBlob = d3dUtil::LoadBinary(ps);
+
+	if (!gs.empty())
+		_gsBlob = d3dUtil::LoadBinary(gs);
+
+	CreateGraphicsShader();
+}
+
+void Shader::CompileGraphicsShader(ShaderInfo info, const D3D_SHADER_MACRO* define, const wstring& vs, const wstring& ps, const wstring& gs)
+{
+	_info = info;
+
+	if (!vs.empty())
+		_vsBlob = d3dUtil::CompileShader(vs, nullptr, "VS_Main", "vs_5_1");
+
+	if (!ps.empty())
+		_psBlob = d3dUtil::CompileShader(ps, define, "PS_Main", "ps_5_1");
+
+	if (!gs.empty())
+		_gsBlob = d3dUtil::CompileShader(gs, nullptr, "GS_Main", "gs_5_1");
+
+	CreateGraphicsShader();
+}
+
+void Shader::LoadComputeShader(const wstring& cs)
+{
+	if (!cs.empty())
+		_csBlob = d3dUtil::LoadBinary(cs);
+
+	CreateComputeShader();
+}
+
+void Shader::CompileComputeShader(const wstring& cs)
+{
+	if (!cs.empty())
+		_csBlob = d3dUtil::CompileShader(cs, nullptr, "CS_Main", "cs_5_1");
+
+	CreateComputeShader();
+}
+
+void Shader::CreateGraphicsShader()
+{
 	D3D12_INPUT_ELEMENT_DESC desc[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
@@ -41,13 +84,13 @@ void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info
 	_graphicsPipelineDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
 	_graphicsPipelineDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
 	_graphicsPipelineDesc.SampleMask = UINT_MAX;
-	_graphicsPipelineDesc.PrimitiveTopologyType = info.topologyType;
+	_graphicsPipelineDesc.PrimitiveTopologyType = _info.topologyType;
 	_graphicsPipelineDesc.NumRenderTargets = 1;
 	_graphicsPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	_graphicsPipelineDesc.SampleDesc.Count = 1;
 	_graphicsPipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 
-	switch (info.shaderType)
+	switch (_info.shaderType)
 	{
 	case SHADER_TYPE::FORWARD:
 		_graphicsPipelineDesc.NumRenderTargets = 1;
@@ -71,7 +114,7 @@ void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info
 	}
 
 
-	switch (info.rasterizerType)
+	switch (_info.rasterizerType)
 	{
 	case RASTERIGER_TYPE::CULL_NONE:
 		_graphicsPipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
@@ -93,7 +136,7 @@ void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info
 		break;
 	}
 
-	switch (info.dpethStencilType)
+	switch (_info.dpethStencilType)
 	{
 	case DEPTH_STENCIL_TYPE::LESS:
 		_graphicsPipelineDesc.DepthStencilState.DepthEnable = TRUE;
@@ -130,7 +173,7 @@ void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info
 
 	D3D12_RENDER_TARGET_BLEND_DESC& rt = _graphicsPipelineDesc.BlendState.RenderTarget[0];
 
-	switch (info.blendType)
+	switch (_info.blendType)
 	{
 	case BLEND_TYPE::DEFAULT:
 		rt.BlendEnable = FALSE;
@@ -143,6 +186,7 @@ void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info
 		rt.LogicOpEnable = FALSE;
 		rt.SrcBlend = D3D12_BLEND_SRC_ALPHA;
 		rt.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+		rt.BlendOp = D3D12_BLEND_OP_ADD;
 		break;
 	case BLEND_TYPE::ONE_TO_ONE_BLEND:
 		rt.BlendEnable = TRUE;
@@ -156,18 +200,16 @@ void Shader::Init(const wstring& vsPath, const wstring& psPath,  ShaderInfo info
 	DEVICE->CreateGraphicsPipelineState(&_graphicsPipelineDesc, IID_PPV_ARGS(&_pipelineState));
 }
 
-void Shader::Init(const wstring& csPath)
+void Shader::CreateComputeShader()
 {
 	_info.shaderType = SHADER_TYPE::COMPUTE;
 
-	_csBlob = CreateShader(csPath);
-	
 	_computePipelineDesc.CS =
 	{
 		reinterpret_cast<BYTE*>(_csBlob->GetBufferPointer()),
 		_csBlob->GetBufferSize()
 	};
-	
+
 	_computePipelineDesc.pRootSignature = COMPUTE_ROOT_SIGNATURE.Get();
 
 	ThrowIfFailed(DEVICE->CreateComputePipelineState(&_computePipelineDesc, IID_PPV_ARGS(&_pipelineState)));
@@ -190,29 +232,4 @@ void Shader::Update()
 	}
 }
 
-ComPtr<ID3DBlob> Shader::CreateShader(const wstring& path)
-{
-	ifstream in{ path, std::ios::binary | std::ios::ate };
 
-	in.seekg(0, ios_base::end);
-	ifstream::pos_type size = (int)in.tellg();
-	in.seekg(0, ios_base::beg);
-
-	ComPtr<ID3DBlob> blob;
-	ThrowIfFailed(D3DCreateBlob(size, blob.GetAddressOf()));
-	
-	in.read((char*)blob->GetBufferPointer(), size);
-	in.close();
-
-	return blob;
-}
-
-ComPtr<ID3DBlob> Shader::CreateVertexShader(const wstring& path)
-{
-	return CreateShader(path);
-}
-
-ComPtr<ID3DBlob> Shader::CreatePixelShader(const wstring& path)
-{
-	return CreateShader(path);
-}

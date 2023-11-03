@@ -19,8 +19,6 @@ public:
 	uint32 AddSrvCount() { uint32 srvCount = _srvCount++; return srvCount; }
 	uint32 AddUavCount() { uint32 uavCount = _uavCount++; return uavCount; }
 
-	//void Update(uint8 currBackIndex);
-
 private:
 	ComPtr<ID3D12DescriptorHeap> _srvHeap;
 	CD3DX12_CPU_DESCRIPTOR_HANDLE _srvHeapBegin = {};

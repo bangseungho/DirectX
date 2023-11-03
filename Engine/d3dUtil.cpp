@@ -17,17 +17,17 @@ bool d3dUtil::IsKeyDown(int vkeyCode)
 
 ComPtr<ID3DBlob> d3dUtil::LoadBinary(const std::wstring& filename)
 {
-    std::ifstream fin(filename, std::ios::binary);
+    ifstream in{ filename, std::ios::binary | std::ios::ate };
 
-    fin.seekg(0, std::ios_base::end);
-    std::ifstream::pos_type size = (int)fin.tellg();
-    fin.seekg(0, std::ios_base::beg);
+    in.seekg(0, ios_base::end);
+    ifstream::pos_type size = (int)in.tellg();
+    in.seekg(0, ios_base::beg);
 
     ComPtr<ID3DBlob> blob;
     ThrowIfFailed(D3DCreateBlob(size, blob.GetAddressOf()));
 
-    fin.read((char*)blob->GetBufferPointer(), size);
-    fin.close();
+    in.read((char*)blob->GetBufferPointer(), size);
+    in.close();
 
     return blob;
 }
@@ -109,6 +109,8 @@ ComPtr<ID3DBlob> d3dUtil::CompileShader(
 
     return byteCode;
 }
+
+
 
 std::wstring DxException::ToString()const
 {

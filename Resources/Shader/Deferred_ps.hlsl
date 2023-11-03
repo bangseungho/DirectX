@@ -48,6 +48,8 @@ PS_OUT PS_Main(VS_OUT pin)
     if (diffuseMapIndex != -1)
         diffuseAlbedo = gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.uv) * diffuseAlbedo;
     
+    clip(diffuseAlbedo.a - 0.1f);
+    
     // ³ë¸Ö ¸Ê
     float4 normalMap = float4(pin.normalW, 0.f);
     if (normalMapIndex != -1)
