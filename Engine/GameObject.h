@@ -36,28 +36,28 @@ public:
 	
  	void AddComponent(sptr<Component> component);
 
-	void SetCheckFrustum(bool checkFrustum) { _checkFrustum = checkFrustum; }
-	bool GetCheckFrustum() { return _checkFrustum; }
+	void SetCheckFrustum(bool checkFrustum) { mCheckFrustum = checkFrustum; }
+	bool GetCheckFrustum() { return mCheckFrustum; }
 
-	void SetObjCBIndex(uint32 index) { _objCBIndex = index; }
-	uint32 GetObjCBIndex() const { return _objCBIndex; }
+	void SetObjCBIndex(uint32 index) { mObjectIndex = index; }
+	uint32 GetObjCBIndex() const { return mObjectIndex; }
 
-	void SetMatIndex(uint32 index) { _matIndex = index; }
-	uint32 GetMatIndex() const { return _matIndex; }
+	void SetMatIndex(uint32 index) { mMatIndex = index; }
+	uint32 GetMatIndex() const { return mMatIndex; }
 
-	void SetLayerIndex(uint8 layer) { _layerIndex = layer; }
-	uint8 GetLayerIndex() { return _layerIndex; }
+	void SetLayerIndex(uint8 layer) { mLayerIndex = layer; }
+	uint8 GetLayerIndex() { return mLayerIndex; }
 
 	static uint32 ObjCBIndex;
 
 private:
-	array<sptr<Component>, FIXED_COMPONENT_COUNT> _components;
-	vector<sptr<MonoBehaviour>> _scripts;
+	array<sptr<Component>, FIXED_COMPONENT_COUNT>	mComponents;
+	vector<sptr<MonoBehaviour>>						mScripts;
 
-	bool _checkFrustum = true;
-	uint32 _objCBIndex = -1;
-	uint32 _matIndex = -1;
+	bool		mCheckFrustum = true;
+	uint32		mObjectIndex = -1;
+	uint32		mMatIndex = -1;
 
-	uint8 _layerIndex = 0;
+	uint8		mLayerIndex = 0;
 };
 

@@ -5,22 +5,22 @@
 
 struct VS_IN
 {
-    float3 pos : POSITION;
-    float2 uv : TEXCOORD;
+    float3 Pos : Position;
+    float2 Uv : TEXCOORD;
 };
 
 struct VS_OUT
 {
-    float4 pos : SV_Position;
-    float2 uv : TEXCOORD;
+    float4 Pos : SV_Position;
+    float2 Uv : TEXCOORD;
 };
 
 VS_OUT VS_Main(VS_IN vin)
 {
     VS_OUT vout = (VS_OUT)0.f;
     
-    vout.pos = float4(vin.pos * 2.f, 1.f);
-    vout.uv = vin.uv;
+    vout.Pos = float4(vin.Pos * 2.f, 1.f);
+    vout.Uv = vin.Uv;
     
     return vout;
 }

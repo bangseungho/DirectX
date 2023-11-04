@@ -45,13 +45,13 @@ namespace DirectX
         {
             long x;
             long y;
-            long width;
-            long height;
+            long Width;
+            long Height;
 
             // Creators
-            Rectangle() noexcept : x(0), y(0), width(0), height(0) {}
-            constexpr Rectangle(long ix, long iy, long iw, long ih) noexcept : x(ix), y(iy), width(iw), height(ih) {}
-            explicit Rectangle(const RECT& rct) noexcept : x(rct.left), y(rct.top), width(rct.right - rct.left), height(rct.bottom - rct.top) {}
+            Rectangle() noexcept : x(0), y(0), Width(0), Height(0) {}
+            constexpr Rectangle(long ix, long iy, long iw, long ih) noexcept : x(ix), y(iy), Width(iw), Height(ih) {}
+            explicit Rectangle(const RECT& rct) noexcept : x(rct.left), y(rct.top), Width(rct.right - rct.left), Height(rct.bottom - rct.top) {}
 
             Rectangle(const Rectangle&) = default;
             Rectangle& operator=(const Rectangle&) = default;
@@ -59,36 +59,36 @@ namespace DirectX
             Rectangle(Rectangle&&) = default;
             Rectangle& operator=(Rectangle&&) = default;
 
-            operator RECT() noexcept { RECT rct; rct.left = x; rct.top = y; rct.right = (x + width); rct.bottom = (y + height); return rct; }
+            operator RECT() noexcept { RECT rct; rct.left = x; rct.top = y; rct.right = (x + Width); rct.bottom = (y + Height); return rct; }
         #ifdef __cplusplus_winrt
-            operator Windows::Foundation::Rect() noexcept { return Windows::Foundation::Rect(float(x), float(y), float(width), float(height)); }
+            operator Windows::Foundation::Rect() noexcept { return Windows::Foundation::Rect(float(x), float(y), float(Width), float(Height)); }
         #endif
 
             // Comparison operators
-            bool operator == (const Rectangle& r) const noexcept { return (x == r.x) && (y == r.y) && (width == r.width) && (height == r.height); }
-            bool operator == (const RECT& rct) const noexcept { return (x == rct.left) && (y == rct.top) && (width == (rct.right - rct.left)) && (height == (rct.bottom - rct.top)); }
+            bool operator == (const Rectangle& r) const noexcept { return (x == r.x) && (y == r.y) && (Width == r.Width) && (Height == r.Height); }
+            bool operator == (const RECT& rct) const noexcept { return (x == rct.left) && (y == rct.top) && (Width == (rct.right - rct.left)) && (Height == (rct.bottom - rct.top)); }
 
-            bool operator != (const Rectangle& r) const noexcept { return (x != r.x) || (y != r.y) || (width != r.width) || (height != r.height); }
-            bool operator != (const RECT& rct) const noexcept { return (x != rct.left) || (y != rct.top) || (width != (rct.right - rct.left)) || (height != (rct.bottom - rct.top)); }
+            bool operator != (const Rectangle& r) const noexcept { return (x != r.x) || (y != r.y) || (Width != r.Width) || (Height != r.Height); }
+            bool operator != (const RECT& rct) const noexcept { return (x != rct.left) || (y != rct.top) || (Width != (rct.right - rct.left)) || (Height != (rct.bottom - rct.top)); }
 
             // Assignment operators
-            Rectangle& operator=(_In_ const RECT& rct) noexcept { x = rct.left; y = rct.top; width = (rct.right - rct.left); height = (rct.bottom - rct.top); return *this; }
+            Rectangle& operator=(_In_ const RECT& rct) noexcept { x = rct.left; y = rct.top; Width = (rct.right - rct.left); Height = (rct.bottom - rct.top); return *this; }
 
             // Rectangle operations
             Vector2 Location() const noexcept;
             Vector2 Center() const noexcept;
 
-            bool IsEmpty() const noexcept { return (width == 0 && height == 0 && x == 0 && y == 0); }
+            bool IsEmpty() const noexcept { return (Width == 0 && Height == 0 && x == 0 && y == 0); }
 
-            bool Contains(long ix, long iy) const noexcept { return (x <= ix) && (ix < (x + width)) && (y <= iy) && (iy < (y + height)); }
+            bool Contains(long ix, long iy) const noexcept { return (x <= ix) && (ix < (x + Width)) && (y <= iy) && (iy < (y + Height)); }
             bool Contains(const Vector2& point) const noexcept;
-            bool Contains(const Rectangle& r) const noexcept { return (x <= r.x) && ((r.x + r.width) <= (x + width)) && (y <= r.y) && ((r.y + r.height) <= (y + height)); }
-            bool Contains(const RECT& rct) const noexcept { return (x <= rct.left) && (rct.right <= (x + width)) && (y <= rct.top) && (rct.bottom <= (y + height)); }
+            bool Contains(const Rectangle& r) const noexcept { return (x <= r.x) && ((r.x + r.Width) <= (x + Width)) && (y <= r.y) && ((r.y + r.Height) <= (y + Height)); }
+            bool Contains(const RECT& rct) const noexcept { return (x <= rct.left) && (rct.right <= (x + Width)) && (y <= rct.top) && (rct.bottom <= (y + Height)); }
 
             void Inflate(long horizAmount, long vertAmount) noexcept;
 
-            bool Intersects(const Rectangle& r) const noexcept { return (r.x < (x + width)) && (x < (r.x + r.width)) && (r.y < (y + height)) && (y < (r.y + r.height)); }
-            bool Intersects(const RECT& rct) const noexcept { return (rct.left < (x + width)) && (x < rct.right) && (rct.top < (y + height)) && (y < rct.bottom); }
+            bool Intersects(const Rectangle& r) const noexcept { return (r.x < (x + Width)) && (x < (r.x + r.Width)) && (r.y < (y + Height)) && (y < (r.y + r.Height)); }
+            bool Intersects(const RECT& rct) const noexcept { return (rct.left < (x + Width)) && (x < rct.right) && (rct.top < (y + Height)) && (y < rct.bottom); }
 
             void Offset(long ox, long oy) noexcept { x += ox; y += oy; }
 
@@ -551,7 +551,7 @@ namespace DirectX
                 const Vector3& object, const Vector3& cameraPosition, const Vector3& rotateAxis,
                 _In_opt_ const Vector3* cameraForward = nullptr, _In_opt_ const Vector3* objectForward = nullptr) noexcept;
 
-            static Matrix CreateTranslation(const Vector3& position) noexcept;
+            static Matrix CreateTranslation(const Vector3& Position) noexcept;
             static Matrix CreateTranslation(float x, float y, float z) noexcept;
 
             static Matrix CreateScale(const Vector3& scales) noexcept;
@@ -565,13 +565,13 @@ namespace DirectX
             static Matrix CreateFromAxisAngle(const Vector3& axis, float angle) noexcept;
 
             static Matrix CreatePerspectiveFieldOfView(float fov, float aspectRatio, float nearPlane, float farPlane) noexcept;
-            static Matrix CreatePerspective(float width, float height, float nearPlane, float farPlane) noexcept;
+            static Matrix CreatePerspective(float Width, float Height, float nearPlane, float farPlane) noexcept;
             static Matrix CreatePerspectiveOffCenter(float left, float right, float bottom, float top, float nearPlane, float farPlane) noexcept;
-            static Matrix CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane) noexcept;
+            static Matrix CreateOrthographic(float Width, float Height, float zNearPlane, float zFarPlane) noexcept;
             static Matrix CreateOrthographicOffCenter(float left, float right, float bottom, float top, float zNearPlane, float zFarPlane) noexcept;
 
-            static Matrix CreateLookAt(const Vector3& position, const Vector3& target, const Vector3& up) noexcept;
-            static Matrix CreateWorld(const Vector3& position, const Vector3& forward, const Vector3& up) noexcept;
+            static Matrix CreateLookAt(const Vector3& Position, const Vector3& target, const Vector3& up) noexcept;
+            static Matrix CreateWorld(const Vector3& Position, const Vector3& forward, const Vector3& up) noexcept;
 
             static Matrix CreateFromQuaternion(const Quaternion& quat) noexcept;
 
@@ -608,9 +608,9 @@ namespace DirectX
         {
             Plane() noexcept : XMFLOAT4(0.f, 1.f, 0.f, 0.f) {}
             constexpr Plane(float ix, float iy, float iz, float iw) noexcept : XMFLOAT4(ix, iy, iz, iw) {}
-            Plane(const Vector3& normal, float d) noexcept : XMFLOAT4(normal.x, normal.y, normal.z, d) {}
+            Plane(const Vector3& Normal, float d) noexcept : XMFLOAT4(Normal.x, Normal.y, Normal.z, d) {}
             Plane(const Vector3& point1, const Vector3& point2, const Vector3& point3) noexcept;
-            Plane(const Vector3& point, const Vector3& normal) noexcept;
+            Plane(const Vector3& point, const Vector3& Normal) noexcept;
             explicit Plane(const Vector4& v) noexcept : XMFLOAT4(v.x, v.y, v.z, v.w) {}
             explicit Plane(_In_reads_(4) const float *pArray) noexcept : XMFLOAT4(pArray) {}
             Plane(FXMVECTOR V) noexcept { XMStoreFloat4(this, V); }
@@ -634,7 +634,7 @@ namespace DirectX
 
             // Properties
             Vector3 Normal() const noexcept { return Vector3(x, y, z); }
-            void Normal(const Vector3& normal) noexcept { x = normal.x; y = normal.y; z = normal.z; }
+            void Normal(const Vector3& Normal) noexcept { x = Normal.x; y = Normal.y; z = Normal.z; }
 
             float D() const noexcept { return w; }
             void D(float d) noexcept { w = d; }
@@ -644,8 +644,8 @@ namespace DirectX
             void Normalize(Plane& result) const noexcept;
 
             float Dot(const Vector4& v) const noexcept;
-            float DotCoordinate(const Vector3& position) const noexcept;
-            float DotNormal(const Vector3& normal) const noexcept;
+            float DotCoordinate(const Vector3& Position) const noexcept;
+            float DotNormal(const Vector3& Normal) const noexcept;
 
             // Static functions
             static void Transform(const Plane& plane, const Matrix& M, Plane& result) noexcept;
@@ -836,11 +836,11 @@ namespace DirectX
         class Ray
         {
         public:
-            Vector3 position;
-            Vector3 direction;
+            Vector3 Position;
+            Vector3 Direction;
 
-            Ray() noexcept : position(0, 0, 0), direction(0, 0, 1) {}
-            Ray(const Vector3& pos, const Vector3& dir) noexcept : position(pos), direction(dir) {}
+            Ray() noexcept : Position(0, 0, 0), Direction(0, 0, 1) {}
+            Ray(const Vector3& Pos, const Vector3& dir) noexcept : Position(Pos), Direction(dir) {}
 
             Ray(const Ray&) = default;
             Ray& operator=(const Ray&) = default;
@@ -866,26 +866,26 @@ namespace DirectX
         public:
             float x;
             float y;
-            float width;
-            float height;
+            float Width;
+            float Height;
             float minDepth;
             float maxDepth;
 
             Viewport() noexcept :
-                x(0.f), y(0.f), width(0.f), height(0.f), minDepth(0.f), maxDepth(1.f) {}
+                x(0.f), y(0.f), Width(0.f), Height(0.f), minDepth(0.f), maxDepth(1.f) {}
             constexpr Viewport(float ix, float iy, float iw, float ih, float iminz = 0.f, float imaxz = 1.f) noexcept :
-                x(ix), y(iy), width(iw), height(ih), minDepth(iminz), maxDepth(imaxz) {}
+                x(ix), y(iy), Width(iw), Height(ih), minDepth(iminz), maxDepth(imaxz) {}
             explicit Viewport(const RECT& rct) noexcept :
                 x(float(rct.left)), y(float(rct.top)),
-                width(float(rct.right - rct.left)),
-                height(float(rct.bottom - rct.top)),
+                Width(float(rct.right - rct.left)),
+                Height(float(rct.bottom - rct.top)),
                 minDepth(0.f), maxDepth(1.f) {}
 
         #if defined(__d3d11_h__) || defined(__d3d11_x_h__)
             // Direct3D 11 interop
             explicit Viewport(const D3D11_VIEWPORT& vp) noexcept :
                 x(vp.TopLeftX), y(vp.TopLeftY),
-                width(vp.Width), height(vp.Height),
+                Width(vp.Width), Height(vp.Height),
                 minDepth(vp.MinDepth), maxDepth(vp.MaxDepth) {}
 
             operator D3D11_VIEWPORT() noexcept { return *reinterpret_cast<const D3D11_VIEWPORT*>(this); }
@@ -897,7 +897,7 @@ namespace DirectX
             // Direct3D 12 interop
             explicit Viewport(const D3D12_VIEWPORT& vp) noexcept :
                 x(vp.TopLeftX), y(vp.TopLeftY),
-                width(vp.Width), height(vp.Height),
+                Width(vp.Width), Height(vp.Height),
                 minDepth(vp.MinDepth), maxDepth(vp.MaxDepth) {}
 
             operator D3D12_VIEWPORT() noexcept { return *reinterpret_cast<const D3D12_VIEWPORT*>(this); }
@@ -921,11 +921,11 @@ namespace DirectX
             // Viewport operations
             float AspectRatio() const noexcept;
 
-            Vector3 Project(const Vector3& p, const Matrix& proj, const Matrix& view, const Matrix& world) const noexcept;
-            void Project(const Vector3& p, const Matrix& proj, const Matrix& view, const Matrix& world, Vector3& result) const noexcept;
+            Vector3 Project(const Vector3& p, const Matrix& Proj, const Matrix& View, const Matrix& world) const noexcept;
+            void Project(const Vector3& p, const Matrix& Proj, const Matrix& View, const Matrix& world, Vector3& result) const noexcept;
 
-            Vector3 Unproject(const Vector3& p, const Matrix& proj, const Matrix& view, const Matrix& world) const noexcept;
-            void Unproject(const Vector3& p, const Matrix& proj, const Matrix& view, const Matrix& world, Vector3& result) const noexcept;
+            Vector3 Unproject(const Vector3& p, const Matrix& Proj, const Matrix& View, const Matrix& world) const noexcept;
+            void Unproject(const Vector3& p, const Matrix& Proj, const Matrix& View, const Matrix& world, Vector3& result) const noexcept;
 
             // Static methods
 #if defined(__dxgi1_2_h__) || defined(__d3d11_x_h__) || defined(__d3d12_x_h__) || defined(__XBOX_D3D12_X__)
@@ -951,8 +951,8 @@ namespace std
         {
             return ((r1.x < r2.x)
                     || ((r1.x == r2.x) && (r1.y < r2.y))
-                    || ((r1.x == r2.x) && (r1.y == r2.y) && (r1.width < r2.width))
-                    || ((r1.x == r2.x) && (r1.y == r2.y) && (r1.width == r2.width) && (r1.height < r2.height)));
+                    || ((r1.x == r2.x) && (r1.y == r2.y) && (r1.Width < r2.Width))
+                    || ((r1.x == r2.x) && (r1.y == r2.y) && (r1.Width == r2.Width) && (r1.Height < r2.Height)));
         }
     };
 
@@ -1047,13 +1047,13 @@ namespace std
     {
         bool operator()(const DirectX::SimpleMath::Ray& R1, const DirectX::SimpleMath::Ray& R2) const noexcept
         {
-            if (R1.position.x != R2.position.x) return R1.position.x < R2.position.x;
-            if (R1.position.y != R2.position.y) return R1.position.y < R2.position.y;
-            if (R1.position.z != R2.position.z) return R1.position.z < R2.position.z;
+            if (R1.Position.x != R2.Position.x) return R1.Position.x < R2.Position.x;
+            if (R1.Position.y != R2.Position.y) return R1.Position.y < R2.Position.y;
+            if (R1.Position.z != R2.Position.z) return R1.Position.z < R2.Position.z;
 
-            if (R1.direction.x != R2.direction.x) return R1.direction.x < R2.direction.x;
-            if (R1.direction.y != R2.direction.y) return R1.direction.y < R2.direction.y;
-            if (R1.direction.z != R2.direction.z) return R1.direction.z < R2.direction.z;
+            if (R1.Direction.x != R2.Direction.x) return R1.Direction.x < R2.Direction.x;
+            if (R1.Direction.y != R2.Direction.y) return R1.Direction.y < R2.Direction.y;
+            if (R1.Direction.z != R2.Direction.z) return R1.Direction.z < R2.Direction.z;
 
             return false;
         }
@@ -1066,8 +1066,8 @@ namespace std
             if (vp1.x != vp2.x) return (vp1.x < vp2.x);
             if (vp1.y != vp2.y) return (vp1.y < vp2.y);
 
-            if (vp1.width != vp2.width) return (vp1.width < vp2.width);
-            if (vp1.height != vp2.height) return (vp1.height < vp2.height);
+            if (vp1.Width != vp2.Width) return (vp1.Width < vp2.Width);
+            if (vp1.Height != vp2.Height) return (vp1.Height < vp2.Height);
 
             if (vp1.minDepth != vp2.minDepth) return (vp1.minDepth < vp2.minDepth);
             if (vp1.maxDepth != vp2.maxDepth) return (vp1.maxDepth < vp2.maxDepth);

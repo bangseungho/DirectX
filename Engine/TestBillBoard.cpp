@@ -13,5 +13,5 @@ TestBillBoard::~TestBillBoard()
 
 void TestBillBoard::LateUpdate()
 {
-	GetTransform()->LookAt(_camera->GetTransform()->GetLocalPosition());
+	GetTransform()->LookAt(mCamera->GetTransform()->GetLocalPosition());
 }

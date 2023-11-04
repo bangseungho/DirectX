@@ -5,15 +5,15 @@
 
 struct VS_IN
 {
-    float3 posL : POSITION;
-    float3 normalL : NORMAL;
-    float2 uv : TEXCOORD;
+    float3 posL : Position;
+    float3 normalL : Normal;
+    float2 Uv : TEXCOORD;
 };
 
 struct VS_OUT
 {
     float4 posH : SV_Position;
-    float3 posL : POSITION;
+    float3 posL : Position;
 };
 
 VS_OUT VS_Main(VS_IN vin)
@@ -26,7 +26,7 @@ VS_OUT VS_Main(VS_IN vin)
     
     posW.xyz += gPassConstants.eyePosW;
     
-    vout.posH = mul(posW, gObjConstants.viewProj).xyww;
+    vout.posH = mul(posW, gObjConstants.ViewProj).xyww;
  
     return vout;
 }

@@ -25,13 +25,16 @@ public:
 	template<typename T>
 	OBJECT_TYPE GetObjectType();
 
+	template<typename T>
+	uint32 GetObjectCount();
+
 	sptr<Mesh> LoadRectMesh();
 	sptr<Mesh> LoadCubeMesh();
 	sptr<Mesh> LoadSphereMesh();
 	sptr<Mesh> LoadGridMesh();
 	sptr<Mesh> LoadRectangleMesh();
 
-	sptr<Texture> CreateTexture(const string& name, DXGI_FORMAT format, uint32 width, uint32 height,
+	sptr<Texture> CreateTexture(const string& name, DXGI_FORMAT format, uint32 Width, uint32 Height,
 		const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType,
 		D3D12_RESOURCE_FLAGS resFlags = D3D12_RESOURCE_FLAG_NONE, Vec4 clearColor = Vec4());
 
@@ -44,14 +47,14 @@ private:
 
 private:
 	using KeyObjMap = std::map<string, sptr<Object>>;
-	array<KeyObjMap, OBJECT_TYPE_COUNT> _resources;
+	array<KeyObjMap, OBJECT_TYPE_COUNT> mResources;
 };
 
 template<typename T>
 inline sptr<T> Resources::Load(const string& key, const wstring& path)
 {
 	OBJECT_TYPE objectType = GetObjectType<T>();
-	KeyObjMap& keyObjMap = _resources[static_cast<uint8>(objectType)];
+	KeyObjMap& keyObjMap = mResources[static_cast<uint8>(objectType)];
 
 	auto findIt = keyObjMap.find(key);
 	if (findIt != keyObjMap.end())
@@ -68,7 +71,7 @@ template<typename T>
 inline bool Resources::Add(const string& key, sptr<T> object)
 {
 	OBJECT_TYPE objectType = GetObjectType<T>();
-	KeyObjMap& keyObjMap = _resources[static_cast<uint8>(objectType)];
+	KeyObjMap& keyObjMap = mResources[static_cast<uint8>(objectType)];
 
 	auto findIt = keyObjMap.find(key);
 	if (findIt != keyObjMap.end())
@@ -83,7 +86,7 @@ template<typename T>
 inline sptr<T> Resources::Get(const string& key)
 {
 	OBJECT_TYPE objectType = GetObjectType<T>();
-	KeyObjMap& keyObjMap = _resources[static_cast<uint8>(objectType)];
+	KeyObjMap& keyObjMap = mResources[static_cast<uint8>(objectType)];
 
 	auto findIt = keyObjMap.find(key);
 	if (findIt != keyObjMap.end())
@@ -109,5 +112,14 @@ inline OBJECT_TYPE Resources::GetObjectType()
 		return OBJECT_TYPE::COMPONENT;
 	else
 		return OBJECT_TYPE::NONE;
+}
+
+template<typename T>
+inline uint32 Resources::GetObjectCount()
+{
+	OBJECT_TYPE objectType = GetObjectType<T>();
+	uint32 num = mResources[static_cast<uint8>(objectType)].size();
+
+	return num;
 }
 

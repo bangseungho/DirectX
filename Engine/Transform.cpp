@@ -17,37 +17,37 @@ Transform::~Transform()
 
 void Transform::FinalUpdate()
 {
-	Matrix matScale = Matrix::CreateScale(_localScale);
-	Matrix matRotation = Matrix::CreateRotationX(_localRotation.x);
-	matRotation *= Matrix::CreateRotationY(_localRotation.y);
-	matRotation *= Matrix::CreateRotationZ(_localRotation.z);
-	Matrix matTranslation = Matrix::CreateTranslation(_localPosition);
+	Matrix matScale = Matrix::CreateScale(mLocalScale);
+	Matrix matRotation = Matrix::CreateRotationX(mLocalRotation.x);
+	matRotation *= Matrix::CreateRotationY(mLocalRotation.y);
+	matRotation *= Matrix::CreateRotationZ(mLocalRotation.z);
+	Matrix matTranslation = Matrix::CreateTranslation(mLocalPosition);
 
-	_matLocal = matScale * matRotation * matTranslation;
-	_matWorld = _matLocal;
+	mMatLocal = matScale * matRotation * matTranslation;
+	mMatWorld = mMatLocal;
 
 	shared_ptr<Transform> parent = GetParent().lock();
 	if (parent != nullptr)
 	{
-		_matWorld *= parent->GetLocalToWorldMatrix();
+		mMatWorld *= parent->GetLocalToWorldMatrix();
 	}
 }
 
 void Transform::PushData()
 {
-	ObjectConstants objectConstants = {};
-	objectConstants.matWorld = _matWorld;
-	objectConstants.texTransform = _texTransform;
-	objectConstants.materialIndex = GetGameObject()->GetMatIndex();
-	objectConstants.matViewProj = Camera::MatView * Camera::MatProjection;
+	ObjectData objectData = {};
+	objectData.MatWorld = mMatWorld;
+	objectData.TexTransform = mTexTransform;
+	objectData.MaterialIndex = GetGameObject()->GetMatIndex();
+	objectData.MatViewProj = Camera::sMatView * Camera::sMatProjection;
 
 	uint32 objCBIndex = GetGameObject()->GetObjCBIndex();
-	OBJECT_CB->CopyData(objCBIndex, objectConstants);
+	OBJECT_CB->CopyData(objCBIndex, objectData);
 
-	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(ObjectConstants));
+	UINT objCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(objectData));
 
 	D3D12_GPU_VIRTUAL_ADDRESS objCBAddress = OBJECT_CB->Resource()->GetGPUVirtualAddress() + objCBIndex * objCBByteSize;
-	GRAPHICS_CMD_LIST->SetGraphicsRootConstantBufferView(1, objCBAddress);
+	CMD_LIST->SetGraphicsRootConstantBufferView(1, objCBAddress);
 }
 
 
@@ -70,7 +70,7 @@ void Transform::LookAt(const Vec3& dir)
 	matrix.Up(up);
 	matrix.Backward(front);
 
-	_localRotation = DecomposeRotationMatrix(matrix);
+	mLocalRotation = DecomposeRotationMatrix(matrix);
 }
 
 bool Transform::CloseEnough(const float& a, const float& b, const float& epsilon)

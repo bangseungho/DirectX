@@ -38,7 +38,7 @@ void RootSignature::CreateGraphicsRootSignature()
 	}
 	ThrowIfFailed(hr);
 
-	ThrowIfFailed(DEVICE->CreateRootSignature(0, blobSignature->GetBufferPointer(), blobSignature->GetBufferSize(), IID_PPV_ARGS(&_graphicsRootSignature)))
+	ThrowIfFailed(DEVICE->CreateRootSignature(0, blobSignature->GetBufferPointer(), blobSignature->GetBufferSize(), IID_PPV_ARGS(&mGraphicsRootSignature)))
 }
 
 void RootSignature::CreateComputeRootSignature()
@@ -46,10 +46,17 @@ void RootSignature::CreateComputeRootSignature()
 	CD3DX12_DESCRIPTOR_RANGE uavTable;
 	uavTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, COMPUTE_TEXTURE_COUNT, 0);
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[1];
-	slotRootParameter[0].InitAsDescriptorTable(1, &uavTable);
+	CD3DX12_DESCRIPTOR_RANGE tex2DTable;
+	tex2DTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURE2D_COUNT + COMPUTE_TEXTURE_COUNT, 1);
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, slotRootParameter,
+	CD3DX12_ROOT_PARAMETER slotRootParameter[5];
+	slotRootParameter[0].InitAsConstantBufferView(0);
+	slotRootParameter[1].InitAsConstantBufferView(1);
+	slotRootParameter[2].InitAsShaderResourceView(0, 1);
+	slotRootParameter[3].InitAsDescriptorTable(1, &uavTable);
+	slotRootParameter[4].InitAsDescriptorTable(1, &tex2DTable);
+
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(5, slotRootParameter,
 		0, nullptr,
 		D3D12_ROOT_SIGNATURE_FLAG_NONE);
 
@@ -62,8 +69,7 @@ void RootSignature::CreateComputeRootSignature()
 	}
 	ThrowIfFailed(hr);
 
-	ThrowIfFailed(DEVICE->CreateRootSignature(0, blobSignature->GetBufferPointer(), blobSignature->GetBufferSize(), IID_PPV_ARGS(&_computeRootSignature)));
-	COMPUTE_CMD_LIST->SetComputeRootSignature(_computeRootSignature.Get());
+	ThrowIfFailed(DEVICE->CreateRootSignature(0, blobSignature->GetBufferPointer(), blobSignature->GetBufferSize(), IID_PPV_ARGS(&mComputeRootSignature)));
 }
 
 array<const CD3DX12_STATIC_SAMPLER_DESC, STATIC_SAMPLER_COUNT> RootSignature::GetStaticSamplers()

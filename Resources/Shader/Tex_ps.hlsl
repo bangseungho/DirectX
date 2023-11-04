@@ -7,7 +7,7 @@
 struct VS_OUT
 {
     float4 posH : SV_Position;
-    float2 uv : TEXCOORD;
+    float2 Uv : TEXCOORD;
 };
 
 float4 PS_Main(VS_OUT pin) : SV_Target
@@ -16,7 +16,7 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     float4 diffuseAlbedo = matData.diffuseAlbedo;
     uint diffuseMapIndex = matData.textureMapIndex;
 
-    return gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.uv) * diffuseAlbedo;
+    return gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.Uv) * diffuseAlbedo;
 }
 
 #endif

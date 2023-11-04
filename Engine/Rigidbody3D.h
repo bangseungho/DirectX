@@ -11,17 +11,17 @@ public:
 	virtual void FixedUpdate() override;
 
 public:
-	void SetMass(float mass) { _mass = mass; }
+	void SetMass(float mass) { mMass = mass; }
 
 private:
-	float _mass = 200.f;
-	float _drag;
-	float _angularDrag;
+	float	mMass = 200.f;
+	float	mDraw;
+	float	mAngularDrag;
 
-	bool _useGravity;
-	bool _isKinematic;
+	bool	mUseGravity;
+	bool	mIsKinematic;
 
-	Vec3 _gravity;
-	Vec3 _accellaration;;
-	Vec3 _velocity;
+	Vec3	mGravity;
+	Vec3	mAccellaration;
+	Vec3	mVelocity;
 };

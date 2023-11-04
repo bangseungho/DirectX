@@ -18,18 +18,18 @@ public:
 	void ClearRenderTargetView(uint32 index);
 	void ClearRenderTargetView();
 
-	sptr<Texture> GetRTTexture(uint32 index) { return _rtVec[index].target; }
-	sptr<Texture> GetDSTexture() { return _dsTexture; }
+	sptr<Texture> GetRTTexture(uint32 index) { return mRtVec[index].target; }
+	sptr<Texture> GetDSTexture() { return mDsTexture; }
 
 	void WaitTargetToResource();
 	void WaitResourceToTarget();
 
 private:
-	RENDER_TARGET_GROUP_TYPE _groupType;
-	vector<RenderTarget> _rtVec;
-	uint32 _rtCount;
-	sptr<Texture> _dsTexture;
-	ComPtr<ID3D12DescriptorHeap> _rtvHeap;
+	RENDER_TARGET_GROUP_TYPE		mGroupType;
+	vector<RenderTarget>			mRtVec;
+	uint32 mRtCount;
+	sptr<Texture> mDsTexture;
+	ComPtr<ID3D12DescriptorHeap> mRtvHeap;
 
 	uint32 _rtvHeapSize;
 	D3D12_CPU_DESCRIPTOR_HANDLE _rtvHeapBegin;

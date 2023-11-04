@@ -7,8 +7,8 @@
 #include "MeshRenderer.h"
 #include "Engine.h"
 
-Matrix Camera::MatView;
-Matrix Camera::MatProjection;
+Matrix Camera::sMatView;
+Matrix Camera::sMatProjection;
 
 Camera::Camera() : Component(COMPONENT_TYPE::CAMERA)
 {
@@ -20,24 +20,24 @@ Camera::~Camera()
 
 void Camera::FinalUpdate()
 {
-	_matView = GetTransform()->GetLocalToWorldMatrix().Invert();
+	mMatView = GetTransform()->GetLocalToWorldMatrix().Invert();
 
-	float width = static_cast<float>(gEngine->GetWindow().width);
-	float height = static_cast<float>(gEngine->GetWindow().height);
+	float Width = static_cast<float>(gEngine->GetWindow().Width);
+	float Height = static_cast<float>(gEngine->GetWindow().Height);
 
-	if (_type == PROJECTION_TYPE::PERSPECTIVE)
-		_matProjection = ::XMMatrixPerspectiveFovLH(_fov, width / height, _near, _far);
+	if (mProjectionType == PROJECTION_TYPE::PERSPECTIVE)
+		mMatProjection = ::XMMatrixPerspectiveFovLH(mFov, Width / Height, mNear, mFar);
 	else
-		_matProjection = ::XMMatrixOrthographicLH(width * _scale, height * _scale, _near, _far);
+		mMatProjection = ::XMMatrixOrthographicLH(Width * mScale, Height * mScale, mNear, mFar);
 
 	// Regenerate Frutum
-	_frustum.CreateFromMatrix(_frustum, _matProjection);
-	_frustum.Transform(_frustum, _matView.Invert());
+	mFrustum.CreateFromMatrix(mFrustum, mMatProjection);
+	mFrustum.Transform(mFrustum, mMatView.Invert());
 }
 
 bool Camera::IsInFrustum(BoundingOrientedBox& boundsOOBB)
 {
-	return _frustum.Intersects(boundsOOBB);
+	return mFrustum.Intersects(boundsOOBB);
 }
 
 void Camera::SortGameObject()
@@ -45,8 +45,8 @@ void Camera::SortGameObject()
 	shared_ptr<Scene> scene = GET_SINGLE(SceneManager)->GetActiveScene();
 	const vector<shared_ptr<GameObject>>& gameObjects = scene->GetGameObjects();
 
-	_vecForward.clear();
-	_vecDeferred.clear();
+	mForwardObjects.clear();
+	mDeferredObjects.clear();
 
 	for (auto& gameObject : gameObjects)
 	{
@@ -63,14 +63,14 @@ void Camera::SortGameObject()
 				continue;
 		}
 
-		SHADER_TYPE shaderType = gameObject->GetMeshRenderer()->GetMaterial()->GetShader()->GetShaderType();
-		switch (shaderType)
+		SHADER_TYPE ShaderType = gameObject->GetMeshRenderer()->GetMaterial()->GetShader()->GetShaderType();
+		switch (ShaderType)
 		{
 		case SHADER_TYPE::DEFERRED:
-			_vecDeferred.push_back(gameObject);
+			mDeferredObjects.push_back(gameObject);
 			break;
 		case SHADER_TYPE::FORWARD:
-			_vecForward.push_back(gameObject);
+			mForwardObjects.push_back(gameObject);
 			break;
 		}
 	}
@@ -78,10 +78,10 @@ void Camera::SortGameObject()
 
 void Camera::Render_Deferred()
 {
-	MatView = _matView;
-	MatProjection = _matProjection;
+	sMatView = mMatView;
+	sMatProjection = mMatProjection;
 
-	for (auto& gameObject : _vecDeferred)
+	for (auto& gameObject : mDeferredObjects)
 	{
 		gameObject->GetMeshRenderer()->Render();
 	}
@@ -89,10 +89,10 @@ void Camera::Render_Deferred()
 
 void Camera::Render_Forward()
 {
-	MatView = _matView;
-	MatProjection = _matProjection;
+	sMatView = mMatView;
+	sMatProjection = mMatProjection;
 
-	for (auto& gameObject : _vecForward)
+	for (auto& gameObject : mForwardObjects)
 	{
 		gameObject->GetMeshRenderer()->Render();
 	}

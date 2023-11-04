@@ -6,25 +6,25 @@
 
 struct VS_IN
 {
-    float3 posL : POSITION;
-    float3 normalL : NORMAL;
-    float2 uv : TEXCOORD;
-    float3 tangentU : TANGENT;
+    float3 posL : Position;
+    float3 normalL : Normal;
+    float2 Uv : TEXCOORD;
+    float3 tangentU : Tangent;
 };
 
 struct VS_OUT
 {
     float4 posH : SV_Position;
-    float3 posW : POSITION;
-    float3 normalW : NORMAL;
-	float3 tangentW : TANGENT;
-    float2 uv : TEXCOORD;
+    float3 posW : Position;
+    float3 normalW : Normal;
+	float3 tangentW : Tangent;
+    float2 Uv : TEXCOORD;
 };
 
 struct PS_OUT
 {
-    float4  position : SV_Target0;
-    float4 normal : SV_Target1;
+    float4  Position : SV_Target0;
+    float4 Normal : SV_Target1;
     float4 diffuseAlbedo : SV_Target2;
     float4 fresnelR0 : SV_Target3;
     float shininess : SV_Target4;
@@ -46,20 +46,20 @@ PS_OUT PS_Main(VS_OUT pin)
     
     // º£ÀÌ½º ÄÃ·¯
     if (diffuseMapIndex != -1)
-        diffuseAlbedo = gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.uv) * diffuseAlbedo;
+        diffuseAlbedo = gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.Uv) * diffuseAlbedo;
     
     clip(diffuseAlbedo.a - 0.1f);
     
     // ³ë¸Ö ¸Ê
     float4 normalMap = float4(pin.normalW, 0.f);
     if (normalMapIndex != -1)
-        normalMap = gTextureMaps[normalMapIndex].Sample(gsamAnisotropicWrap, pin.uv);
+        normalMap = gTextureMaps[normalMapIndex].Sample(gsamAnisotropicWrap, pin.Uv);
     
     float3 bumpedNormalW = NormalToWorldSpace(normalMap.rgb, pin.normalW, pin.tangentW);
     
     // °ÅÄ¥±â 
     if (roughness != -1)
-        roughness *= gTextureMaps[roughnessMapIndex].Sample(gsamAnisotropicWrap, pin.uv).x;
+        roughness *= gTextureMaps[roughnessMapIndex].Sample(gsamAnisotropicWrap, pin.Uv).x;
     
     // ±¤ÅÃ : °ÅÄ¥¼ö·Ï ±¤ÅÃÀÌ ¶³¾îÁü
     float shininess = 1.f - roughness;
@@ -71,8 +71,8 @@ PS_OUT PS_Main(VS_OUT pin)
         shininess *= normalMap.a;
 
     PS_OUT pout = (PS_OUT)0;
-    pout.position = float4(pin.posW, 0.f);
-    pout.normal = float4(bumpedNormalW, 0.f);
+    pout.Position = float4(pin.posW, 0.f);
+    pout.Normal = float4(bumpedNormalW, 0.f);
     pout.diffuseAlbedo = diffuseAlbedo;
     pout.fresnelR0 = float4(fresnelR0, 0.f);
     pout.shininess = shininess;

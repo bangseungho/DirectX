@@ -15,24 +15,19 @@ MeshRenderer::~MeshRenderer()
 
 }
 
-void MeshRenderer::SetMaterial(sptr<Material> material)
-{
-	_material = material;
-}
-
 BoundingOrientedBox& MeshRenderer::GetBoundingBox()
 {
-	return _mesh->GetBoundingBox();
+	return mMesh->GetBoundingBox();
 }
 
 void MeshRenderer::Render()
 {
 	GetTransform()->PushData();
-	_material->Update();
-	_mesh->Render();
+	mMaterial->Update();
+	mMesh->Render();
 }
 
 void MeshRenderer::Start()
 {
-	GetGameObject()->SetMatIndex(_material->GetMatCBIndex());
+	GetGameObject()->SetMatIndex(mMaterial->GetMatCBIndex());
 }

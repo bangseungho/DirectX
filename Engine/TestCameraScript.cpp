@@ -16,47 +16,47 @@ TestCameraScript::~TestCameraScript()
 
 void TestCameraScript::LateUpdate()
 {
-	Vec3 pos = GetTransform()->GetLocalPosition();
+	Vec3 Pos = GetTransform()->GetLocalPosition();
 
 	if (KEY_PRESSED('W'))
-		pos += GetTransform()->GetLook() * _translationSpeed * DELTA_TIME;
+		Pos += GetTransform()->GetLook() * mTranslationSpeed * DELTA_TIME;
 
 	if (KEY_PRESSED('S'))
-		pos -= GetTransform()->GetLook() * _translationSpeed * DELTA_TIME;
+		Pos -= GetTransform()->GetLook() * mTranslationSpeed * DELTA_TIME;
 
 	if (KEY_PRESSED('A'))
-		pos -= GetTransform()->GetRight() * _translationSpeed * DELTA_TIME;
+		Pos -= GetTransform()->GetRight() * mTranslationSpeed * DELTA_TIME;
 
 	if (KEY_PRESSED('D'))
-		pos += GetTransform()->GetRight() * _translationSpeed * DELTA_TIME;
+		Pos += GetTransform()->GetRight() * mTranslationSpeed * DELTA_TIME;
 
 	if (KEY_PRESSED(VK_LEFT))
 	{
 		Vec3 rotation = GetTransform()->GetLocalRotation();
-		rotation.y -= _rotationSpeed * DELTA_TIME;
+		rotation.y -= mRotationSpeed * DELTA_TIME;
 		GetTransform()->SetLocalRotation(rotation);
 	}
 
 	if (KEY_PRESSED(VK_RIGHT))
 	{
 		Vec3 rotation = GetTransform()->GetLocalRotation();
-		rotation.y += _rotationSpeed * DELTA_TIME;
+		rotation.y += mRotationSpeed * DELTA_TIME;
 		GetTransform()->SetLocalRotation(rotation);
 	}
 
 	if (KEY_PRESSED(VK_UP))
 	{
 		Vec3 rotation = GetTransform()->GetLocalRotation();
-		rotation.x -= _rotationSpeed * DELTA_TIME;
+		rotation.x -= mRotationSpeed * DELTA_TIME;
 		GetTransform()->SetLocalRotation(rotation);
 	}
 
 	if (KEY_PRESSED(VK_DOWN))
 	{
 		Vec3 rotation = GetTransform()->GetLocalRotation();
-		rotation.x += _rotationSpeed * DELTA_TIME;
+		rotation.x += mRotationSpeed * DELTA_TIME;
 		GetTransform()->SetLocalRotation(rotation);
 	}
 
-	GetTransform()->SetLocalPosition(pos);
+	GetTransform()->SetLocalPosition(Pos);
 }

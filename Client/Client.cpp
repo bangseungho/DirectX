@@ -48,9 +48,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
-    GWindowInfo.width = 800;
-    GWindowInfo.height = 600;
-    GWindowInfo.windowed = true;
+    GWindowInfo.Width = 800;
+    GWindowInfo.Height = 600;
+    GWindowInfo.Windowed = true;
 
     gGame.Init(GWindowInfo);
 
@@ -129,7 +129,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
-   GWindowInfo.hwnd = hWnd;
+   GWindowInfo.Hwnd = hWnd;
 
    return TRUE;
 }

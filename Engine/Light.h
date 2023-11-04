@@ -11,22 +11,21 @@ public:
 	void Render();
 
 public:
-	const LightInfo& GetLightInfo() { return _lightInfo; }
+	const LightInfo& GetLightInfo() { return mLightInfo; }
 
-	void SetLightStrenth(const Vec3& strength) { _lightInfo.strength = strength; }
-	void SetLightDirection(const Vec3& direction) { _lightInfo.direction = direction; }
+	void SetLightStrenth(const Vec3& Strength) { mLightInfo.Strength = Strength; }
+	void SetLightDirection(const Vec3& Direction) { mLightInfo.Direction = Direction; }
 
 	void SetLightType(LIGHT_TYPE type);
-	void SetFallOff(float start, float end) { _lightInfo.fallOffStart = start, _lightInfo.fallOffEnd = end; }
-	void SetSpotPower(float spotPower) { _lightInfo.spotPower = spotPower; }
+	void SetFallOff(float start, float end) { mLightInfo.FallOffStart = start, mLightInfo.FallOffEnd = end; }
+	void SetSpotPower(float SpotPower) { mLightInfo.SpotPower = SpotPower; }
 
-	void SetLightIndex(int8 index) { _lightIndex = index; }
+	void SetLightIndex(int8 index) { mLightIndex = index; }
 
 private:
-	LightInfo _lightInfo = {};
-
-	int8 _lightIndex = -1;
-	shared_ptr<class Mesh> _volumeMesh;
-	shared_ptr<class Material> _lightMaterial;
+	LightInfo					mLightInfo = {};
+	int8						mLightIndex = -1;
+	shared_ptr<class Mesh>		mVolumeMesh;
+	shared_ptr<class Material>	mLightMaterial;
 };
 

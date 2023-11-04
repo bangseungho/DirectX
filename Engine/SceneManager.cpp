@@ -26,34 +26,37 @@ DECLARE_SINGLE(SceneManager)
 
 void SceneManager::Update()
 {
-	if (_activeScene == nullptr)
+	if (mActiveScene == nullptr)
 		return;
 
-	_currTime += DELTA_TIME;
-	if (_currTime >= 0.01f) {
-		_activeScene->FixedUpdate();
-		_currTime = 0.f;
+	mCurrTime += DELTA_TIME;
+	if (mCurrTime >= 0.01f) {
+		mActiveScene->FixedUpdate();
+		mCurrTime = 0.f;
 	}
 
-	_activeScene->Update();
-	_activeScene->LateUpdate();
-	_activeScene->FinalUpdate();
+	shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Compute");
+	material->Dispatch(1, 1024, 1);
+
+	mActiveScene->Update();
+	mActiveScene->LateUpdate();
+	mActiveScene->FinalUpdate();
 }
 
 void SceneManager::Render()
 {
-	if (_activeScene)
-		_activeScene->Render();
+	if (mActiveScene)
+		mActiveScene->Render();
 }
 
 uint32 SceneManager::LoadScene(wstring sceneName)
 {
 	// TODO : 기존 Scene 정리
 	// TODO : 파일에서 Scene 정보 로드
-	_activeScene = LoadTestScene();
+	mActiveScene = LoadTestScene();
 
-	_activeScene->Awake();
-	_activeScene->Start();
+	mActiveScene->Awake();
+	mActiveScene->Start();
 
 	uint32 objCount = GameObject::ObjCBIndex;
 
@@ -62,17 +65,17 @@ uint32 SceneManager::LoadScene(wstring sceneName)
 
 void SceneManager::SetLayerName(uint8 index, const wstring& name)
 {
-	const wstring prevName = _layerNames[index];
-	_layerIndex.erase(prevName);
+	const wstring prevName = mLayerNames[index];
+	mLayerIndex.erase(prevName);
 
-	_layerNames[index] = name;
-	_layerIndex[name] = index;
+	mLayerNames[index] = name;
+	mLayerIndex[name] = index;
 }
 
 uint8 SceneManager::LayerNameToIndex(const wstring& name)
 {
-	auto findIt = _layerIndex.find(name);
-	if (findIt == _layerIndex.end())
+	auto findIt = mLayerIndex.find(name);
+	if (findIt == mLayerIndex.end())
 		return 0;
 
 	return findIt->second;
@@ -85,8 +88,6 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	SetLayerName(0, L"Default");
 	SetLayerName(1, L"UI");
 #pragma endregion
-
-
 
 //============================================================================== Scene
 	shared_ptr<Scene> scene = make_shared<Scene>();
@@ -341,7 +342,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Compute");
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("UAVMaterial");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);

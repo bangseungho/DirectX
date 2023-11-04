@@ -95,8 +95,8 @@ struct DDS_HEADER
 {
     uint32_t        size;
     uint32_t        flags;
-    uint32_t        height;
-    uint32_t        width;
+    uint32_t        Height;
+    uint32_t        Width;
     uint32_t        pitchOrLinearSize;
     uint32_t        depth; // only if DDS_HEADER_FLAGS_VOLUME is set in flags
     uint32_t        mipMapCount;
@@ -422,8 +422,8 @@ static size_t BitsPerPixel( _In_ DXGI_FORMAT fmt )
 //--------------------------------------------------------------------------------------
 // Get surface information for a particular format
 //--------------------------------------------------------------------------------------
-static void GetSurfaceInfo( _In_ size_t width,
-                            _In_ size_t height,
+static void GetSurfaceInfo( _In_ size_t Width,
+                            _In_ size_t Height,
                             _In_ DXGI_FORMAT fmt,
                             _Out_opt_ size_t* outNumBytes,
                             _Out_opt_ size_t* outRowBytes,
@@ -497,14 +497,14 @@ static void GetSurfaceInfo( _In_ size_t width,
     if (bc)
     {
         size_t numBlocksWide = 0;
-        if (width > 0)
+        if (Width > 0)
         {
-            numBlocksWide = std::max<size_t>( 1, (width + 3) / 4 );
+            numBlocksWide = std::max<size_t>( 1, (Width + 3) / 4 );
         }
         size_t numBlocksHigh = 0;
-        if (height > 0)
+        if (Height > 0)
         {
-            numBlocksHigh = std::max<size_t>( 1, (height + 3) / 4 );
+            numBlocksHigh = std::max<size_t>( 1, (Height + 3) / 4 );
         }
         rowBytes = numBlocksWide * bpe;
         numRows = numBlocksHigh;
@@ -512,28 +512,28 @@ static void GetSurfaceInfo( _In_ size_t width,
     }
     else if (packed)
     {
-        rowBytes = ( ( width + 1 ) >> 1 ) * bpe;
-        numRows = height;
-        numBytes = rowBytes * height;
+        rowBytes = ( ( Width + 1 ) >> 1 ) * bpe;
+        numRows = Height;
+        numBytes = rowBytes * Height;
     }
     else if ( fmt == DXGI_FORMAT_NV11 )
     {
-        rowBytes = ( ( width + 3 ) >> 2 ) * 4;
-        numRows = height * 2; // Direct3D makes this simplifying assumption, although it is larger than the 4:1:1 data
+        rowBytes = ( ( Width + 3 ) >> 2 ) * 4;
+        numRows = Height * 2; // Direct3D makes this simplifying assumption, although it is larger than the 4:1:1 data
         numBytes = rowBytes * numRows;
     }
     else if (planar)
     {
-        rowBytes = ( ( width + 1 ) >> 1 ) * bpe;
-        numBytes = ( rowBytes * height ) + ( ( rowBytes * height + 1 ) >> 1 );
-        numRows = height + ( ( height + 1 ) >> 1 );
+        rowBytes = ( ( Width + 1 ) >> 1 ) * bpe;
+        numBytes = ( rowBytes * Height ) + ( ( rowBytes * Height + 1 ) >> 1 );
+        numRows = Height + ( ( Height + 1 ) >> 1 );
     }
     else
     {
         size_t bpp = BitsPerPixel( fmt );
-        rowBytes = ( width * bpp + 7 ) / 8; // round up to nearest byte
-        numRows = height;
-        numBytes = rowBytes * height;
+        rowBytes = ( Width * bpp + 7 ) / 8; // round up to nearest byte
+        numRows = Height;
+        numBytes = rowBytes * Height;
     }
 
     if (outNumBytes)
@@ -798,8 +798,8 @@ static DXGI_FORMAT MakeSRGB( _In_ DXGI_FORMAT format )
 
 
 //--------------------------------------------------------------------------------------
-static HRESULT FillInitData( _In_ size_t width,
-                             _In_ size_t height,
+static HRESULT FillInitData( _In_ size_t Width,
+                             _In_ size_t Height,
                              _In_ size_t depth,
                              _In_ size_t mipCount,
                              _In_ size_t arraySize,
@@ -831,8 +831,8 @@ static HRESULT FillInitData( _In_ size_t width,
     size_t index = 0;
     for( size_t j = 0; j < arraySize; j++ )
     {
-        size_t w = width;
-        size_t h = height;
+        size_t w = Width;
+        size_t h = Height;
         size_t d = depth;
         for( size_t i = 0; i < mipCount; i++ )
         {
@@ -894,8 +894,8 @@ static HRESULT FillInitData( _In_ size_t width,
     return (index > 0) ? S_OK : E_FAIL;
 }
 
-static HRESULT FillInitData12(_In_ size_t width,
-	_In_ size_t height,
+static HRESULT FillInitData12(_In_ size_t Width,
+	_In_ size_t Height,
 	_In_ size_t depth,
 	_In_ size_t mipCount,
 	_In_ size_t arraySize,
@@ -928,8 +928,8 @@ static HRESULT FillInitData12(_In_ size_t width,
 	size_t index = 0;
 	for (size_t j = 0; j < arraySize; j++)
 	{
-		size_t w = width;
-		size_t h = height;
+		size_t w = Width;
+		size_t h = Height;
 		size_t d = depth;
 		for (size_t i = 0; i < mipCount; i++)
 		{
@@ -994,8 +994,8 @@ static HRESULT FillInitData12(_In_ size_t width,
 //--------------------------------------------------------------------------------------
 static HRESULT CreateD3DResources( _In_ ID3D11Device* d3dDevice,
                                    _In_ uint32_t resDim,
-                                   _In_ size_t width,
-                                   _In_ size_t height,
+                                   _In_ size_t Width,
+                                   _In_ size_t Height,
                                    _In_ size_t depth,
                                    _In_ size_t mipCount,
                                    _In_ size_t arraySize,
@@ -1025,7 +1025,7 @@ static HRESULT CreateD3DResources( _In_ ID3D11Device* d3dDevice,
         case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
             {
                 D3D11_TEXTURE1D_DESC desc;
-                desc.Width = static_cast<UINT>( width ); 
+                desc.Width = static_cast<UINT>( Width ); 
                 desc.MipLevels = static_cast<UINT>( mipCount );
                 desc.ArraySize = static_cast<UINT>( arraySize );
                 desc.Format = format;
@@ -1086,8 +1086,8 @@ static HRESULT CreateD3DResources( _In_ ID3D11Device* d3dDevice,
         case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
             {
                 D3D11_TEXTURE2D_DESC desc;
-                desc.Width = static_cast<UINT>( width );
-                desc.Height = static_cast<UINT>( height );
+                desc.Width = static_cast<UINT>( Width );
+                desc.Height = static_cast<UINT>( Height );
                 desc.MipLevels = static_cast<UINT>( mipCount );
                 desc.ArraySize = static_cast<UINT>( arraySize );
                 desc.Format = format;
@@ -1173,8 +1173,8 @@ static HRESULT CreateD3DResources( _In_ ID3D11Device* d3dDevice,
         case D3D11_RESOURCE_DIMENSION_TEXTURE3D:
             {
                 D3D11_TEXTURE3D_DESC desc;
-                desc.Width = static_cast<UINT>( width );
-                desc.Height = static_cast<UINT>( height );
+                desc.Width = static_cast<UINT>( Width );
+                desc.Height = static_cast<UINT>( Height );
                 desc.Depth = static_cast<UINT>( depth );
                 desc.MipLevels = static_cast<UINT>( mipCount );
                 desc.Format = format;
@@ -1231,8 +1231,8 @@ static HRESULT CreateD3DResources12(
 	ID3D12Device* device,
 	ID3D12GraphicsCommandList* cmdList,
 	_In_ uint32_t resDim,
-	_In_ size_t width,
-	_In_ size_t height,
+	_In_ size_t Width,
+	_In_ size_t Height,
 	_In_ size_t depth,
 	_In_ size_t mipCount,
 	_In_ size_t arraySize,
@@ -1259,8 +1259,8 @@ static HRESULT CreateD3DResources12(
 		ZeroMemory(&texDesc, sizeof(D3D12_RESOURCE_DESC));
 		texDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
 		texDesc.Alignment = 0;
-		texDesc.Width = width;
-		texDesc.Height = (uint32_t)height;
+		texDesc.Width = Width;
+		texDesc.Height = (uint32_t)Height;
 		texDesc.DepthOrArraySize = (depth > 1) ? (uint16_t)depth : (uint16_t)arraySize;
 		texDesc.MipLevels = (uint16_t)mipCount;
 		texDesc.Format = format;
@@ -1336,8 +1336,8 @@ static HRESULT CreateTextureFromDDS( _In_ ID3D11Device* d3dDevice,
 {
     HRESULT hr = S_OK;
 
-    UINT width = header->width;
-    UINT height = header->height;
+    UINT Width = header->Width;
+    UINT Height = header->Height;
     UINT depth = header->depth;
 
     uint32_t resDim = D3D11_RESOURCE_DIMENSION_UNKNOWN;
@@ -1383,11 +1383,11 @@ static HRESULT CreateTextureFromDDS( _In_ ID3D11Device* d3dDevice,
         {
         case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
             // D3DX writes 1D textures with a fixed Height of 1
-            if ((header->flags & DDS_HEIGHT) && height != 1)
+            if ((header->flags & DDS_HEIGHT) && Height != 1)
             {
                 return HRESULT_FROM_WIN32( ERROR_INVALID_DATA );
             }
-            height = depth = 1;
+            Height = depth = 1;
             break;
 
         case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
@@ -1463,7 +1463,7 @@ static HRESULT CreateTextureFromDDS( _In_ ID3D11Device* d3dDevice,
     {
     case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
         if ((arraySize > D3D11_REQ_TEXTURE1D_ARRAY_AXIS_DIMENSION) ||
-            (width > D3D11_REQ_TEXTURE1D_U_DIMENSION) )
+            (Width > D3D11_REQ_TEXTURE1D_U_DIMENSION) )
         {
             return HRESULT_FROM_WIN32( ERROR_NOT_SUPPORTED );
         }
@@ -1474,15 +1474,15 @@ static HRESULT CreateTextureFromDDS( _In_ ID3D11Device* d3dDevice,
         {
             // This is the right bound because we set arraySize to (NumCubes*6) above
             if ((arraySize > D3D11_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION) ||
-                (width > D3D11_REQ_TEXTURECUBE_DIMENSION) ||
-                (height > D3D11_REQ_TEXTURECUBE_DIMENSION))
+                (Width > D3D11_REQ_TEXTURECUBE_DIMENSION) ||
+                (Height > D3D11_REQ_TEXTURECUBE_DIMENSION))
             {
                 return HRESULT_FROM_WIN32( ERROR_NOT_SUPPORTED );
             }
         }
         else if ((arraySize > D3D11_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION) ||
-                    (width > D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION) ||
-                    (height > D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION))
+                    (Width > D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION) ||
+                    (Height > D3D11_REQ_TEXTURE2D_U_OR_V_DIMENSION))
         {
             return HRESULT_FROM_WIN32( ERROR_NOT_SUPPORTED );
         }
@@ -1490,8 +1490,8 @@ static HRESULT CreateTextureFromDDS( _In_ ID3D11Device* d3dDevice,
 
     case D3D11_RESOURCE_DIMENSION_TEXTURE3D:
         if ((arraySize > 1) ||
-            (width > D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION) ||
-            (height > D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION) ||
+            (Width > D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION) ||
+            (Height > D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION) ||
             (depth > D3D11_REQ_TEXTURE3D_U_V_OR_W_DIMENSION) )
         {
             return HRESULT_FROM_WIN32( ERROR_NOT_SUPPORTED );
@@ -1503,7 +1503,7 @@ static HRESULT CreateTextureFromDDS( _In_ ID3D11Device* d3dDevice,
     }
 
     bool autogen = false;
-    if ( mipCount == 1 && d3dContext != 0 && textureView != 0 ) // Must have context and shader-view to auto generate mipmaps
+    if ( mipCount == 1 && d3dContext != 0 && textureView != 0 ) // Must have context and shader-View to auto generate mipmaps
     {
         // See if format is supported for auto-gen mipmaps (varies by feature level)
         UINT fmtSupport = 0;
@@ -1523,7 +1523,7 @@ static HRESULT CreateTextureFromDDS( _In_ ID3D11Device* d3dDevice,
     {
         // Create texture with auto-generated mipmaps
         ID3D11Resource* tex = nullptr;
-        hr = CreateD3DResources( d3dDevice, resDim, width, height, depth, 0, arraySize,
+        hr = CreateD3DResources( d3dDevice, resDim, Width, Height, depth, 0, arraySize,
                                  format, usage,
                                  bindFlags | D3D11_BIND_RENDER_TARGET,
                                  cpuAccessFlags,
@@ -1533,7 +1533,7 @@ static HRESULT CreateTextureFromDDS( _In_ ID3D11Device* d3dDevice,
         {
             size_t numBytes = 0;
             size_t rowBytes = 0;
-            GetSurfaceInfo( width, height, format, &numBytes, &rowBytes, nullptr );
+            GetSurfaceInfo( Width, Height, format, &numBytes, &rowBytes, nullptr );
 
             if ( numBytes > bitSize )
             {
@@ -1613,7 +1613,7 @@ static HRESULT CreateTextureFromDDS( _In_ ID3D11Device* d3dDevice,
         size_t twidth = 0;
         size_t theight = 0;
         size_t tdepth = 0;
-        hr = FillInitData( width, height, depth, mipCount, arraySize, format, maxsize, bitSize, bitData,
+        hr = FillInitData( Width, Height, depth, mipCount, arraySize, format, maxsize, bitSize, bitData,
                            twidth, theight, tdepth, skipMip, initData.get() );
 
         if ( SUCCEEDED(hr) )
@@ -1654,7 +1654,7 @@ static HRESULT CreateTextureFromDDS( _In_ ID3D11Device* d3dDevice,
                     break;
                 }
 
-                hr = FillInitData( width, height, depth, mipCount, arraySize, format, maxsize, bitSize, bitData,
+                hr = FillInitData( Width, Height, depth, mipCount, arraySize, format, maxsize, bitSize, bitData,
                                    twidth, theight, tdepth, skipMip, initData.get() );
                 if ( SUCCEEDED(hr) )
                 {
@@ -1682,8 +1682,8 @@ static HRESULT CreateTextureFromDDS12(
 {
 	HRESULT hr = S_OK;
 
-	UINT width = header->width;
-	UINT height = header->height;
+	UINT Width = header->Width;
+	UINT Height = header->Height;
 	UINT depth = header->depth;
 
 	uint32_t resDim = D3D12_RESOURCE_DIMENSION_UNKNOWN;
@@ -1720,9 +1720,9 @@ static HRESULT CreateTextureFromDDS12(
 		switch (d3d10ext->resourceDimension)
 		{
 		case D3D11_RESOURCE_DIMENSION_TEXTURE1D:
-			if ((header->flags & DDS_HEIGHT) && height != 1)
+			if ((header->flags & DDS_HEIGHT) && Height != 1)
 				return HRESULT_FROM_WIN32(ERROR_INVALID_DATA);
-			height = depth = 1;
+			Height = depth = 1;
 			break;
 
 		case D3D11_RESOURCE_DIMENSION_TEXTURE2D:
@@ -1796,7 +1796,7 @@ static HRESULT CreateTextureFromDDS12(
 	{
 	case D3D12_RESOURCE_DIMENSION_TEXTURE1D:
 		if ((arraySize > D3D12_REQ_TEXTURE1D_ARRAY_AXIS_DIMENSION) ||
-			(width > D3D12_REQ_TEXTURE1D_U_DIMENSION))
+			(Width > D3D12_REQ_TEXTURE1D_U_DIMENSION))
 		{
 			return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
 		}
@@ -1807,15 +1807,15 @@ static HRESULT CreateTextureFromDDS12(
 		{
 			// This is the right bound because we set arraySize to (NumCubes*6) above
 			if ((arraySize > D3D12_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION) ||
-				(width > D3D12_REQ_TEXTURECUBE_DIMENSION) ||
-				(height > D3D12_REQ_TEXTURECUBE_DIMENSION))
+				(Width > D3D12_REQ_TEXTURECUBE_DIMENSION) ||
+				(Height > D3D12_REQ_TEXTURECUBE_DIMENSION))
 			{
 				return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
 			}
 		}
 		else if ((arraySize > D3D12_REQ_TEXTURE2D_ARRAY_AXIS_DIMENSION) ||
-			(width > D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION) ||
-			(height > D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION))
+			(Width > D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION) ||
+			(Height > D3D12_REQ_TEXTURE2D_U_OR_V_DIMENSION))
 		{
 			return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
 		}
@@ -1823,8 +1823,8 @@ static HRESULT CreateTextureFromDDS12(
 
 	case D3D12_RESOURCE_DIMENSION_TEXTURE3D:
 		if ((arraySize > 1) ||
-			(width > D3D12_REQ_TEXTURE3D_U_V_OR_W_DIMENSION) ||
-			(height > D3D12_REQ_TEXTURE3D_U_V_OR_W_DIMENSION) ||
+			(Width > D3D12_REQ_TEXTURE3D_U_V_OR_W_DIMENSION) ||
+			(Height > D3D12_REQ_TEXTURE3D_U_V_OR_W_DIMENSION) ||
 			(depth > D3D12_REQ_TEXTURE3D_U_V_OR_W_DIMENSION))
 		{
 			return HRESULT_FROM_WIN32(ERROR_NOT_SUPPORTED);
@@ -1851,7 +1851,7 @@ static HRESULT CreateTextureFromDDS12(
 	size_t tdepth = 0;
 
 	hr = FillInitData12(
-		width, height, depth, mipCount, arraySize, format, maxsize, bitSize, bitData,
+		Width, Height, depth, mipCount, arraySize, format, maxsize, bitSize, bitData,
 		twidth, theight, tdepth, skipMip, initData.get()
 		);
 

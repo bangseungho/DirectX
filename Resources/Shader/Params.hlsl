@@ -13,14 +13,14 @@
 
 struct LightInfo
 {
-    float3      strength;
-    float       fallOffStart; 
-    float3      direction;    
-    float       fallOffEnd;   
-    float3      position;     
-    float       spotPower;    
-    int         lightType;
-    float3      padding;
+    float3      Strength;
+    float       FallOffStart; 
+    float3      Direction;    
+    float       FallOffEnd;   
+    float3      Position;     
+    float       SpotPower;    
+    int         LightType;
+    float3      Padding;
 };
 
 struct Material
@@ -38,14 +38,14 @@ struct LightColor
 
 struct PassConstants
 {
-    row_major matrix    view;
-    row_major matrix    proj;
-    row_major matrix    viewProj;
+    row_major matrix    View;
+    row_major matrix    Proj;
+    row_major matrix    ViewProj;
     float4              eyePosW;
 	float               nearZ;
 	float               farZ;
-    float               width;
-    float               height;
+    float               Width;
+    float               Height;
 	float               totalTime;
 	float               deltaTime;
 	float2              padding2;
@@ -55,13 +55,13 @@ struct PassConstants
 	LightInfo	        lights[MAX_LIGHTS];
 };
 
-struct ObjectConstants
+struct ObjectData
 {
     row_major matrix    world;
-    row_major matrix    viewProj;
+    row_major matrix    ViewProj;
     row_major matrix    texTransform;
     uint                materialIndex;
-    float3              padding;
+    float3              Padding;
 };
 
 struct MaterialData
@@ -76,9 +76,42 @@ struct MaterialData
     int                 lightIndex;
 };
 
+struct ParticleMatData
+{
+    float DeltaTime;
+	float AccTime;
+	uint MaxCount;
+	uint AddCount;
+	float MinLifeTime;
+	float MaxLifeTime;
+	float MinSpeed;
+	float MaxSpeed;
+};
+
+struct Particle
+{
+    float3 worldPos;
+    float curTime;
+    float3 worldDir;
+    float lifeTime; 
+    int alive;
+    float3 Padding;
+};
+
+struct ComputeShared
+{
+    int AddCount;
+    float3 Padding;
+};
+
 ConstantBuffer<PassConstants> gPassConstants : register(b0);
-ConstantBuffer<ObjectConstants> gObjConstants : register(b1);
+ConstantBuffer<ObjectData> gObjConstants : register(b1);
 StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
+
+//StructuredBuffer<ParticleMatData> gParticleMatData : register(t0, space2);
+//RWStructuredBuffer<Particle> gParticle : register(u0);
+//StructuredBuffer<Particle> gData : register(t0, space3);
+//RWStructuredBuffer<ComputeShared> gShared : register(u1);
 
 TextureCube gCubeMap : register(t0);
 Texture2D gTextureMaps[TEXTURE2D_COUNT] : register(t1);

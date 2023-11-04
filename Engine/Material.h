@@ -8,21 +8,21 @@ public:
 	virtual ~Material();
 
 public:
-	void SetShader(shared_ptr<class Shader> shader) { _shader = shader; }
-	shared_ptr<class Shader> GetShader() { return _shader; }
+	void SetShader(shared_ptr<class Shader> shader) { mShader = shader; }
+	shared_ptr<class Shader> GetShader() { return mShader; }
 
-	void SetDiffuse(Vec4 diffuse) { _params.DiffuseAlbedo = diffuse; }
-	void SetFresnel(Vec3 fresnel) { _params.FresnelR0 = fresnel; }
-	void SetRoughness(float roughness) { _params.Roughness = roughness; }
-	void SetMatTransform(Matrix matTransform) { _params.MatTransform = matTransform; }
-	void SetLightIndex(uint8 index) { _params.LightIndex = index; }
+	void SetDiffuse(Vec4 diffuse) { mMatData.DiffuseAlbedo = diffuse; }
+	void SetFresnel(Vec3 fresnel) { mMatData.FresnelR0 = fresnel; }
+	void SetRoughness(float roughness) { mMatData.Roughness = roughness; }
+	void SetMatTransform(Matrix matTransform) { mMatData.MatTransform = matTransform; }
+	void SetLightIndex(uint8 index) { mMatData.LightIndex = index; }
 
-	void SetMatCBIndex(uint32 index) { _matCBIndex = index; }
-	uint32 GetMatCBIndex() const { return _matCBIndex; }
+	void SetMatCBIndex(uint32 index) { mMatIndex = index; }
+	uint32 GetMatCBIndex() const { return mMatIndex; }
 
-	void SetDiffuseSrvHeapIndex(uint8 index) { _params.TextureMapIndex = index; }
-	void SetNormalSrvHeapIndex(uint8 index) { _params.NormalMapIndex = static_cast<uint8>(index); }
-	void SetRoughnessSrvHeapIndex(uint8 index) { _params.RoughnessMapIndex = static_cast<uint8>(index); }
+	void SetDiffuseSrvHeapIndex(uint8 index) { mMatData.TextureMapIndex = index; }
+	void SetNormalSrvHeapIndex(uint8 index) { mMatData.NormalMapIndex = static_cast<uint8>(index); }
+	void SetRoughnessSrvHeapIndex(uint8 index) { mMatData.RoughnessMapIndex = static_cast<uint8>(index); }
 
 	void Dispatch(uint32 x, uint32 y, uint32 z);
 
@@ -30,9 +30,8 @@ public:
 	void PushComputeData();
 
 private:
-	shared_ptr<class Shader> _shader;
-	MaterialConstants _params;
-
-	uint32 _matCBIndex = 0;
+	shared_ptr<class Shader>	mShader;
+	MaterialData				mMatData;
+	uint32						mMatIndex = 0;
 };
 

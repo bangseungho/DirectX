@@ -72,7 +72,7 @@
     <ClCompile Include="d3dUtil.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="TableDescriptorHeap.cpp">
+    <ClCompile Include="DescriptorHeap.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
@@ -200,7 +200,7 @@
     <ClInclude Include="UploadBuffer.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="TableDescriptorHeap.h">
+    <ClInclude Include="DescriptorHeap.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Texture.h">
@@ -346,6 +346,18 @@
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="..\Resources\Shader\Compute_cs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Particle_vs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Particle_ps.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Particle_cs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Particle_gs.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
   </ItemGroup>

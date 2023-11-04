@@ -9,7 +9,7 @@ enum class SHADER_TYPE : uint8
 	COMPUTE,
 };
 
-enum class RASTERIGER_TYPE : uint8
+enum class RASTERIZER_TYPE : uint8
 {
 	CULL_NONE,
 	CULL_FRONT,
@@ -38,11 +38,11 @@ enum class BLEND_TYPE : uint8
 
 struct ShaderInfo
 {
-	SHADER_TYPE shaderType = SHADER_TYPE::FORWARD;
-	RASTERIGER_TYPE rasterizerType = RASTERIGER_TYPE::CULL_BACK;
-	DEPTH_STENCIL_TYPE dpethStencilType = DEPTH_STENCIL_TYPE::LESS;
-	BLEND_TYPE blendType = BLEND_TYPE::DEFAULT;
-	D3D12_PRIMITIVE_TOPOLOGY_TYPE topologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	SHADER_TYPE						ShaderType = SHADER_TYPE::FORWARD;
+	RASTERIZER_TYPE					RasterizerType = RASTERIZER_TYPE::CULL_BACK;
+	DEPTH_STENCIL_TYPE				DepthStencilType = DEPTH_STENCIL_TYPE::LESS;
+	BLEND_TYPE						BlendType = BLEND_TYPE::DEFAULT;
+	D3D12_PRIMITIVE_TOPOLOGY_TYPE	TopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 };
 
 class Shader : public Object
@@ -59,24 +59,24 @@ public:
 
 	void Update();
 
-	SHADER_TYPE GetShaderType() { return _info.shaderType; }
+	SHADER_TYPE GetShaderType() { return mWindow.ShaderType; }
 
 private:
 	void CreateComputeShader();
 	void CreateGraphicsShader();
 
 private:
-	ShaderInfo							_info;
-	ComPtr<ID3D12PipelineState>			_pipelineState;
+	ShaderInfo							mWindow;
+	ComPtr<ID3D12PipelineState>			mPipelineState;
 
-	ComPtr<ID3DBlob>					_vsBlob;
-	ComPtr<ID3DBlob>					_psBlob;
-	ComPtr<ID3DBlob>					_gsBlob;
-	ComPtr<ID3DBlob>					_errBlob;
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC  _graphicsPipelineDesc = {};
+	ComPtr<ID3DBlob>					mVsBlob;
+	ComPtr<ID3DBlob>					mPsBlob;
+	ComPtr<ID3DBlob>					mGsBlob;
+	ComPtr<ID3DBlob>					mErrBlob;
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC  mGraphicsPipelineDesc = {};
 
 private:
-	ComPtr<ID3DBlob>					_csBlob;
-	D3D12_COMPUTE_PIPELINE_STATE_DESC  _computePipelineDesc = {};
+	ComPtr<ID3DBlob>					mCsBlob;
+	D3D12_COMPUTE_PIPELINE_STATE_DESC	mComputePipelineDesc = {};
 };
 

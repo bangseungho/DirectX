@@ -5,7 +5,7 @@
 
 TestAutoMoveScript::TestAutoMoveScript(float pivot)
 {
-	_pivot = pivot;
+	mPivot = pivot;
 }
 
 TestAutoMoveScript::~TestAutoMoveScript()
@@ -14,11 +14,11 @@ TestAutoMoveScript::~TestAutoMoveScript()
 
 void TestAutoMoveScript::LateUpdate()
 {
-	Vec3 pos = GetTransform()->GetLocalPosition();
+	Vec3 Pos = GetTransform()->GetLocalPosition();
 	
 
-	pos.x = _pivot + sinf(TOTAL_TIME * _moveSpeed) * _distance;
+	Pos.x = mPivot + sinf(TOTAL_TIME * mMoveSpeed) * mDistance;
 
 
-	GetTransform()->SetLocalPosition(pos);
+	GetTransform()->SetLocalPosition(Pos);
 }

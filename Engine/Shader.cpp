@@ -12,32 +12,32 @@ Shader::~Shader()
 
 void Shader::LoadGraphicsShader(ShaderInfo info, const wstring& vs, const wstring& ps, const wstring& gs)
 {
-	_info = info;
+	mWindow = info;
 
 	if (!vs.empty())
-		_vsBlob = d3dUtil::LoadBinary(vs);
+		mVsBlob = d3dUtil::LoadBinary(vs);
 
 	if (!ps.empty())
-		_psBlob = d3dUtil::LoadBinary(ps);
+		mPsBlob = d3dUtil::LoadBinary(ps);
 
 	if (!gs.empty())
-		_gsBlob = d3dUtil::LoadBinary(gs);
+		mGsBlob = d3dUtil::LoadBinary(gs);
 
 	CreateGraphicsShader();
 }
 
 void Shader::CompileGraphicsShader(ShaderInfo info, const D3D_SHADER_MACRO* define, const wstring& vs, const wstring& ps, const wstring& gs)
 {
-	_info = info;
+	mWindow = info;
 
 	if (!vs.empty())
-		_vsBlob = d3dUtil::CompileShader(vs, nullptr, "VS_Main", "vs_5_1");
+		mVsBlob = d3dUtil::CompileShader(vs, nullptr, "VS_Main", "vs_5_1");
 
 	if (!ps.empty())
-		_psBlob = d3dUtil::CompileShader(ps, define, "PS_Main", "ps_5_1");
+		mPsBlob = d3dUtil::CompileShader(ps, define, "PS_Main", "ps_5_1");
 
 	if (!gs.empty())
-		_gsBlob = d3dUtil::CompileShader(gs, nullptr, "GS_Main", "gs_5_1");
+		mGsBlob = d3dUtil::CompileShader(gs, nullptr, "GS_Main", "gs_5_1");
 
 	CreateGraphicsShader();
 }
@@ -45,7 +45,7 @@ void Shader::CompileGraphicsShader(ShaderInfo info, const D3D_SHADER_MACRO* defi
 void Shader::LoadComputeShader(const wstring& cs)
 {
 	if (!cs.empty())
-		_csBlob = d3dUtil::LoadBinary(cs);
+		mCsBlob = d3dUtil::LoadBinary(cs);
 
 	CreateComputeShader();
 }
@@ -53,7 +53,7 @@ void Shader::LoadComputeShader(const wstring& cs)
 void Shader::CompileComputeShader(const wstring& cs)
 {
 	if (!cs.empty())
-		_csBlob = d3dUtil::CompileShader(cs, nullptr, "CS_Main", "cs_5_1");
+		mCsBlob = d3dUtil::CompileShader(cs, nullptr, "CS_Main", "cs_5_1");
 
 	CreateComputeShader();
 }
@@ -62,118 +62,118 @@ void Shader::CreateGraphicsShader()
 {
 	D3D12_INPUT_ELEMENT_DESC desc[] =
 	{
-		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "Position", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "Normal", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "Tangent", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
 
-	_graphicsPipelineDesc.InputLayout = { desc, _countof(desc) };
-	_graphicsPipelineDesc.pRootSignature = GRAPHICS_ROOT_SIGNATURE.Get();
-	_graphicsPipelineDesc.VS =
+	mGraphicsPipelineDesc.InputLayout = { desc, _countof(desc) };
+	mGraphicsPipelineDesc.pRootSignature = GRAPHICS_ROOT_SIGNATURE.Get();
+	mGraphicsPipelineDesc.VS =
 	{
-		reinterpret_cast<BYTE*>(_vsBlob->GetBufferPointer()),
-		_vsBlob->GetBufferSize()
+		reinterpret_cast<BYTE*>(mVsBlob->GetBufferPointer()),
+		mVsBlob->GetBufferSize()
 	};
-	_graphicsPipelineDesc.PS =
+	mGraphicsPipelineDesc.PS =
 	{
-		reinterpret_cast<BYTE*>(_psBlob->GetBufferPointer()),
-		_psBlob->GetBufferSize()
+		reinterpret_cast<BYTE*>(mPsBlob->GetBufferPointer()),
+		mPsBlob->GetBufferSize()
 	};
-	_graphicsPipelineDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
-	_graphicsPipelineDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
-	_graphicsPipelineDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
-	_graphicsPipelineDesc.SampleMask = UINT_MAX;
-	_graphicsPipelineDesc.PrimitiveTopologyType = _info.topologyType;
-	_graphicsPipelineDesc.NumRenderTargets = 1;
-	_graphicsPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-	_graphicsPipelineDesc.SampleDesc.Count = 1;
-	_graphicsPipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
+	mGraphicsPipelineDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);
+	mGraphicsPipelineDesc.BlendState = CD3DX12_BLEND_DESC(D3D12_DEFAULT);
+	mGraphicsPipelineDesc.DepthStencilState = CD3DX12_DEPTH_STENCIL_DESC(D3D12_DEFAULT);
+	mGraphicsPipelineDesc.SampleMask = UINT_MAX;
+	mGraphicsPipelineDesc.PrimitiveTopologyType = mWindow.TopologyType;
+	mGraphicsPipelineDesc.NumRenderTargets = 1;
+	mGraphicsPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	mGraphicsPipelineDesc.SampleDesc.Count = 1;
+	mGraphicsPipelineDesc.DSVFormat = DXGI_FORMAT_D32_FLOAT;
 
-	switch (_info.shaderType)
+	switch (mWindow.ShaderType)
 	{
 	case SHADER_TYPE::FORWARD:
-		_graphicsPipelineDesc.NumRenderTargets = 1;
-		_graphicsPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		mGraphicsPipelineDesc.NumRenderTargets = 1;
+		mGraphicsPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		break;
 	case SHADER_TYPE::DEFERRED:
-		_graphicsPipelineDesc.NumRenderTargets = RENDER_TARGET_G_BUFFER_GROUP_COUNT;
-		_graphicsPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		_graphicsPipelineDesc.RTVFormats[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
-		_graphicsPipelineDesc.RTVFormats[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		_graphicsPipelineDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		_graphicsPipelineDesc.RTVFormats[4] = DXGI_FORMAT_R8_UNORM;
+		mGraphicsPipelineDesc.NumRenderTargets = RENDER_TARGET_G_BUFFER_GROUP_COUNT;
+		mGraphicsPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		mGraphicsPipelineDesc.RTVFormats[1] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		mGraphicsPipelineDesc.RTVFormats[2] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		mGraphicsPipelineDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		mGraphicsPipelineDesc.RTVFormats[4] = DXGI_FORMAT_R8_UNORM;
 		break;
 	case SHADER_TYPE::LIGHTING:
-		_graphicsPipelineDesc.NumRenderTargets = 2;
-		_graphicsPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		_graphicsPipelineDesc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		mGraphicsPipelineDesc.NumRenderTargets = 2;
+		mGraphicsPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		mGraphicsPipelineDesc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		break;
 	default:
 		break;
 	}
 
 
-	switch (_info.rasterizerType)
+	switch (mWindow.RasterizerType)
 	{
-	case RASTERIGER_TYPE::CULL_NONE:
-		_graphicsPipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-		_graphicsPipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	case RASTERIZER_TYPE::CULL_NONE:
+		mGraphicsPipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		mGraphicsPipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 		break;
-	case RASTERIGER_TYPE::CULL_FRONT:
-		_graphicsPipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-		_graphicsPipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT;
+	case RASTERIZER_TYPE::CULL_FRONT:
+		mGraphicsPipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		mGraphicsPipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_FRONT;
 		break;
-	case RASTERIGER_TYPE::CULL_BACK:
-		_graphicsPipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
-		_graphicsPipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
+	case RASTERIZER_TYPE::CULL_BACK:
+		mGraphicsPipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_SOLID;
+		mGraphicsPipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_BACK;
 		break;
-	case RASTERIGER_TYPE::WIREFRAME:
-		_graphicsPipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
-		_graphicsPipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
+	case RASTERIZER_TYPE::WIREFRAME:
+		mGraphicsPipelineDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+		mGraphicsPipelineDesc.RasterizerState.CullMode = D3D12_CULL_MODE_NONE;
 		break;
 	default:
 		break;
 	}
 
-	switch (_info.dpethStencilType)
+	switch (mWindow.DepthStencilType)
 	{
 	case DEPTH_STENCIL_TYPE::LESS:
-		_graphicsPipelineDesc.DepthStencilState.DepthEnable = TRUE;
-		_graphicsPipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		mGraphicsPipelineDesc.DepthStencilState.DepthEnable = TRUE;
+		mGraphicsPipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 		break;
 	case DEPTH_STENCIL_TYPE::LESS_EQUAL:
-		_graphicsPipelineDesc.DepthStencilState.DepthEnable = TRUE;
-		_graphicsPipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		mGraphicsPipelineDesc.DepthStencilState.DepthEnable = TRUE;
+		mGraphicsPipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		break;
 	case DEPTH_STENCIL_TYPE::GREATER:
-		_graphicsPipelineDesc.DepthStencilState.DepthEnable = TRUE;
-		_graphicsPipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_GREATER;
+		mGraphicsPipelineDesc.DepthStencilState.DepthEnable = TRUE;
+		mGraphicsPipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_GREATER;
 		break;
 	case DEPTH_STENCIL_TYPE::GREATER_EQUAL:
-		_graphicsPipelineDesc.DepthStencilState.DepthEnable = TRUE;
-		_graphicsPipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_GREATER_EQUAL;
+		mGraphicsPipelineDesc.DepthStencilState.DepthEnable = TRUE;
+		mGraphicsPipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_GREATER_EQUAL;
 		break;
 	case DEPTH_STENCIL_TYPE::NO_DEPTH_TEST:
-		_graphicsPipelineDesc.DepthStencilState.DepthEnable = FALSE;
-		_graphicsPipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		mGraphicsPipelineDesc.DepthStencilState.DepthEnable = FALSE;
+		mGraphicsPipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 		break;
 	case DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE:
-		_graphicsPipelineDesc.DepthStencilState.DepthEnable = FALSE;
-		_graphicsPipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+		mGraphicsPipelineDesc.DepthStencilState.DepthEnable = FALSE;
+		mGraphicsPipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 		break;
 	case DEPTH_STENCIL_TYPE::LESS_NO_WRITE:
-		_graphicsPipelineDesc.DepthStencilState.DepthEnable = TRUE;
-		_graphicsPipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
-		_graphicsPipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+		mGraphicsPipelineDesc.DepthStencilState.DepthEnable = TRUE;
+		mGraphicsPipelineDesc.DepthStencilState.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		mGraphicsPipelineDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
 		break;
 	default:
 		break;
 	}
 
-	D3D12_RENDER_TARGET_BLEND_DESC& rt = _graphicsPipelineDesc.BlendState.RenderTarget[0];
+	D3D12_RENDER_TARGET_BLEND_DESC& rt = mGraphicsPipelineDesc.BlendState.RenderTarget[0];
 
-	switch (_info.blendType)
+	switch (mWindow.BlendType)
 	{
 	case BLEND_TYPE::DEFAULT:
 		rt.BlendEnable = FALSE;
@@ -197,39 +197,27 @@ void Shader::CreateGraphicsShader()
 	}
 
 
-	DEVICE->CreateGraphicsPipelineState(&_graphicsPipelineDesc, IID_PPV_ARGS(&_pipelineState));
+	DEVICE->CreateGraphicsPipelineState(&mGraphicsPipelineDesc, IID_PPV_ARGS(&mPipelineState));
 }
 
 void Shader::CreateComputeShader()
 {
-	_info.shaderType = SHADER_TYPE::COMPUTE;
+	mWindow.ShaderType = SHADER_TYPE::COMPUTE;
 
-	_computePipelineDesc.CS =
+	mComputePipelineDesc.CS =
 	{
-		reinterpret_cast<BYTE*>(_csBlob->GetBufferPointer()),
-		_csBlob->GetBufferSize()
+		reinterpret_cast<BYTE*>(mCsBlob->GetBufferPointer()),
+		mCsBlob->GetBufferSize()
 	};
 
-	_computePipelineDesc.pRootSignature = COMPUTE_ROOT_SIGNATURE.Get();
+	mComputePipelineDesc.pRootSignature = COMPUTE_ROOT_SIGNATURE.Get();
 
-	ThrowIfFailed(DEVICE->CreateComputePipelineState(&_computePipelineDesc, IID_PPV_ARGS(&_pipelineState)));
+	ThrowIfFailed(DEVICE->CreateComputePipelineState(&mComputePipelineDesc, IID_PPV_ARGS(&mPipelineState)));
 }
 
 void Shader::Update()
 {
-	switch (_info.shaderType)
-	{
-	case SHADER_TYPE::FORWARD:
-	case SHADER_TYPE::DEFERRED:
-	case SHADER_TYPE::LIGHTING:
-		GRAPHICS_CMD_LIST->SetPipelineState(_pipelineState.Get());
-		break;
-	case SHADER_TYPE::COMPUTE:
-		COMPUTE_CMD_LIST->SetPipelineState(_pipelineState.Get());
-		break;
-	default:
-		break;
-	}
+	CMD_LIST->SetPipelineState(mPipelineState.Get());
 }
 
 

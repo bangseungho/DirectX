@@ -7,9 +7,9 @@
 
 void FlashLightScript::LateUpdate()
 {
-	Vec3 targetPos = _target->GetTransform()->GetLocalPosition();
+	Vec3 targetPos = mTarget->GetTransform()->GetLocalPosition();
 	GetTransform()->SetLocalPosition(targetPos);
 
-	Vec3 targetDir = _target->GetTransform()->GetLook();
+	Vec3 targetDir = mTarget->GetTransform()->GetLook();
 	GetGameObject()->GetLight()->SetLightDirection(targetDir);
 }

@@ -64,7 +64,7 @@ enum
 enum class RENDER_TARGET_GROUP_TYPE : uint8
 {
 	SWAP_CHAIN, // BACK_BUFFER, FRONT_BUFFER
-	G_BUFFER, // POSITION, NORMAL, DIFFUSEALBEDO, SHINESS, FRESNELR0
+	G_BUFFER, // Position, Normal, DIFFUSEALBEDO, SHINESS, FRESNELR0
 	LIGHTING, // DIFFUSE, SPECULAR
 
 	END,
@@ -138,10 +138,10 @@ enum
 
 struct WindowInfo
 {
-	HWND	hwnd; // 출력 윈도우
-	int32	width; // 너비
-	int32	height; // 높이
-	bool	windowed; // 창모드 or 전체화면
+	HWND	Hwnd; 
+	int32	Width; 
+	int32	Height;
+	bool	Windowed;
 };
 
 struct Vertex
@@ -149,20 +149,20 @@ struct Vertex
 	Vertex() {}
 
 	Vertex(Vec3 p, Vec2 u, Vec3 n, Vec3 t)
-		: pos(p), uv(u), normal(n), tangent(t)
+		: Pos(p), Uv(u), Normal(n), Tangent(t)
 	{
 	}
 
-	Vec3 pos;
-	Vec2 uv;
-	Vec3 normal;
-	Vec3 tangent;
+	Vec3 Pos;
+	Vec2 Uv;
+	Vec3 Normal;
+	Vec3 Tangent;
 };
 
 struct MinMaxVert
 {
-	Vec3 min;
-	Vec3 max;
+	Vec3 Min;
+	Vec3 Max;
 };
 
 enum class LIGHT_TYPE : uint8
@@ -174,77 +174,87 @@ enum class LIGHT_TYPE : uint8
 
 struct LightInfo
 {
-	Vec3 strength = { 0.5f, 0.5f, 0.5f };
-	float fallOffStart = 1.0f;                  // point/spot light only
-	Vec3 direction = { 0.0f, -1.0f, 0.0f };		// directional/spot light only
-	float fallOffEnd = 10.0f;                   // point/spot light only
-	Vec3 position = { 0.0f, 0.0f, 0.0f };		// point/spot light only
-	float spotPower = 64.0f;                    // spot light only
-	int32 lightType;
-	Vec3 padding;
+	Vec3 Strength = { 0.5f, 0.5f, 0.5f };
+	float FallOffStart = 1.0f;                  // point/spot light only
+	Vec3 Direction = { 0.0f, -1.0f, 0.0f };		// directional/spot light only
+	float FallOffEnd = 10.0f;                   // point/spot light only
+	Vec3 Position = { 0.0f, 0.0f, 0.0f };		// point/spot light only
+	float SpotPower = 64.0f;                    // spot light only
+	int32 LightType;
+	Vec3 Padding;
 };
 
 #define MAX_LIGHTS	200
 struct PassConstants
 {
-	Matrix view = Matrix::Identity;
-	Matrix proj = Matrix::Identity;
-	Matrix viewProj = Matrix::Identity;
-	Vec4 eyePosW = { 0.f, 0.f, 0.f, 0.f };
-	float nearZ = 0.f;
-	float farZ = 0.f;
-	float width = 0.f;
-	float height = 0.f;
-	float totalTime = 0.f;
-	float deltaTime = 0.f;
-	Vec2 padding2;
+	Matrix		View = Matrix::Identity;
+	Matrix		Proj = Matrix::Identity;
+	Matrix		ViewProj = Matrix::Identity;
+	Vec4		EyePosW = { 0.f, 0.f, 0.f, 0.f };
+	float		NearZ = 0.f;
+	float		FarZ = 0.f;
+	float		Width = 0.f;
+	float		Height = 0.f;
+	float		TotalTime = 0.f;
+	float		DeltaTime = 0.f;
+	Vec2		Padding;
 
-	Vec4 ambientLight = { 0.f, 0.f, 0.f, 1.f };
+	Vec4		AmbientLight = { 0.f, 0.f, 0.f, 1.f };
 
-	uint32		lightCount;
-	Vec3		padding3;
-	LightInfo	lights[MAX_LIGHTS];
+	uint32		LightCount;
+	Vec3		Padding2;
+	LightInfo	Lights[MAX_LIGHTS];
 };
 
-struct ObjectConstants
+struct ObjectData
 {
-	Matrix	matWorld = Matrix::Identity;
-	Matrix  matViewProj = Matrix::Identity;
-	Matrix  texTransform = Matrix::Identity;
-	uint32	materialIndex = 0;
-	Vec3	padding;
+	Matrix	MatWorld = Matrix::Identity;
+	Matrix  MatViewProj = Matrix::Identity;
+	Matrix  TexTransform = Matrix::Identity;
+	uint32	MaterialIndex = 0;
+	Vec3	Padding;
 };
 
-struct MaterialConstants
+struct MaterialData
 {
-	Vec4 DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
-	Vec3 FresnelR0 = { 0.01f, 0.01f, 0.01f };
-	float Roughness = 0.25f;
-	Matrix MatTransform = MathHelper::Identity4x4();
-	int32 TextureMapIndex = -1;
-	int32 NormalMapIndex = -1;
-	int32 RoughnessMapIndex = -1;
-	int32 LightIndex = -1;
+	Vec4	DiffuseAlbedo = { 1.0f, 1.0f, 1.0f, 1.0f };
+	Vec3	FresnelR0 = { 0.01f, 0.01f, 0.01f };
+	float	Roughness = 0.25f;
+	Matrix	MatTransform = MathHelper::Identity4x4();
+	int32	TextureMapIndex = -1;
+	int32	NormalMapIndex = -1;
+	int32	RoughnessMapIndex = -1;
+	int32	LightIndex = -1;
+};
+
+struct ComputeParticleData
+{
+	float DeltaTime = 0.f;
+	float AccTime = 0.f;
+	int32 MaxCount = 0;
+	int32 AddCount = 0;
+	float MinLifeTime = 0.f;
+	float MaxLifeTime = 0.f;
+	float MinSpeed = 0.f;
+	float MaxSpeed = 0.f;
 };
 
 #define DEVICE							gEngine->GetDevice()->GetDevice()
 
 #define DESCHEAP						gEngine->GetTableDescHeap()
 
-#define GRAPHICS_CMD_QUEUE				gEngine->GetGraphicsCmdQueue()->GetCmdQueue()
-#define GRAPHICS_CMD_LIST				gEngine->GetGraphicsCmdQueue()->GetCmdList()
-#define GRAPHICS_CMD_ALLOC				gEngine->GetGraphicsCmdQueue()->GetCmdAlloc()
-
-#define COMPUTE_CMD_LIST				gEngine->GetComputeCmdQueue()->GetCmdList()
+#define CMD_QUEUE						gEngine->GetCmdQueue()->GetCmdQueue()
+#define CMD_LIST						gEngine->GetCmdQueue()->GetCmdList()
+#define CMD_ALLOC						gEngine->GetCmdQueue()->GetCmdAlloc()
 
 #define CURR_FRAMERESOURCE				gEngine->GetCurrFrameResource()
-#define CURR_OBJECT_CB					gEngine->GetCurrFrameResource()->ObjectCB
+#define CURR_OBJECT_CB					gEngine->GetCurrFrameResource()->mObjectCB
 
 #define GRAPHICS_ROOT_SIGNATURE			gEngine->GetRootSignature()->GetGraphicsRootSignature()
 #define COMPUTE_ROOT_SIGNATURE			gEngine->GetRootSignature()->GetComputeRootSignature()
 
-#define OBJECT_CB gEngine->GetCurrFrameResource()->ObjectCB
-#define PASS_CB gEngine->GetCurrFrameResource()->PassCB
-#define MATERIAL_CB gEngine->GetCurrFrameResource()->MaterialCB
+#define OBJECT_CB gEngine->GetCurrFrameResource()->mObjectCB
+#define PASS_CB gEngine->GetCurrFrameResource()->mPassCB
+#define MATERIAL_CB gEngine->GetCurrFrameResource()->mMatData
 
 extern unique_ptr<class Engine> gEngine;

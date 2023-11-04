@@ -5,19 +5,19 @@
 
 struct VS_IN
 {
-    float3 posL : POSITION;
-    float3 normalL : NORMAL;
-    float2 uv : TEXCOORD;
-    float3 tangentU : TANGENT;
+    float3 posL : Position;
+    float3 normalL : Normal;
+    float2 Uv : TEXCOORD;
+    float3 tangentU : Tangent;
 };
 
 struct VS_OUT
 {
     float4 posH : SV_Position;
-    float3 posW : POSITION;
-    float3 normalW : NORMAL;
-	float3 tangentW : TANGENT;
-    float2 uv : TEXCOORD;
+    float3 posW : Position;
+    float3 normalW : Normal;
+	float3 tangentW : Tangent;
+    float2 Uv : TEXCOORD;
 };
 
 VS_OUT VS_Main(VS_IN vin)
@@ -36,10 +36,10 @@ VS_OUT VS_Main(VS_IN vin)
     vout.tangentW = mul(vin.tangentU, (float3x3)gObjConstants.world);
 
     // 동차 절단 공간으로 변환
-    vout.posH = mul(posW, gObjConstants.viewProj);
+    vout.posH = mul(posW, gObjConstants.ViewProj);
 
-    float4 uv = mul(float4(vin.uv, 0.f, 1.f), matData.matTransform);
-    vout.uv = uv.xy;
+    float4 Uv = mul(float4(vin.Uv, 0.f, 1.f), matData.matTransform);
+    vout.Uv = Uv.xy;
  
     return vout;
 }

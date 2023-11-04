@@ -9,7 +9,7 @@
 
 void Scene::Awake()
 {
-	for (const sptr<GameObject>& gameObject : _gameObjects)
+	for (const sptr<GameObject>& gameObject : mGameObjects)
 	{
 		gameObject->Awake();
 	}
@@ -25,18 +25,18 @@ void Scene::Render()
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->ClearRenderTargetView();
 
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->OMSetRenderTargets();
-	_mainCamera->SortGameObject();
-	_mainCamera->Render_Deferred();
+	mMainCamera->SortGameObject();
+	mMainCamera->Render_Deferred();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->WaitTargetToResource();
 
 	RenderLights();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->WaitTargetToResource();
 	RenderFinal();
 
-	_mainCamera->Render_Forward();
+	mMainCamera->Render_Forward();
 
-	for (auto& camera : _cameraObjects) {
-		if (camera == _mainCamera)
+	for (auto& camera : mCameraObjects) {
+		if (camera == mMainCamera)
 			continue;
 
 		camera->SortGameObject();
@@ -57,7 +57,7 @@ void Scene::RenderLights()
 {
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->OMSetRenderTargets();
 
-	for (auto& light : _lightObjects)
+	for (auto& light : mLightObjects)
 	{
 		light->Render();
 	}
@@ -65,7 +65,7 @@ void Scene::RenderLights()
 
 void Scene::Start()
 {
-	for (const sptr<GameObject>& gameObject : _gameObjects)
+	for (const sptr<GameObject>& gameObject : mGameObjects)
 	{
 		gameObject->Start();
 	}
@@ -73,7 +73,7 @@ void Scene::Start()
 
 void Scene::FixedUpdate()
 {
-	for (const sptr<GameObject>& gameObject : _gameObjects)
+	for (const sptr<GameObject>& gameObject : mGameObjects)
 	{
 		gameObject->FixedUpdate();
 	}
@@ -81,7 +81,7 @@ void Scene::FixedUpdate()
 
 void Scene::Update()
 {
-	for (const sptr<GameObject>& gameObject : _gameObjects)
+	for (const sptr<GameObject>& gameObject : mGameObjects)
 	{
 		gameObject->Update();
 	}
@@ -89,7 +89,7 @@ void Scene::Update()
 
 void Scene::LateUpdate()
 {
-	for (const sptr<GameObject>& gameObject : _gameObjects)
+	for (const sptr<GameObject>& gameObject : mGameObjects)
 	{
 		gameObject->LateUpdate();
 	}
@@ -97,7 +97,7 @@ void Scene::LateUpdate()
 
 void Scene::FinalUpdate()
 {
-	for (const sptr<GameObject>& gameObject : _gameObjects)
+	for (const sptr<GameObject>& gameObject : mGameObjects)
 	{
 		gameObject->FinalUpdate();
 	}
@@ -106,33 +106,33 @@ void Scene::FinalUpdate()
 void Scene::AddGameObject(sptr<GameObject> gameObject)
 {
 	if (gameObject->GetCamera() != nullptr)
-		_cameraObjects.push_back(gameObject->GetCamera());
+		mCameraObjects.push_back(gameObject->GetCamera());
 
 	else if (gameObject->GetLight() != nullptr)
-		_lightObjects.push_back(gameObject->GetLight());
+		mLightObjects.push_back(gameObject->GetLight());
 
-	_gameObjects.push_back(gameObject);
+	mGameObjects.push_back(gameObject);
 }
 
 void Scene::RemoveGameObject(sptr<GameObject> gameObject)
 {
 	if (gameObject->GetCamera())
 	{
-		auto findIt = std::find(_cameraObjects.begin(), _cameraObjects.end(), gameObject->GetCamera());
-		if (findIt != _cameraObjects.end())
-			_cameraObjects.erase(findIt);
+		auto findIt = std::find(mCameraObjects.begin(), mCameraObjects.end(), gameObject->GetCamera());
+		if (findIt != mCameraObjects.end())
+			mCameraObjects.erase(findIt);
 	}
 	else if (gameObject->GetLight())
 	{
-		auto findIt = std::find(_lightObjects.begin(), _lightObjects.end(), gameObject->GetLight());
-		if (findIt != _lightObjects.end())
-			_lightObjects.erase(findIt);
+		auto findIt = std::find(mLightObjects.begin(), mLightObjects.end(), gameObject->GetLight());
+		if (findIt != mLightObjects.end())
+			mLightObjects.erase(findIt);
 	}
 
-	auto findIt = std::find(_gameObjects.begin(), _gameObjects.end(), gameObject);
-	if (findIt != _gameObjects.end())
+	auto findIt = std::find(mGameObjects.begin(), mGameObjects.end(), gameObject);
+	if (findIt != mGameObjects.end())
 	{
-		_gameObjects.erase(findIt);
+		mGameObjects.erase(findIt);
 	}
 }
 
@@ -140,25 +140,25 @@ void Scene::PushPassData()
 {
 	PassConstants passConstants = {};
 
-	passConstants.view = _mainCamera->_matView;
-	passConstants.proj = _mainCamera->_matProjection;
-	passConstants.viewProj = passConstants.view * passConstants.proj;
-	passConstants.eyePosW = _mainCamera->GetTransform()->GetLocalPosition();
-	passConstants.nearZ = _mainCamera->_near;
-	passConstants.farZ = _mainCamera->_far;
-	passConstants.width = static_cast<float>(gEngine->GetWindow().width);
-	passConstants.height = static_cast<float>(gEngine->GetWindow().height);
-	passConstants.totalTime = TOTAL_TIME;
-	passConstants.deltaTime = DELTA_TIME;
-	passConstants.ambientLight = _ambientLight;
+	passConstants.View = mMainCamera->mMatView;
+	passConstants.Proj = mMainCamera->mMatProjection;
+	passConstants.ViewProj = passConstants.View * passConstants.Proj;
+	passConstants.EyePosW = mMainCamera->GetTransform()->GetLocalPosition();
+	passConstants.NearZ = mMainCamera->mNear;
+	passConstants.FarZ = mMainCamera->mFar;
+	passConstants.Width = static_cast<float>(gEngine->GetWindow().Width);
+	passConstants.Height = static_cast<float>(gEngine->GetWindow().Height);
+	passConstants.TotalTime = TOTAL_TIME;
+	passConstants.DeltaTime = DELTA_TIME;
+	passConstants.AmbientLight = mAmbientLight;
 
-	for (auto& light : _lightObjects) {
+	for (auto& light : mLightObjects) {
 		const LightInfo& lightInfo = light->GetLightInfo();
 
-		light->SetLightIndex(passConstants.lightCount);
+		light->SetLightIndex(passConstants.LightCount);
 
-		passConstants.lights[passConstants.lightCount] = lightInfo;
-		passConstants.lightCount++;
+		passConstants.Lights[passConstants.LightCount] = lightInfo;
+		passConstants.LightCount++;
 	}
 
 	PASS_CB->CopyData(0, passConstants);

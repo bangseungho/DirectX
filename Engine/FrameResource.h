@@ -8,11 +8,12 @@ public:
     ~FrameResource();
 
 public:
-    ComPtr<ID3D12CommandAllocator> CmdAlloc;
+    uint64                                   mFence = 0;
+    ComPtr<ID3D12CommandAllocator>           mCmdAlloc;
 
-    sptr<UploadBuffer<PassConstants>> PassCB;
-    sptr<UploadBuffer<ObjectConstants>> ObjectCB;
-    sptr<UploadBuffer<MaterialConstants>> MaterialCB;
+    sptr<UploadBuffer<PassConstants>>        mPassCB;
+    sptr<UploadBuffer<ObjectData>>           mObjectCB;
+    sptr<UploadBuffer<MaterialData>>         mMatData;
+    sptr<UploadBuffer<ComputeParticleData>>  mParticleData;
 
-    uint64 Fence = 0;
 };

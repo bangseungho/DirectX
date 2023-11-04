@@ -10,12 +10,12 @@ inline MinMaxVert CalcMinMaxVertices(const vector<Vertex>& vec)
 
 	for (const auto& v : vec)
 	{
-		minPoint.x = min(minPoint.x, v.pos.x);
-		minPoint.y = min(minPoint.y, v.pos.y);
-		minPoint.z = min(minPoint.z, v.pos.z);
-		maxPoint.x = max(maxPoint.x, v.pos.x);
-		maxPoint.y = max(maxPoint.y, v.pos.y);
-		maxPoint.z = max(maxPoint.z, v.pos.z);
+		minPoint.x = min(minPoint.x, v.Pos.x);
+		minPoint.y = min(minPoint.y, v.Pos.y);
+		minPoint.z = min(minPoint.z, v.Pos.z);
+		maxPoint.x = max(maxPoint.x, v.Pos.x);
+		maxPoint.y = max(maxPoint.y, v.Pos.y);
+		maxPoint.z = max(maxPoint.z, v.Pos.z);
 	}
 
 	return MinMaxVert{ minPoint, maxPoint };
@@ -24,8 +24,8 @@ inline MinMaxVert CalcMinMaxVertices(const vector<Vertex>& vec)
 void CreateBoundingBox(MinMaxVert minMaxVert, sptr<Mesh> mesh)
 {
 	Vec3 points[2] = {
-		minMaxVert.min,
-		minMaxVert.max
+		minMaxVert.Min,
+		minMaxVert.Max
 	};
 
 	mesh->GetBoundingBox().CreateFromPoints(mesh->GetBoundingBox(), 2, points, sizeof(Vec3));
@@ -154,11 +154,11 @@ shared_ptr<Mesh> Resources::LoadSphereMesh()
 	Vertex v;
 
 	// ºÏ±Ø
-	v.pos = Vec3(0.0f, radius, 0.0f);
-	v.uv = Vec2(0.5f, 0.0f);
-	v.normal = v.pos;
-	v.normal.Normalize();
-	v.tangent = Vec3(1.0f, 0.0f, 1.0f);
+	v.Pos = Vec3(0.0f, radius, 0.0f);
+	v.Uv = Vec2(0.5f, 0.0f);
+	v.Normal = v.Pos;
+	v.Normal.Normalize();
+	v.Tangent = Vec3(1.0f, 0.0f, 1.0f);
 	vec.push_back(v);
 
 	float stackAngle = XM_PI / stackCount;
@@ -177,30 +177,30 @@ shared_ptr<Mesh> Resources::LoadSphereMesh()
 		{
 			float theta = x * sliceAngle;
 
-			v.pos.x = radius * sinf(phi) * cosf(theta);
-			v.pos.y = radius * cosf(phi);
-			v.pos.z = radius * sinf(phi) * sinf(theta);
+			v.Pos.x = radius * sinf(phi) * cosf(theta);
+			v.Pos.y = radius * cosf(phi);
+			v.Pos.z = radius * sinf(phi) * sinf(theta);
 
-			v.uv = Vec2(deltaU * x, deltaV * y);
+			v.Uv = Vec2(deltaU * x, deltaV * y);
 
-			v.normal = v.pos;
-			v.normal.Normalize();
+			v.Normal = v.Pos;
+			v.Normal.Normalize();
 
-			v.tangent.x = -radius * sinf(phi) * sinf(theta);
-			v.tangent.y = 0.0f;
-			v.tangent.z = radius * sinf(phi) * cosf(theta);
-			v.tangent.Normalize();
+			v.Tangent.x = -radius * sinf(phi) * sinf(theta);
+			v.Tangent.y = 0.0f;
+			v.Tangent.z = radius * sinf(phi) * cosf(theta);
+			v.Tangent.Normalize();
 
 			vec.push_back(v);
 		}
 	}
 
 	// ³²±Ø
-	v.pos = Vec3(0.0f, -radius, 0.0f);
-	v.uv = Vec2(0.5f, 1.0f);
-	v.normal = v.pos;
-	v.normal.Normalize();
-	v.tangent = Vec3(1.0f, 0.0f, 0.0f);
+	v.Pos = Vec3(0.0f, -radius, 0.0f);
+	v.Uv = Vec2(0.5f, 1.0f);
+	v.Normal = v.Pos;
+	v.Normal.Normalize();
+	v.Tangent = Vec3(1.0f, 0.0f, 0.0f);
 	vec.push_back(v);
 
 	vector<uint32> idx(36);
@@ -266,16 +266,16 @@ sptr<Mesh> Resources::LoadGridMesh()
 
 	uint32 m = 200;
 	uint32 n = 200;
-	float width = 10000.f;
+	float Width = 10000.f;
 	float depth = 10000.f;
 
 	uint32 vertexCount = m * n;
 	uint32 faceCount = (m - 1) * (n - 1) * 2;
 
-	float halfWidth = 0.5f * width;
+	float halfWidth = 0.5f * Width;
 	float halfDepth = 0.5f * depth;
 
-	float dx = width / (n - 1);
+	float dx = Width / (n - 1);
 	float dz = depth / (m - 1);
 	
 	float du = 1.f / (n - 1);
@@ -287,12 +287,12 @@ sptr<Mesh> Resources::LoadGridMesh()
 		for (uint32 j = 0; j < n; ++j) {
 			float x = -halfWidth + j * dx;
 			
-			vec[i * n + j].pos = Vec3(x, 0.f, z);
-			vec[i * n + j].normal = Vec3(0.f, 1.f, 0.f);
-			vec[i * n + j].tangent = Vec3(1.f, 0.f, 0.f);
+			vec[i * n + j].Pos = Vec3(x, 0.f, z);
+			vec[i * n + j].Normal = Vec3(0.f, 1.f, 0.f);
+			vec[i * n + j].Tangent = Vec3(1.f, 0.f, 0.f);
 			
-			vec[i * n + j].uv.x = j * du;
-			vec[i * n + j].uv.y = i * dv;
+			vec[i * n + j].Uv.x = j * du;
+			vec[i * n + j].Uv.y = i * dv;
 		}
 	}
 
@@ -351,10 +351,10 @@ sptr<Mesh> Resources::LoadRectangleMesh()
 	return mesh;
 }
 
-sptr<Texture> Resources::CreateTexture(const string& name, DXGI_FORMAT format, uint32 width, uint32 height, const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType, D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor)
+sptr<Texture> Resources::CreateTexture(const string& name, DXGI_FORMAT format, uint32 Width, uint32 Height, const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType, D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor)
 {
 	sptr<Texture> texture = make_shared<Texture>();
-	texture->Create(format, width, height, heapProperty, heapFlags, groupType, resFlags, clearColor);
+	texture->Create(format, Width, Height, heapProperty, heapFlags, groupType, resFlags, clearColor);
 	Add<Texture>(name, texture);
 
 	return texture;
@@ -375,7 +375,7 @@ void Resources::CreateDefaultShader()
 	{
 		ShaderInfo info = {
 			SHADER_TYPE::FORWARD,
-			RASTERIGER_TYPE::CULL_NONE,
+			RASTERIZER_TYPE::CULL_NONE,
 			DEPTH_STENCIL_TYPE::LESS_EQUAL
 		};
 
@@ -388,7 +388,7 @@ void Resources::CreateDefaultShader()
 	{
 		ShaderInfo info = {
 			SHADER_TYPE::FORWARD,
-			RASTERIGER_TYPE::CULL_NONE,
+			RASTERIZER_TYPE::CULL_NONE,
 			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE
 		};
 
@@ -412,7 +412,7 @@ void Resources::CreateDefaultShader()
 	{
 		ShaderInfo info = {
 			SHADER_TYPE::FORWARD,
-			RASTERIGER_TYPE::CULL_NONE,
+			RASTERIZER_TYPE::CULL_NONE,
 		};
 
 		sptr<Shader> shader = make_shared<Shader>();
@@ -435,7 +435,7 @@ void Resources::CreateDefaultShader()
 	{
 		ShaderInfo info = {
 			SHADER_TYPE::LIGHTING,
-			RASTERIGER_TYPE::CULL_NONE,
+			RASTERIZER_TYPE::CULL_NONE,
 			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE,
 			BLEND_TYPE::ONE_TO_ONE_BLEND,
 		};
@@ -450,7 +450,7 @@ void Resources::CreateDefaultShader()
 		ShaderInfo info =
 		{
 			SHADER_TYPE::LIGHTING,
-			RASTERIGER_TYPE::CULL_FRONT,
+			RASTERIZER_TYPE::CULL_FRONT,
 			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE,
 			BLEND_TYPE::ONE_TO_ONE_BLEND
 		};
@@ -465,7 +465,7 @@ void Resources::CreateDefaultShader()
 		ShaderInfo info =
 		{
 			SHADER_TYPE::LIGHTING,
-			RASTERIGER_TYPE::CULL_FRONT,
+			RASTERIZER_TYPE::CULL_FRONT,
 			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE,
 			BLEND_TYPE::ONE_TO_ONE_BLEND
 		};
@@ -480,7 +480,7 @@ void Resources::CreateDefaultShader()
 		ShaderInfo info =
 		{
 			SHADER_TYPE::FORWARD,
-			RASTERIGER_TYPE::CULL_NONE,
+			RASTERIZER_TYPE::CULL_NONE,
 			DEPTH_STENCIL_TYPE::LESS_NO_WRITE,
 			BLEND_TYPE::ALPHA_BLEND,
 		};
@@ -492,8 +492,7 @@ void Resources::CreateDefaultShader()
 		};
 
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->CompileGraphicsShader(info, defines, L"..\\Resources\\Shader\\Forward_vs.hlsl", L"Resources\\Shader\\Forward_ps.hlsl");
-		//shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso");
+		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso");
 		Add<Shader>("Particle", shader);
 	}
 
@@ -502,7 +501,7 @@ void Resources::CreateDefaultShader()
 		ShaderInfo info =
 		{
 			SHADER_TYPE::LIGHTING,
-			RASTERIGER_TYPE::CULL_BACK,
+			RASTERIZER_TYPE::CULL_BACK,
 			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE,
 		};
 
@@ -577,11 +576,11 @@ void Resources::CreateDefaultMaterial()
 {
 	{
 		shared_ptr<Shader> shader = Get<Shader>("Tex");
-		auto pos = make_shared<Material>();
-		pos->SetMatCBIndex(0);
-		pos->SetDiffuseSrvHeapIndex(Get<Texture>("PositionTarget")->GetTexHeapIndex());
-		pos->SetShader(shader);
-		Add<Material>("PositionTarget", move(pos));
+		auto Pos = make_shared<Material>();
+		Pos->SetMatCBIndex(0);
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>("PositionTarget")->GetTexHeapIndex());
+		Pos->SetShader(shader);
+		Add<Material>("PositionTarget", move(Pos));
 	}
 
 	{
@@ -745,21 +744,24 @@ void Resources::CreateDefaultMaterial()
 	{
 		shared_ptr<Shader> shader = Get<Shader>("Compute");
 		auto material = make_shared<Material>();
+		material->SetMatCBIndex(17);
 		material->SetShader(shader);
-		material->Dispatch(1, 1024, 1);
+		Add<Material>("Compute", move(material));
+	}
 
+	{
 		shared_ptr<Shader> tex = Get<Shader>("Tex");
+		auto material = make_shared<Material>();
+		material->SetMatCBIndex(18);
 		material->SetShader(tex);
 		material->SetDiffuseSrvHeapIndex(Get<Texture>("UAVTexture")->GetTexHeapIndex());
-		material->SetMatCBIndex(17);
-		Add<Material>("Compute", move(material));
+		Add<Material>("UAVMaterial", move(material));
 	}
 
 	{
 		shared_ptr<Shader> shader = Get<Shader>("Particle");
 		auto particle = make_shared<Material>();
-		//particle->SetDiffuse(Vec4(1.f, 1.f, 1.f, 0.5f));
-		particle->SetMatCBIndex(18);
+		particle->SetMatCBIndex(19);
 		particle->SetDiffuseSrvHeapIndex(Get<Texture>("particle")->GetTexHeapIndex());
 		particle->SetShader(shader);
 		Add<Material>("particle", move(particle));

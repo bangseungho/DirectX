@@ -11,25 +11,25 @@ public:
 	void Init(const vector<Vertex>& vertexBuffer, const vector<uint32>& indexBuffer);
 	void Render();
 
-	BoundingOrientedBox& GetBoundingBox() { return _boundingBox; }
+	BoundingOrientedBox& GetBoundingBox() { return mBoundingBox; }
 
 public:
 	void CreateVertexBuffer(const vector<Vertex>& buffer);
 	void CreateIndexBuffer(const vector<uint32>& buffer);
 
 private:
-	ComPtr<ID3D12Resource> _vertexBuffer;
-	ComPtr<ID3D12Resource> _vertexBufferUploader;
-	D3D12_VERTEX_BUFFER_VIEW _vertexBufferView = {};
-	uint32 _vertexCount = 0;
+	ComPtr<ID3D12Resource>			mVertexBuffer;
+	ComPtr<ID3D12Resource>			mVertexBufferUploader;
+	D3D12_VERTEX_BUFFER_VIEW		mVertexBufferView = {};
+	uint32							mVertexCount = 0;
 
-	ComPtr<ID3D12Resource> _indexBuffer;
-	ComPtr<ID3D12Resource> _indexBufferUploader;
-	D3D12_INDEX_BUFFER_VIEW _indexBufferView = {};
-	uint32 _indexCount = 0;
+	ComPtr<ID3D12Resource>			mIndexBuffer;
+	ComPtr<ID3D12Resource>			mIndexBufferUploader;
+	D3D12_INDEX_BUFFER_VIEW			mIndexBufferView = {};
+	uint32							mIndexCount = 0;
 
-	ObjectConstants _objectConstant = {};
+	ObjectData						mObjectData = {};
 
-	BoundingOrientedBox _boundingBox;
+	BoundingOrientedBox				mBoundingBox;
 };
 

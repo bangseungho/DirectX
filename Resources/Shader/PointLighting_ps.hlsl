@@ -7,7 +7,7 @@
 struct VS_OUT
 {
     float4 posH : SV_Position;
-    float2 uv : TEXCOORD;
+    float2 Uv : TEXCOORD;
 };
 
 struct PS_OUT
@@ -23,21 +23,21 @@ PS_OUT PS_Main(VS_OUT pin)
     MaterialData matData = gMaterialData[gObjConstants.materialIndex];
     LightInfo light = gPassConstants.lights[matData.lightIndex];
     
-    float2 uv = float2(pin.posH.x / gPassConstants.width, pin.posH.y / gPassConstants.height);
-    float3 posW = gTextureMaps[POSITIONMAP_INDEX].Sample(gsamAnisotropicWrap, uv).xyz;
-    float4 posV = mul(float4(posW, 1.f), gPassConstants.view);
+    float2 Uv = float2(pin.posH.x / gPassConstants.Width, pin.posH.y / gPassConstants.Height);
+    float3 posW = gTextureMaps[POSITIONMAP_INDEX].Sample(gsamAnisotropicWrap, Uv).xyz;
+    float4 posV = mul(float4(posW, 1.f), gPassConstants.View);
     if(posV.z <= 0.f)
         clip(-1);
     
     float3 toEyeW = normalize(gPassConstants.eyePosW.xyz - posW);
-    float distance = length(light.position - posW);
-    if (distance > light.fallOffEnd)
+    float distance = length(light.Position - posW);
+    if (distance > light.FallOffEnd)
         clip(-1);
     
-    float3 normalW = gTextureMaps[NORMALMAP_INDEX].Sample(gsamAnisotropicWrap, uv).xyz;
-    float4 diffuseAlbedo = gTextureMaps[DIFFUSEMAP_INDEX].Sample(gsamAnisotropicWrap, uv);
-    float3 fresnelR0 = gTextureMaps[FRESNELMAP_INDEX].Sample(gsamAnisotropicWrap, uv).xyz;
-    float shininess = gTextureMaps[SHININESSMAP_INDEX].Sample(gsamAnisotropicWrap, uv).x;
+    float3 normalW = gTextureMaps[NORMALMAP_INDEX].Sample(gsamAnisotropicWrap, Uv).xyz;
+    float4 diffuseAlbedo = gTextureMaps[DIFFUSEMAP_INDEX].Sample(gsamAnisotropicWrap, Uv);
+    float3 fresnelR0 = gTextureMaps[FRESNELMAP_INDEX].Sample(gsamAnisotropicWrap, Uv).xyz;
+    float shininess = gTextureMaps[SHININESSMAP_INDEX].Sample(gsamAnisotropicWrap, Uv).x;
     
     float4 ambient = gPassConstants.ambientLight * diffuseAlbedo;
     

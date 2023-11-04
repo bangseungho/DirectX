@@ -15,7 +15,7 @@ void Texture::Load(const wstring& path)
 	wstring ext = fs::path(path).extension();
 
 	if (ext == L".dds" || ext == L".DDS")
-		ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(DEVICE.Get(), GRAPHICS_CMD_LIST.Get(), path.c_str(), _resource, _uploadHeap));
+		ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(DEVICE.Get(), CMD_LIST.Get(), path.c_str(), _resource, _uploadHeap));
 }
 
 void Texture::Create(DXGI_FORMAT format, uint32 width, uint32 height, const D3D12_HEAP_PROPERTIES& property, D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType, D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor)

@@ -6,7 +6,7 @@
 #include "RootSignature.h"
 #include "Mesh.h"
 #include "Shader.h"
-#include "TableDescriptorHeap.h"
+#include "DescriptorHeap.h"
 #include "FrameResource.h"
 #include "Texture.h"
 #include "InputManager.h"
@@ -22,41 +22,38 @@ public:
 	void Init(const WindowInfo& info);
 	void Update();
 	void Render();
-	void BuildFrameResource(ComPtr<ID3D12Device> device, uint32 objectCount);
+	void BuildFrameResource(ComPtr<ID3D12Device> device, uint32 objectCount, uint32 materialCount);
 
 public:
-	sptr<Device> GetDevice() { return _device; }
-	sptr<GraphicsCommandQueue> GetGraphicsCmdQueue() { return _graphicsCmdQueue; }
-	sptr<ComputeCommandQueue> GetComputeCmdQueue() { return _computeCmdQueue; }
-	sptr<SwapChain> GetSwapChain() { return _swapChain; }
-	sptr<RootSignature> GetRootSignature() { return _rootSignature; }
-	sptr<TableDescriptorHeap> GetTableDescHeap() { return _tableDescHeap; }
-	sptr<MultipleRenderTarget> GetMRT(RENDER_TARGET_GROUP_TYPE type) { return _mrt[static_cast<uint8>(type)]; }
-
+	sptr<Device> GetDevice() { return mDevice; }
+	sptr<CommandQueue> GetCmdQueue() { return mCmdQueue; }
+	sptr<SwapChain> GetSwapChain() { return mSwapChain; }
+	sptr<RootSignature> GetRootSignature() { return mRootSignature; }
+	sptr<DescriptorHeap> GetTableDescHeap() { return mDescHeap; }
+	sptr<MultipleRenderTarget> GetMRT(RENDER_TARGET_GROUP_TYPE type) { return mMrtGroup[static_cast<uint8>(type)]; }
 	FrameResource* GetCurrFrameResource() { return	mCurrFrameResource; }
-	WindowInfo GetWindow() const { return _window; }
+	WindowInfo GetWindow() const { return mWindow; }
 
 public:
 	void RenderBegin();
 	void RenderEnd();
-	void ResizeWindow(int32 width, int32 height);
+	void ResizeWindow(int32 Width, int32 Height);
 
 private:
 	void CreateMultipleRenderTarget();
 
 private:
-	// window size
-	WindowInfo		_window;
-	D3D12_VIEWPORT	_viewport = {};
-	D3D12_RECT		_scissorRect = {};
+	WindowInfo				mWindow = {};
+	D3D12_VIEWPORT			mViewport = {};
+	D3D12_RECT				mScissorRect = {};
 
-	sptr<Device> _device;
-	sptr<GraphicsCommandQueue> _graphicsCmdQueue;
-	sptr<ComputeCommandQueue> _computeCmdQueue;
-	sptr<SwapChain> _swapChain;
-	sptr<RootSignature> _rootSignature;
-	sptr<TableDescriptorHeap> _tableDescHeap;
-	array<sptr<MultipleRenderTarget>, RENDER_TARGET_GROUP_COUNT> _mrt;
+	sptr<Device>			mDevice = make_shared<Device>();
+	sptr<CommandQueue>		mCmdQueue = make_shared<CommandQueue>();
+	sptr<SwapChain>			mSwapChain = make_shared<SwapChain>();
+	sptr<RootSignature>		mRootSignature = make_shared<RootSignature>();
+	sptr<DescriptorHeap>	mDescHeap = make_shared<DescriptorHeap>();
+
+	array<sptr<MultipleRenderTarget>, RENDER_TARGET_GROUP_COUNT> mMrtGroup;
 
 	std::array<uptr<FrameResource>, FRAME_RESOURCE_COUNT> mFrameResources;
 	FrameResource* mCurrFrameResource = nullptr;

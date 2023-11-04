@@ -1,13 +1,13 @@
 #pragma once
 #include "Texture.h"
 
-class TableDescriptorHeap
+class DescriptorHeap
 {
 public:
 	void Init();
 
-	ComPtr<ID3D12DescriptorHeap> GetSRV() { return _srvHeap; }
-	D3D12_CPU_DESCRIPTOR_HANDLE GetSRVHandle() { return _srvHeapBegin; }
+	ComPtr<ID3D12DescriptorHeap> GetSRV() { return mSrvHeap; }
+	D3D12_CPU_DESCRIPTOR_HANDLE GetSRVHandle() { return mSrvHeapBegin; }
 
 	ComPtr<ID3D12DescriptorHeap> GetUAV() { return _uavHeap; }
 	D3D12_CPU_DESCRIPTOR_HANDLE GetUAVHandle() { return _uavHeapBegin; }
@@ -20,8 +20,8 @@ public:
 	uint32 AddUavCount() { uint32 uavCount = _uavCount++; return uavCount; }
 
 private:
-	ComPtr<ID3D12DescriptorHeap> _srvHeap;
-	CD3DX12_CPU_DESCRIPTOR_HANDLE _srvHeapBegin = {};
+	ComPtr<ID3D12DescriptorHeap> mSrvHeap;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE mSrvHeapBegin = {};
 
 	ComPtr<ID3D12DescriptorHeap> _uavHeap;
 	CD3DX12_CPU_DESCRIPTOR_HANDLE _uavHeapBegin = {};

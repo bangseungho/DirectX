@@ -24,19 +24,19 @@ public:
 	void AddGameObject(sptr<GameObject> gameObject);
 	void RemoveGameObject(sptr<GameObject> gameObject);
 
-	const vector<sptr<GameObject>>& GetGameObjects() { return _gameObjects; }
-	const vector<sptr<Camera>>& GetCameraObjects() { return _cameraObjects; }
-	sptr<Camera>& GetMainCamera() { return _mainCamera; }
+	const vector<sptr<GameObject>>& GetGameObjects() { return mGameObjects; }
+	const vector<sptr<Camera>>& GetCameraObjects() { return mCameraObjects; }
+	sptr<Camera>& GetMainCamera() { return mMainCamera; }
 
-	void SetMainCamera(sptr<GameObject> camera) { _mainCamera = camera->GetCamera(); }
+	void SetMainCamera(sptr<GameObject> camera) { mMainCamera = camera->GetCamera(); }
 
 private:
-	vector<sptr<GameObject>> _gameObjects;
-	Vec4 _ambientLight = { 0.1f, 0.1f, 0.1f, 1.f };
+	vector<sptr<GameObject>>			mGameObjects;
+	Vec4								mAmbientLight = { 0.1f, 0.1f, 0.1f, 1.f };
 
-	vector<sptr<Camera>> _cameraObjects;
-	sptr<Camera> _mainCamera;
+	vector<sptr<Camera>>				mCameraObjects;
+	sptr<Camera>						mMainCamera;
 
-	vector<shared_ptr<class Light>> _lightObjects;
+	vector<shared_ptr<class Light>>		mLightObjects;
 };
 

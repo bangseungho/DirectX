@@ -20,12 +20,14 @@ void Game::Init(const WindowInfo& info)
 	gEngine->Init(info);
 
 	uint32 objectCount = GET_SINGLE(SceneManager)->LoadScene(L"TestScene");
-	gEngine->BuildFrameResource(DEVICE, objectCount);
+	uint32 materialCount = GET_SINGLE(Resources)->GetObjectCount<Material>();
 
-	ThrowIfFailed(GRAPHICS_CMD_LIST->Close());
-	ID3D12CommandList* cmdsLists[] = { GRAPHICS_CMD_LIST.Get() };
-	GRAPHICS_CMD_QUEUE->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
-	gEngine->GetGraphicsCmdQueue()->WaitSync();
+	gEngine->BuildFrameResource(DEVICE, objectCount, materialCount);
+
+	ThrowIfFailed(CMD_LIST->Close());
+	ID3D12CommandList* cmdsLists[] = { CMD_LIST.Get() };
+	CMD_QUEUE->ExecuteCommandLists(_countof(cmdsLists), cmdsLists);
+	gEngine->GetCmdQueue()->WaitSync();
 }
 
 void Game::Update()
@@ -33,7 +35,7 @@ void Game::Update()
 	gEngine->Update();
 }
 
-LRESULT Game::OnProcessingWindowMessage(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT Game::OnProcessingWindowMessage(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{

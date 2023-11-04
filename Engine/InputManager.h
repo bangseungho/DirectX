@@ -8,8 +8,8 @@ enum class KEY_STATE
 };
 
 struct KeyInfo {
-	KEY_STATE mState{};
-	bool mIsPrevPushed{};
+	KEY_STATE	mState{};
+	bool		mIsPrevPushed{};
 };
 
 class InputManager {
@@ -35,11 +35,11 @@ public:
 	}
 
 private:
-	WindowInfo _info = {};
-	std::unordered_map<int, KeyInfo> mKeys;
-	Vec2  mMousePos;
-	Vec2  mMousePrevPos;
-	Vec2  mMouseDir;
+	WindowInfo							mWindow = {};
+	std::unordered_map<int, KeyInfo>	mKeys;
+	Vec2								mMousePos;
+	Vec2								mMousePrevPos;
+	Vec2								mMouseDir;
 };
 
 

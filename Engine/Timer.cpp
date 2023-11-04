@@ -106,7 +106,7 @@ void Timer::CalculateFrameStats()
 		wstring wndCaption = L"DirectX Game";
 		wstring windowText = wndCaption + L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
 
-		SetWindowText(mInfo.hwnd, windowText.c_str());
+		SetWindowText(mInfo.Hwnd, windowText.c_str());
 
 		// Reset for next average.
 		frameCnt = 0;

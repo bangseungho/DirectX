@@ -26,20 +26,20 @@ inline Vector2 Rectangle::Location() const noexcept
 
 inline Vector2 Rectangle::Center() const noexcept
 {
-    return Vector2(float(x) + (float(width) / 2.f), float(y) + (float(height) / 2.f));
+    return Vector2(float(x) + (float(Width) / 2.f), float(y) + (float(Height) / 2.f));
 }
 
 inline bool Rectangle::Contains(const Vector2& point) const noexcept
 {
-    return (float(x) <= point.x) && (point.x < float(x + width)) && (float(y) <= point.y) && (point.y < float(y + height));
+    return (float(x) <= point.x) && (point.x < float(x + Width)) && (float(y) <= point.y) && (point.y < float(y + Height));
 }
 
 inline void Rectangle::Inflate(long horizAmount, long vertAmount) noexcept
 {
     x -= horizAmount;
     y -= vertAmount;
-    width += horizAmount;
-    height += vertAmount;
+    Width += horizAmount;
+    Height += vertAmount;
 }
 
 //------------------------------------------------------------------------------
@@ -48,11 +48,11 @@ inline void Rectangle::Inflate(long horizAmount, long vertAmount) noexcept
 
 inline Rectangle Rectangle::Intersect(const Rectangle& ra, const Rectangle& rb) noexcept
 {
-    long righta = ra.x + ra.width;
-    long rightb = rb.x + rb.width;
+    long righta = ra.x + ra.Width;
+    long rightb = rb.x + rb.Width;
 
-    long bottoma = ra.y + ra.height;
-    long bottomb = rb.y + rb.height;
+    long bottoma = ra.y + ra.Height;
+    long bottomb = rb.y + rb.Height;
 
     long maxX = ra.x > rb.x ? ra.x : rb.x;
     long maxY = ra.y > rb.y ? ra.y : rb.y;
@@ -66,15 +66,15 @@ inline Rectangle Rectangle::Intersect(const Rectangle& ra, const Rectangle& rb) 
     {
         result.x = maxX;
         result.y = maxY;
-        result.width = minRight - maxX;
-        result.height = minBottom - maxY;
+        result.Width = minRight - maxX;
+        result.Height = minBottom - maxY;
     }
     else
     {
         result.x = 0;
         result.y = 0;
-        result.width = 0;
-        result.height = 0;
+        result.Width = 0;
+        result.Height = 0;
     }
 
     return result;
@@ -110,11 +110,11 @@ inline RECT Rectangle::Intersect(const RECT& rcta, const RECT& rctb) noexcept
 
 inline Rectangle Rectangle::Union(const Rectangle& ra, const Rectangle& rb) noexcept
 {
-    long righta = ra.x + ra.width;
-    long rightb = rb.x + rb.width;
+    long righta = ra.x + ra.Width;
+    long rightb = rb.x + rb.Width;
 
-    long bottoma = ra.y + ra.height;
-    long bottomb = rb.y + rb.height;
+    long bottoma = ra.y + ra.Height;
+    long bottomb = rb.y + rb.Height;
 
     int minX = ra.x < rb.x ? ra.x : rb.x;
     int minY = ra.y < rb.y ? ra.y : rb.y;
@@ -125,8 +125,8 @@ inline Rectangle Rectangle::Union(const Rectangle& ra, const Rectangle& rb) noex
     Rectangle result;
     result.x = minX;
     result.y = minY;
-    result.width = maxRight - minX;
-    result.height = maxBottom - minY;
+    result.Width = maxRight - minX;
+    result.Height = maxBottom - minY;
     return result;
 }
 
@@ -2489,11 +2489,11 @@ inline Matrix Matrix::CreateConstrainedBillboard(
     return R;
 }
 
-inline Matrix Matrix::CreateTranslation(const Vector3& position) noexcept
+inline Matrix Matrix::CreateTranslation(const Vector3& Position) noexcept
 {
     using namespace DirectX;
     Matrix R;
-    XMStoreFloat4x4(&R, XMMatrixTranslation(position.x, position.y, position.z));
+    XMStoreFloat4x4(&R, XMMatrixTranslation(Position.x, Position.y, Position.z));
     return R;
 }
 
@@ -2570,11 +2570,11 @@ inline Matrix Matrix::CreatePerspectiveFieldOfView(float fov, float aspectRatio,
     return R;
 }
 
-inline Matrix Matrix::CreatePerspective(float width, float height, float nearPlane, float farPlane) noexcept
+inline Matrix Matrix::CreatePerspective(float Width, float Height, float nearPlane, float farPlane) noexcept
 {
     using namespace DirectX;
     Matrix R;
-    XMStoreFloat4x4(&R, XMMatrixPerspectiveRH(width, height, nearPlane, farPlane));
+    XMStoreFloat4x4(&R, XMMatrixPerspectiveRH(Width, Height, nearPlane, farPlane));
     return R;
 }
 
@@ -2586,11 +2586,11 @@ inline Matrix Matrix::CreatePerspectiveOffCenter(float left, float right, float 
     return R;
 }
 
-inline Matrix Matrix::CreateOrthographic(float width, float height, float zNearPlane, float zFarPlane) noexcept
+inline Matrix Matrix::CreateOrthographic(float Width, float Height, float zNearPlane, float zFarPlane) noexcept
 {
     using namespace DirectX;
     Matrix R;
-    XMStoreFloat4x4(&R, XMMatrixOrthographicRH(width, height, zNearPlane, zFarPlane));
+    XMStoreFloat4x4(&R, XMMatrixOrthographicRH(Width, Height, zNearPlane, zFarPlane));
     return R;
 }
 
@@ -2613,7 +2613,7 @@ inline Matrix Matrix::CreateLookAt(const Vector3& eye, const Vector3& target, co
     return R;
 }
 
-inline Matrix Matrix::CreateWorld(const Vector3& position, const Vector3& forward, const Vector3& up) noexcept
+inline Matrix Matrix::CreateWorld(const Vector3& Position, const Vector3& forward, const Vector3& up) noexcept
 {
     using namespace DirectX;
     XMVECTOR zaxis = XMVector3Normalize(XMVectorNegate(XMLoadFloat3(&forward)));
@@ -2626,7 +2626,7 @@ inline Matrix Matrix::CreateWorld(const Vector3& position, const Vector3& forwar
     XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&R._21), yaxis);
     XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&R._31), zaxis);
     R._14 = R._24 = R._34 = 0.f;
-    R._41 = position.x; R._42 = position.y; R._43 = position.z;
+    R._41 = Position.x; R._42 = Position.y; R._43 = Position.z;
     R._44 = 1.f;
     return R;
 }
@@ -2757,11 +2757,11 @@ inline Plane::Plane(const Vector3& point1, const Vector3& point2, const Vector3&
     XMStoreFloat4(this, XMPlaneFromPoints(P0, P1, P2));
 }
 
-inline Plane::Plane(const Vector3& point, const Vector3& normal) noexcept
+inline Plane::Plane(const Vector3& point, const Vector3& Normal) noexcept
 {
     using namespace DirectX;
     XMVECTOR P = XMLoadFloat3(&point);
-    XMVECTOR N = XMLoadFloat3(&normal);
+    XMVECTOR N = XMLoadFloat3(&Normal);
     XMStoreFloat4(this, XMPlaneFromPointNormal(P, N));
 }
 
@@ -2811,19 +2811,19 @@ inline float Plane::Dot(const Vector4& v) const noexcept
     return XMVectorGetX(XMPlaneDot(p, v0));
 }
 
-inline float Plane::DotCoordinate(const Vector3& position) const noexcept
+inline float Plane::DotCoordinate(const Vector3& Position) const noexcept
 {
     using namespace DirectX;
     XMVECTOR p = XMLoadFloat4(this);
-    XMVECTOR v0 = XMLoadFloat3(&position);
+    XMVECTOR v0 = XMLoadFloat3(&Position);
     return XMVectorGetX(XMPlaneDotCoord(p, v0));
 }
 
-inline float Plane::DotNormal(const Vector3& normal) const noexcept
+inline float Plane::DotNormal(const Vector3& Normal) const noexcept
 {
     using namespace DirectX;
     XMVECTOR p = XMLoadFloat4(this);
-    XMVECTOR n0 = XMLoadFloat3(&normal);
+    XMVECTOR n0 = XMLoadFloat3(&Normal);
     return XMVectorGetX(XMPlaneDotNormal(p, n0));
 }
 
@@ -3551,20 +3551,20 @@ inline Color Color::Lerp(const Color& c1, const Color& c2, float t) noexcept
 inline bool Ray::operator == (const Ray& r) const noexcept
 {
     using namespace DirectX;
-    XMVECTOR r1p = XMLoadFloat3(&position);
-    XMVECTOR r2p = XMLoadFloat3(&r.position);
-    XMVECTOR r1d = XMLoadFloat3(&direction);
-    XMVECTOR r2d = XMLoadFloat3(&r.direction);
+    XMVECTOR r1p = XMLoadFloat3(&Position);
+    XMVECTOR r2p = XMLoadFloat3(&r.Position);
+    XMVECTOR r1d = XMLoadFloat3(&Direction);
+    XMVECTOR r2d = XMLoadFloat3(&r.Direction);
     return XMVector3Equal(r1p, r2p) && XMVector3Equal(r1d, r2d);
 }
 
 inline bool Ray::operator != (const Ray& r) const noexcept
 {
     using namespace DirectX;
-    XMVECTOR r1p = XMLoadFloat3(&position);
-    XMVECTOR r2p = XMLoadFloat3(&r.position);
-    XMVECTOR r1d = XMLoadFloat3(&direction);
-    XMVECTOR r2d = XMLoadFloat3(&r.direction);
+    XMVECTOR r1p = XMLoadFloat3(&Position);
+    XMVECTOR r2p = XMLoadFloat3(&r.Position);
+    XMVECTOR r1d = XMLoadFloat3(&Direction);
+    XMVECTOR r2d = XMLoadFloat3(&r.Direction);
     return XMVector3NotEqual(r1p, r2p) && XMVector3NotEqual(r1d, r2d);
 }
 
@@ -3574,17 +3574,17 @@ inline bool Ray::operator != (const Ray& r) const noexcept
 
 inline bool Ray::Intersects(const BoundingSphere& sphere, _Out_ float& Dist) const noexcept
 {
-    return sphere.Intersects(position, direction, Dist);
+    return sphere.Intersects(Position, Direction, Dist);
 }
 
 inline bool Ray::Intersects(const BoundingBox& box, _Out_ float& Dist) const noexcept
 {
-    return box.Intersects(position, direction, Dist);
+    return box.Intersects(Position, Direction, Dist);
 }
 
 inline bool Ray::Intersects(const Vector3& tri0, const Vector3& tri1, const Vector3& tri2, _Out_ float& Dist) const noexcept
 {
-    return DirectX::TriangleTests::Intersects(position, direction, tri0, tri1, tri2, Dist);
+    return DirectX::TriangleTests::Intersects(Position, Direction, tri0, tri1, tri2, Dist);
 }
 
 inline bool Ray::Intersects(const Plane& plane, _Out_ float& Dist) const noexcept
@@ -3592,7 +3592,7 @@ inline bool Ray::Intersects(const Plane& plane, _Out_ float& Dist) const noexcep
     using namespace DirectX;
 
     XMVECTOR p = XMLoadFloat4(&plane);
-    XMVECTOR dir = XMLoadFloat3(&direction);
+    XMVECTOR dir = XMLoadFloat3(&Direction);
 
     XMVECTOR nd = XMPlaneDotNormal(p, dir);
 
@@ -3604,8 +3604,8 @@ inline bool Ray::Intersects(const Plane& plane, _Out_ float& Dist) const noexcep
     else
     {
         // t = -(dot(n,origin) + D) / dot(n,dir)
-        XMVECTOR pos = XMLoadFloat3(&position);
-        XMVECTOR v = XMPlaneDotNormal(p, pos);
+        XMVECTOR Pos = XMLoadFloat3(&Position);
+        XMVECTOR v = XMPlaneDotNormal(p, Pos);
         v = XMVectorAdd(v, XMVectorSplatW(p));
         v = XMVectorDivide(v, nd);
         float dist = -XMVectorGetX(v);
@@ -3636,14 +3636,14 @@ inline bool Ray::Intersects(const Plane& plane, _Out_ float& Dist) const noexcep
 inline bool Viewport::operator == (const Viewport& vp) const noexcept
 {
     return (x == vp.x && y == vp.y
-            && width == vp.width && height == vp.height
+            && Width == vp.Width && Height == vp.Height
             && minDepth == vp.minDepth && maxDepth == vp.maxDepth);
 }
 
 inline bool Viewport::operator != (const Viewport& vp) const noexcept
 {
     return (x != vp.x || y != vp.y
-            || width != vp.width || height != vp.height
+            || Width != vp.Width || Height != vp.Height
             || minDepth != vp.minDepth || maxDepth != vp.maxDepth);
 }
 
@@ -3654,8 +3654,8 @@ inline bool Viewport::operator != (const Viewport& vp) const noexcept
 inline Viewport& Viewport::operator= (const RECT& rct) noexcept
 {
     x = float(rct.left); y = float(rct.top);
-    width = float(rct.right - rct.left);
-    height = float(rct.bottom - rct.top);
+    Width = float(rct.right - rct.left);
+    Height = float(rct.bottom - rct.top);
     minDepth = 0.f; maxDepth = 1.f;
     return *this;
 }
@@ -3664,7 +3664,7 @@ inline Viewport& Viewport::operator= (const RECT& rct) noexcept
 inline Viewport& Viewport::operator= (const D3D11_VIEWPORT& vp) noexcept
 {
     x = vp.TopLeftX; y = vp.TopLeftY;
-    width = vp.Width; height = vp.Height;
+    Width = vp.Width; Height = vp.Height;
     minDepth = vp.MinDepth; maxDepth = vp.MaxDepth;
     return *this;
 }
@@ -3674,7 +3674,7 @@ inline Viewport& Viewport::operator= (const D3D11_VIEWPORT& vp) noexcept
 inline Viewport& Viewport::operator= (const D3D12_VIEWPORT& vp) noexcept
 {
     x = vp.TopLeftX; y = vp.TopLeftY;
-    width = vp.Width; height = vp.Height;
+    Width = vp.Width; Height = vp.Height;
     minDepth = vp.MinDepth; maxDepth = vp.MaxDepth;
     return *this;
 }
@@ -3686,48 +3686,48 @@ inline Viewport& Viewport::operator= (const D3D12_VIEWPORT& vp) noexcept
 
 inline float Viewport::AspectRatio() const noexcept
 {
-    if (width == 0.f || height == 0.f)
+    if (Width == 0.f || Height == 0.f)
         return 0.f;
 
-    return (width / height);
+    return (Width / Height);
 }
 
-inline Vector3 Viewport::Project(const Vector3& p, const Matrix& proj, const Matrix& view, const Matrix& world) const noexcept
+inline Vector3 Viewport::Project(const Vector3& p, const Matrix& Proj, const Matrix& View, const Matrix& world) const noexcept
 {
     using namespace DirectX;
     XMVECTOR v = XMLoadFloat3(&p);
-    XMMATRIX projection = XMLoadFloat4x4(&proj);
-    v = XMVector3Project(v, x, y, width, height, minDepth, maxDepth, projection, view, world);
+    XMMATRIX projection = XMLoadFloat4x4(&Proj);
+    v = XMVector3Project(v, x, y, Width, Height, minDepth, maxDepth, projection, View, world);
     Vector3 result;
     XMStoreFloat3(&result, v);
     return result;
 }
 
-inline void Viewport::Project(const Vector3& p, const Matrix& proj, const Matrix& view, const Matrix& world, Vector3& result) const noexcept
+inline void Viewport::Project(const Vector3& p, const Matrix& Proj, const Matrix& View, const Matrix& world, Vector3& result) const noexcept
 {
     using namespace DirectX;
     XMVECTOR v = XMLoadFloat3(&p);
-    XMMATRIX projection = XMLoadFloat4x4(&proj);
-    v = XMVector3Project(v, x, y, width, height, minDepth, maxDepth, projection, view, world);
+    XMMATRIX projection = XMLoadFloat4x4(&Proj);
+    v = XMVector3Project(v, x, y, Width, Height, minDepth, maxDepth, projection, View, world);
     XMStoreFloat3(&result, v);
 }
 
-inline Vector3 Viewport::Unproject(const Vector3& p, const Matrix& proj, const Matrix& view, const Matrix& world) const noexcept
+inline Vector3 Viewport::Unproject(const Vector3& p, const Matrix& Proj, const Matrix& View, const Matrix& world) const noexcept
 {
     using namespace DirectX;
     XMVECTOR v = XMLoadFloat3(&p);
-    XMMATRIX projection = XMLoadFloat4x4(&proj);
-    v = XMVector3Unproject(v, x, y, width, height, minDepth, maxDepth, projection, view, world);
+    XMMATRIX projection = XMLoadFloat4x4(&Proj);
+    v = XMVector3Unproject(v, x, y, Width, Height, minDepth, maxDepth, projection, View, world);
     Vector3 result;
     XMStoreFloat3(&result, v);
     return result;
 }
 
-inline void Viewport::Unproject(const Vector3& p, const Matrix& proj, const Matrix& view, const Matrix& world, Vector3& result) const noexcept
+inline void Viewport::Unproject(const Vector3& p, const Matrix& Proj, const Matrix& View, const Matrix& world, Vector3& result) const noexcept
 {
     using namespace DirectX;
     XMVECTOR v = XMLoadFloat3(&p);
-    XMMATRIX projection = XMLoadFloat4x4(&proj);
-    v = XMVector3Unproject(v, x, y, width, height, minDepth, maxDepth, projection, view, world);
+    XMMATRIX projection = XMLoadFloat4x4(&Proj);
+    v = XMVector3Unproject(v, x, y, Width, Height, minDepth, maxDepth, projection, View, world);
     XMStoreFloat3(&result, v);
 }

@@ -7,16 +7,16 @@
 struct VS_OUT
 {
     float4 posH : SV_Position;
-    float2 uv : TEXCOORD;
+    float2 Uv : TEXCOORD;
 };
 
 float4 PS_Main(VS_OUT pin) : SV_Target
 {
     float4 pout = (float4)0;
 
-    float4 diffuseAlbedo = gTextureMaps[DIFFUSEMAP_INDEX].Sample(gsamAnisotropicWrap, pin.uv);
-    float4 diffuseLight = gTextureMaps[DIFFUSELIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.uv);
-    float4 specular = gTextureMaps[SPECULARLIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.uv);
+    float4 diffuseAlbedo = gTextureMaps[DIFFUSEMAP_INDEX].Sample(gsamAnisotropicWrap, pin.Uv);
+    float4 diffuseLight = gTextureMaps[DIFFUSELIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.Uv);
+    float4 specular = gTextureMaps[SPECULARLIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.Uv);
     
     
     pout = diffuseLight * diffuseAlbedo + specular;

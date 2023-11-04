@@ -24,10 +24,10 @@ public:
 	Object(OBJECT_TYPE type);
 	virtual ~Object();
 
-	OBJECT_TYPE GetType() { return _objectType; }
+	OBJECT_TYPE GetType() { return mObjectType; }
 
-	void SetName(const wstring& name) { _name = name; }
-	const wstring& GetName() { return _name; }
+	void SetName(const wstring& name) { mName = name; }
+	const wstring& GetName() { return mName; }
 
 protected:
 	friend class Resources;
@@ -35,6 +35,6 @@ protected:
 	virtual void Save(const wstring& path) { }
 
 protected:
-	OBJECT_TYPE _objectType = OBJECT_TYPE::NONE;
-	wstring _name;
+	OBJECT_TYPE mObjectType = OBJECT_TYPE::NONE;
+	wstring mName;
 };

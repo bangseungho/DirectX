@@ -36,18 +36,18 @@ public:
 	virtual void FinalUpdate() { }
 
 public:
-	COMPONENT_TYPE GetType() { return _type; }
-	bool IsValid() { return _gameObject.expired() == false; }
+	COMPONENT_TYPE GetType() { return mType; }
+	bool IsValid() { return mGameObject.expired() == false; }
 
 	sptr<GameObject> GetGameObject();
 	sptr<Transform> GetTransform();
 
 private:
 	friend class GameObject;
-	void SetGameObject(sptr<GameObject> gameObject) { _gameObject = gameObject; }
+	void SetGameObject(sptr<GameObject> gameObject) { mGameObject = gameObject; }
 
 protected:
-	COMPONENT_TYPE _type;
-	wptr<GameObject> _gameObject;
+	COMPONENT_TYPE		mType;
+	wptr<GameObject>	mGameObject;
 };
 

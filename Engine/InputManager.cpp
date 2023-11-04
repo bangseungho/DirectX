@@ -22,7 +22,7 @@ int keyList[] =
 
 void InputManager::Init(const WindowInfo& info)
 {
-	_info = info;
+	mWindow = info;
 
 	for (int key : keyList) {
 		mKeys[key] = KeyInfo{ KEY_STATE::NONE, false };
@@ -72,7 +72,7 @@ void InputManager::Update()
 
 		POINT ptMouse{};
 		GetCursorPos(&ptMouse);
-		ScreenToClient(_info.hwnd, &ptMouse);
+		ScreenToClient(mWindow.Hwnd, &ptMouse);
 
 		mMousePrevPos = mMousePos;
 		mMousePos = XMFLOAT2(static_cast<float>(ptMouse.x), static_cast<float>(ptMouse.y));

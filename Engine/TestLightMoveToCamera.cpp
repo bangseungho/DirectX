@@ -5,6 +5,6 @@
 
 void TestLightMoveToCamera::LateUpdate()
 {
-	Vec3 targetPos = _target->GetTransform()->GetLocalPosition();
+	Vec3 targetPos = mTarget->GetTransform()->GetLocalPosition();
 	GetTransform()->SetLocalPosition(targetPos);
 }

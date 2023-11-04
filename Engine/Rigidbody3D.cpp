@@ -5,11 +5,11 @@
 
 Rigidbody3D::Rigidbody3D() : Component(COMPONENT_TYPE::RIGIDBODY3D)
 {
-	_gravity = Vec3(0.f, -9.8f, 0.f);
-	_accellaration = _gravity;
-	_velocity = Vec3(0.f, 0.f, 0.f);
+	mGravity = Vec3(0.f, -9.8f, 0.f);
+	mAccellaration = mGravity;
+	mVelocity = Vec3(0.f, 0.f, 0.f);
 
-	_useGravity = false;
+	mUseGravity = false;
 }
 
 Rigidbody3D::~Rigidbody3D()
@@ -20,13 +20,13 @@ void Rigidbody3D::FixedUpdate()
 {
 	Vec3 localPos = GetTransform()->GetLocalPosition();
 
-	if (!_useGravity)
+	if (!mUseGravity)
 		return;
 
-	localPos += _velocity * DELTA_TIME;
+	localPos += mVelocity * DELTA_TIME;
 	GetTransform()->SetLocalPosition(localPos);
-	_velocity += _accellaration * _mass * DELTA_TIME;
+	mVelocity += mAccellaration * mMass * DELTA_TIME;
 
 	if (localPos.y <= 100.f)
-		_velocity.y = 500.f;
+		mVelocity.y = 500.f;
 }

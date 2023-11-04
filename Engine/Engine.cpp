@@ -5,34 +5,26 @@
 
 Engine::~Engine()
 {
-	if (_device != nullptr)
-		_graphicsCmdQueue->WaitSync();
+	if (mDevice != nullptr)
+		mCmdQueue->WaitSync();
 }
 
 void Engine::Init(const WindowInfo& info)
 {
-	_window = info;
+	mWindow = info;
 
-	_viewport = { 0, 0, static_cast<FLOAT>(info.width), static_cast<FLOAT>(info.height), 0.0f, 1.0f };
-	_scissorRect = CD3DX12_RECT(0, 0, info.width, info.height);
+	mViewport = { 0, 0, static_cast<FLOAT>(info.Width), static_cast<FLOAT>(info.Height), 0.0f, 1.0f };
+	mScissorRect = CD3DX12_RECT(0, 0, info.Width, info.Height);
 
-	_device = make_shared<Device>();
-	_graphicsCmdQueue = make_shared<GraphicsCommandQueue>();
-	_computeCmdQueue = make_shared<ComputeCommandQueue>();
-	_swapChain = make_shared<SwapChain>();
-	_rootSignature = make_shared<RootSignature>();
-	_tableDescHeap = make_shared<TableDescriptorHeap>();
-
-	_device->Init();
-	_graphicsCmdQueue->Init(_device->GetDevice(), _swapChain);
-	_computeCmdQueue->Init(_device->GetDevice());
-	_swapChain->Init(info, _device->GetDevice(), _device->GetDXGI(), _graphicsCmdQueue->GetCmdQueue());
-	_rootSignature->Init();
-	_tableDescHeap->Init();
+	mDevice->Init();
+	mCmdQueue->Init(mDevice->GetDevice(), mSwapChain);
+	mSwapChain->Init(info, mDevice->GetDevice(), mDevice->GetDXGI(), mCmdQueue->GetCmdQueue());
+	mRootSignature->Init();
+	mDescHeap->Init();
 
 	CreateMultipleRenderTarget();
 
-	ResizeWindow(info.width, info.height);
+	ResizeWindow(info.Width, info.Height);
 
 	GET_SINGLE(InputManager)->Init(info);
 	GET_SINGLE(Timer)->Init(info);
@@ -44,17 +36,16 @@ void Engine::Update()
 	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % FRAME_RESOURCE_COUNT;
 	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
 
-	if (mCurrFrameResource->Fence != 0 && _graphicsCmdQueue->GetFence()->GetCompletedValue() < mCurrFrameResource->Fence)
+	if (mCurrFrameResource->mFence != 0 && mCmdQueue->GetFence()->GetCompletedValue() < mCurrFrameResource->mFence)
 	{
 		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
-		ThrowIfFailed(_graphicsCmdQueue->GetFence()->SetEventOnCompletion(mCurrFrameResource->Fence, eventHandle));
+		ThrowIfFailed(mCmdQueue->GetFence()->SetEventOnCompletion(mCurrFrameResource->mFence, eventHandle));
 		WaitForSingleObject(eventHandle, INFINITE);
 		CloseHandle(eventHandle);
 	}
 
 	GET_SINGLE(InputManager)->Update();
 	GET_SINGLE(Timer)->Update();
-	GET_SINGLE(SceneManager)->Update();
 
 	Render();
 }
@@ -63,44 +54,45 @@ void Engine::Render()
 {
 	RenderBegin();
 
+	GET_SINGLE(SceneManager)->Update();
 	GET_SINGLE(SceneManager)->Render();
 
 	RenderEnd();
 }
 
-void Engine::BuildFrameResource(ComPtr<ID3D12Device> device, uint32 objectCount)
+void Engine::BuildFrameResource(ComPtr<ID3D12Device> device, uint32 objectCount, uint32 materialCount)
 {
 	for (int i = 0; i < FRAME_RESOURCE_COUNT; ++i)
 	{
-		mFrameResources[i] = std::make_unique<FrameResource>(device, objectCount, TEXTURE_COUNT);
+		mFrameResources[i] = std::make_unique<FrameResource>(device, objectCount, materialCount);
 	}
 }
 
 void Engine::RenderBegin()
 {
-	_graphicsCmdQueue->RenderBegin(&_viewport, &_scissorRect);
+	mCmdQueue->RenderBegin(&mViewport, &mScissorRect);
 }
 
 void Engine::RenderEnd()
 {
-	_graphicsCmdQueue->RenderEnd();
+	mCmdQueue->RenderEnd();
 }
 
-void Engine::ResizeWindow(int32 width, int32 height)
+void Engine::ResizeWindow(int32 Width, int32 Height)
 {
-	_window.width = width;
-	_window.height = height;
+	mWindow.Width = Width;
+	mWindow.Height = Height;
 
-	RECT rect = { 0, 0, width, height };
+	RECT rect = { 0, 0, Width, Height };
 	::AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, false);
-	::SetWindowPos(_window.hwnd, 0, 100, 100, width, height, 0);
+	::SetWindowPos(mWindow.Hwnd, 0, 100, 100, Width, Height, 0);
 }
 
 void Engine::CreateMultipleRenderTarget()
 {
 	// DepthStencil
 	sptr<Texture> dsTexture = GET_SINGLE(Resources)->CreateTexture("DepthStencil",
-		DXGI_FORMAT_D32_FLOAT, _window.width, _window.height,
+		DXGI_FORMAT_D32_FLOAT, mWindow.Width, mWindow.Height,
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::DEPTH_STENCIL,
 		D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
@@ -114,12 +106,12 @@ void Engine::CreateMultipleRenderTarget()
 			string name = "SwapChainTarget_" + std::to_string(i);
 
 			ComPtr<ID3D12Resource> resource;
-			_swapChain->GetSwapChain()->GetBuffer(i, IID_PPV_ARGS(&resource));
+			mSwapChain->GetSwapChain()->GetBuffer(i, IID_PPV_ARGS(&resource));
 			rtVec[i].target = GET_SINGLE(Resources)->CreateTextureFromResource(name, resource, RENDER_GROUP_TYPE::SWAP_CHAIN);
 		}
 
-		_mrt[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)] = make_shared<MultipleRenderTarget>();
-		_mrt[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)]->Create(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN, rtVec, dsTexture);
+		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)] = make_shared<MultipleRenderTarget>();
+		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)]->Create(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN, rtVec, dsTexture);
 	}
 
 	// Deferred Group
@@ -127,37 +119,37 @@ void Engine::CreateMultipleRenderTarget()
 		vector<RenderTarget> rtVec(RENDER_TARGET_G_BUFFER_GROUP_COUNT);
 
 		rtVec[0].target = GET_SINGLE(Resources)->CreateTexture("PositionTarget",
-			DXGI_FORMAT_R32G32B32A32_FLOAT, _window.width, _window.height, 
+			DXGI_FORMAT_R32G32B32A32_FLOAT, mWindow.Width, mWindow.Height, 
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::G_BUFFER,
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
 		rtVec[1].target = GET_SINGLE(Resources)->CreateTexture("NormalTarget",
-			DXGI_FORMAT_R32G32B32A32_FLOAT, _window.width, _window.height,
+			DXGI_FORMAT_R32G32B32A32_FLOAT, mWindow.Width, mWindow.Height,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::G_BUFFER,
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
 		rtVec[2].target = GET_SINGLE(Resources)->CreateTexture("DiffuseTarget",
-			DXGI_FORMAT_R8G8B8A8_UNORM, _window.width, _window.height,
+			DXGI_FORMAT_R8G8B8A8_UNORM, mWindow.Width, mWindow.Height,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::G_BUFFER, 
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
 		rtVec[3].target = GET_SINGLE(Resources)->CreateTexture("FresnelTarget",
-			DXGI_FORMAT_R8G8B8A8_UNORM, _window.width, _window.height,
+			DXGI_FORMAT_R8G8B8A8_UNORM, mWindow.Width, mWindow.Height,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::G_BUFFER, 
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
 		rtVec[4].target = GET_SINGLE(Resources)->CreateTexture("ShininessTarget",
-			DXGI_FORMAT_R8_UNORM, _window.width, _window.height,
+			DXGI_FORMAT_R8_UNORM, mWindow.Width, mWindow.Height,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::G_BUFFER, 
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
-		_mrt[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::G_BUFFER)] = make_shared<MultipleRenderTarget>();
-		_mrt[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::G_BUFFER)]->Create(RENDER_TARGET_GROUP_TYPE::G_BUFFER, rtVec, dsTexture);
+		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::G_BUFFER)] = make_shared<MultipleRenderTarget>();
+		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::G_BUFFER)]->Create(RENDER_TARGET_GROUP_TYPE::G_BUFFER, rtVec, dsTexture);
 	}
 
 	// Lighting Group
@@ -165,18 +157,18 @@ void Engine::CreateMultipleRenderTarget()
 		vector<RenderTarget> rtVec(RENDER_TARGET_LIGHTING_COUNT);
 
 		rtVec[0].target = GET_SINGLE(Resources)->CreateTexture("DiffuseLightTarget",
-			DXGI_FORMAT_R8G8B8A8_UNORM, _window.width, _window.height,
+			DXGI_FORMAT_R8G8B8A8_UNORM, mWindow.Width, mWindow.Height,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::LIGHTING,
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
 		rtVec[1].target = GET_SINGLE(Resources)->CreateTexture("SpecularLightTarget",
-			DXGI_FORMAT_R8G8B8A8_UNORM, _window.width, _window.height,
+			DXGI_FORMAT_R8G8B8A8_UNORM, mWindow.Width, mWindow.Height,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::LIGHTING,
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
-		_mrt[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)] = make_shared<MultipleRenderTarget>();
-		_mrt[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)]->Create(RENDER_TARGET_GROUP_TYPE::LIGHTING, rtVec, dsTexture);
+		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)] = make_shared<MultipleRenderTarget>();
+		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)]->Create(RENDER_TARGET_GROUP_TYPE::LIGHTING, rtVec, dsTexture);
 	}
 }

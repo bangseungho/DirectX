@@ -12,7 +12,7 @@ public:
 	virtual void Update() override;
 
 private:
-	Vec3 _center;
-	bool _isTrigger;
+	Vec3 mCenter;
+	bool mIsTrigger;
 };
 

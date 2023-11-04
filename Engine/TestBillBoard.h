@@ -10,9 +10,9 @@ public:
 	virtual void LateUpdate() override;
 
 public:
-	void SetCamera(sptr<class GameObject> cam) { _camera = cam; }
+	void SetCamera(sptr<class GameObject> cam) { mCamera = cam; }
 
 private:
-	sptr<class GameObject> _camera;
+	sptr<class GameObject> mCamera;
 };
 

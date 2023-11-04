@@ -13,47 +13,47 @@ Light::~Light()
 
 void Light::FinalUpdate()
 {
-	_lightInfo.position = GetTransform()->GetWorldPosition();
+	mLightInfo.Position = GetTransform()->GetWorldPosition();
 }
 
 void Light::Render()
 {
 	GetTransform()->PushData();
 
-	_lightMaterial->SetLightIndex(_lightIndex);
-	_lightMaterial->Update();
+	mLightMaterial->SetLightIndex(mLightIndex);
+	mLightMaterial->Update();
 
-	switch (static_cast<LIGHT_TYPE>(_lightInfo.lightType))
+	switch (static_cast<LIGHT_TYPE>(mLightInfo.LightType))
 	{
 	case LIGHT_TYPE::POINT_LIGHT:
 	case LIGHT_TYPE::SPOT_LIGHT:
-		float scale = 2 * _lightInfo.fallOffEnd;
+		float scale = 2 * mLightInfo.FallOffEnd;
 		GetTransform()->SetLocalScale(Vec3(scale, scale, scale));
 		break;
 	}
 
-	_volumeMesh->Render();
+	mVolumeMesh->Render();
 }
 
 void Light::SetLightType(LIGHT_TYPE type)
 {
-	_lightInfo.lightType = static_cast<int32>(type);
+	mLightInfo.LightType = static_cast<int32>(type);
 
 	switch (type)
 	{
 	case LIGHT_TYPE::DIRECTIONAL_LIGHT:
-		_volumeMesh = GET_SINGLE(Resources)->Get<Mesh>("Rectangle");
-		_lightMaterial = GET_SINGLE(Resources)->Get<Material>("DirLight");
+		mVolumeMesh = GET_SINGLE(Resources)->Get<Mesh>("Rectangle");
+		mLightMaterial = GET_SINGLE(Resources)->Get<Material>("DirLight");
 		break;
 	case LIGHT_TYPE::POINT_LIGHT:
-		_volumeMesh = GET_SINGLE(Resources)->Get<Mesh>("Sphere");
-		_lightMaterial = GET_SINGLE(Resources)->Get<Material>("PointLight");
+		mVolumeMesh = GET_SINGLE(Resources)->Get<Mesh>("Sphere");
+		mLightMaterial = GET_SINGLE(Resources)->Get<Material>("PointLight");
 		break;
 	case LIGHT_TYPE::SPOT_LIGHT:
-		_volumeMesh = GET_SINGLE(Resources)->Get<Mesh>("Sphere");
-		_lightMaterial = GET_SINGLE(Resources)->Get<Material>("SpotLight");
+		mVolumeMesh = GET_SINGLE(Resources)->Get<Mesh>("Sphere");
+		mLightMaterial = GET_SINGLE(Resources)->Get<Material>("SpotLight");
 		break;
 	}
 
-	GetGameObject()->SetMatIndex(_lightMaterial->GetMatCBIndex());
+	GetGameObject()->SetMatIndex(mLightMaterial->GetMatCBIndex());
 }

@@ -19,8 +19,8 @@ public:
 public:
 	bool IsInFrustum(BoundingOrientedBox& boundsOOBB);
 
-	void SetProjectionType(PROJECTION_TYPE type) { _type = type; }
-	PROJECTION_TYPE GetProjectionType() const { return _type; }
+	void SetProjectionType(PROJECTION_TYPE type) { mProjectionType = type; }
+	PROJECTION_TYPE GetProjectionType() const { return mProjectionType; }
 
 	void SortGameObject();
 	void Render_Deferred();
@@ -29,39 +29,35 @@ public:
 	void SetCullingMaskLayerOnOff(uint8 layer, bool on)
 	{
 		if (on)
-			_cullingMask |= (1 << layer);
+			mCullingMask |= (1 << layer);
 		else
-			_cullingMask &= ~(1 << layer);
+			mCullingMask &= ~(1 << layer);
 	}
 
 	void SetCullingMaskAll() { SetCullingMask(UINT32_MAX); }
-	void SetCullingMask(uint32 mask) { _cullingMask = mask; }
-	bool IsCulled(uint8 layer) { return (_cullingMask & (1 << layer)) != 0; }
+	void SetCullingMask(uint32 mask) { mCullingMask = mask; }
+	bool IsCulled(uint8 layer) { return (mCullingMask & (1 << layer)) != 0; }
 
 private:
 	friend class Scene;
 
-	PROJECTION_TYPE _type = PROJECTION_TYPE::PERSPECTIVE;
-
-	float _near = 1.f;
-	float _far = 2000.f;
-	float _fov = XM_PI / 4.f;
-	float _scale = 1.0f;
-
-	Matrix _matView = {};
-	Matrix _matProjection = {};
-
-	BoundingFrustum _frustum;
-	
-	uint32 _cullingMask = 0;
+	PROJECTION_TYPE		mProjectionType = PROJECTION_TYPE::PERSPECTIVE;
+	float				mNear = 1.f;
+	float				mFar = 2000.f;
+	float				mFov = XM_PI / 4.f;
+	float				mScale = 1.0f;
+	Matrix				mMatView = {};
+	Matrix				mMatProjection = {};
+	BoundingFrustum		mFrustum;
+	uint32				mCullingMask = 0;
 
 private:
-	vector<shared_ptr<GameObject>>	_vecDeferred;
-	vector<shared_ptr<GameObject>>	_vecForward;
+	vector<shared_ptr<GameObject>>	mDeferredObjects;
+	vector<shared_ptr<GameObject>>	mForwardObjects;
 
 public:
-	static Matrix MatView;
-	static Matrix MatProjection;
+	static Matrix sMatView;
+	static Matrix sMatProjection;
 };
 
 

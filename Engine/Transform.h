@@ -12,26 +12,26 @@ public:
 
 public:
 	// Parent 기준
-	const Vec3& GetLocalPosition() { return _localPosition; }
-	const Vec3& GetLocalRotation() { return _localRotation; }
-	const Vec3& GetLocalScale() { return _localScale; }
+	const Vec3& GetLocalPosition() { return mLocalPosition; }
+	const Vec3& GetLocalRotation() { return mLocalRotation; }
+	const Vec3& GetLocalScale() { return mLocalScale; }
 
 	// TEMP
-	float GetBoundingSphereRadius() { return max(max(_localScale.x, _localScale.y), _localScale.z); }
+	float GetBoundingSphereRadius() { return max(max(mLocalScale.x, mLocalScale.y), mLocalScale.z); }
 
-	const Matrix& GetLocalToWorldMatrix() { return _matWorld; }
-	Vec3 GetWorldPosition() { return _matWorld.Translation(); }
+	const Matrix& GetLocalToWorldMatrix() { return mMatWorld; }
+	Vec3 GetWorldPosition() { return mMatWorld.Translation(); }
 
-	void SetTexTransform(Matrix transform) { _texTransform = transform; }
-	Matrix& GetTexTransform() { return _texTransform; }
+	void SetTexTransform(Matrix transform) { mTexTransform = transform; }
+	Matrix& GetTexTransform() { return mTexTransform; }
 
-	Vec3 GetRight() { return _matWorld.Right(); }
-	Vec3 GetUp() { return _matWorld.Up(); }
-	Vec3 GetLook() { return _matWorld.Backward(); }
+	Vec3 GetRight() { return mMatWorld.Right(); }
+	Vec3 GetUp() { return mMatWorld.Up(); }
+	Vec3 GetLook() { return mMatWorld.Backward(); }
 
-	void SetLocalPosition(const Vec3& position) { _localPosition = position; }
-	void SetLocalRotation(const Vec3& rotation) { _localRotation = rotation; }
-	void SetLocalScale(const Vec3& scale) { _localScale = scale; }
+	void SetLocalPosition(const Vec3& Position) { mLocalPosition = Position; }
+	void SetLocalRotation(const Vec3& rotation) { mLocalRotation = rotation; }
+	void SetLocalScale(const Vec3& scale) { mLocalScale = scale; }
 
 	void LookAt(const Vec3& dir);
 
@@ -39,19 +39,18 @@ public:
 	static Vec3 DecomposeRotationMatrix(const Matrix& rotation);
 
 public:
-	void SetParent(shared_ptr<Transform> parent) { _parent = parent; }
-	weak_ptr<Transform> GetParent() { return _parent; }
+	void SetParent(shared_ptr<Transform> parent) { mParent = parent; }
+	weak_ptr<Transform> GetParent() { return mParent; }
 
 private:
-	// Parent 기준
-	Vec3 _localPosition = {};
-	Vec3 _localRotation = {};
-	Vec3 _localScale = { 1.f, 1.f, 1.f };
+	Vec3					mLocalPosition = {};
+	Vec3					mLocalRotation = {};
+	Vec3					mLocalScale = { 1.f, 1.f, 1.f };
 
-	Matrix _matLocal = {};
-	Matrix _matWorld = {};
-	Matrix _texTransform = {};
+	Matrix					mMatLocal = {};
+	Matrix					mMatWorld = {};
+	Matrix					mTexTransform = {};
 
-	weak_ptr<Transform> _parent;
+	weak_ptr<Transform>		mParent;
 };
 
