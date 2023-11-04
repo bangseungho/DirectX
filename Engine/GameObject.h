@@ -9,6 +9,7 @@ class Camera;
 class Light;
 class MonoBehaviour;
 class Collider;
+class ParticleSystem;
 class GameObject : public Object, public enable_shared_from_this<GameObject>
 {
 public:
@@ -33,6 +34,7 @@ public:
 	sptr<Camera> GetCamera();
 	sptr<Light> GetLight();
 	sptr<Collider> GetCollider();
+	sptr<ParticleSystem> GetParticleSystem();
 	
  	void AddComponent(sptr<Component> component);
 

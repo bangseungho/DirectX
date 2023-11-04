@@ -8,8 +8,9 @@ FrameResource::FrameResource(ComPtr<ID3D12Device> device, uint32 objectCount, ui
         IID_PPV_ARGS(mCmdAlloc.GetAddressOf())));
 
     mPassCB = std::make_shared<UploadBuffer<PassConstants>>(device, 1, true);
-    mMatData = std::make_shared<UploadBuffer<MaterialData>>(device, materialCount, false);
     mObjectCB = std::make_shared<UploadBuffer<ObjectData>>(device, objectCount, true);
+    mMatData = std::make_shared<UploadBuffer<MaterialData>>(device, materialCount, false);
+    mParticleSystemData = std::make_shared<UploadBuffer<ParticleSystemData>>(device, 1, false);
 }
 
 FrameResource::~FrameResource()

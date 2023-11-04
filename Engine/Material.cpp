@@ -12,14 +12,14 @@ Material::~Material()
 
 void Material::Update()
 {
-	MATERIAL_CB->CopyData(mMatIndex, mMatData);
+	MATERIAL_DATA->CopyData(mMatIndex, mMatData);
 
 	mShader->Update();
 }
 
 void Material::PushComputeData()
 {
-	//MATERIAL_CB->CopyData(mMatIndex, mMatData);
+	//MATERIAL_DATA->CopyData(mMatIndex, mMatData);
 
 	mShader->Update();
 }

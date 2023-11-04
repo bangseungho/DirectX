@@ -14,6 +14,6 @@ public:
     sptr<UploadBuffer<PassConstants>>        mPassCB;
     sptr<UploadBuffer<ObjectData>>           mObjectCB;
     sptr<UploadBuffer<MaterialData>>         mMatData;
-    sptr<UploadBuffer<ComputeParticleData>>  mParticleData;
+    sptr<UploadBuffer<ParticleSystemData>>   mParticleSystemData;
 
 };

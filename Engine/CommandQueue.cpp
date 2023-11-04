@@ -57,6 +57,7 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 		D3D12_RESOURCE_STATE_PRESENT,
 		D3D12_RESOURCE_STATE_RENDER_TARGET);
 
+#pragma region Graphics
 	mCmdList->SetGraphicsRootSignature(GRAPHICS_ROOT_SIGNATURE.Get());
 
 	ID3D12DescriptorHeap* descHeap = gEngine->GetTableDescHeap()->GetSRV().Get();
@@ -65,7 +66,7 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	auto passCB = CURR_FRAMERESOURCE->mPassCB->Resource();
 	mCmdList->SetGraphicsRootConstantBufferView(0, passCB->GetGPUVirtualAddress());
 
-	auto matData = MATERIAL_CB->Resource();
+	auto matData = MATERIAL_DATA->Resource();
 	mCmdList->SetGraphicsRootShaderResourceView(2, matData->GetGPUVirtualAddress());
 
 	CD3DX12_GPU_DESCRIPTOR_HANDLE skyTexDescriptor(DESCHEAP->GetSRV()->GetGPUDescriptorHandleForHeapStart());
@@ -73,19 +74,24 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	mCmdList->SetGraphicsRootDescriptorTable(3, skyTexDescriptor);
 
 	mCmdList->SetGraphicsRootDescriptorTable(4, DESCHEAP->GetSRV()->GetGPUDescriptorHandleForHeapStart());
+#pragma endregion
 
-	// compute command list
+#pragma region Compute
 	CMD_LIST->SetComputeRootSignature(COMPUTE_ROOT_SIGNATURE.Get());
+
+	mCmdList->SetComputeRootConstantBufferView(0, passCB->GetGPUVirtualAddress());
+
+	auto particleData = PARTICLE_DATA->Resource();
+	mCmdList->SetComputeRootShaderResourceView(1, particleData->GetGPUVirtualAddress());
 
 	descHeap = gEngine->GetTableDescHeap()->GetUAV().Get();
 	CMD_LIST->SetDescriptorHeaps(1, &descHeap);
 
 	D3D12_GPU_DESCRIPTOR_HANDLE handle = descHeap->GetGPUDescriptorHandleForHeapStart();
-	CMD_LIST->SetComputeRootDescriptorTable(3, handle);
-
+	CMD_LIST->SetComputeRootDescriptorTable(2, handle);
+#pragma endregion
 
 	mCmdList->ResourceBarrier(1, &barrier);
-
 	mCmdList->RSSetViewports(1, vp);
 	mCmdList->RSSetScissorRects(1, rect);
 }

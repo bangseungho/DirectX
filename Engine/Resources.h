@@ -28,6 +28,7 @@ public:
 	template<typename T>
 	uint32 GetObjectCount();
 
+	sptr<Mesh> LoadPointMesh();
 	sptr<Mesh> LoadRectMesh();
 	sptr<Mesh> LoadCubeMesh();
 	sptr<Mesh> LoadSphereMesh();

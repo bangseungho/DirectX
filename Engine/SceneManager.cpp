@@ -11,6 +11,7 @@
 #include "Light.h"
 #include "Rigidbody3D.h"
 #include "Collider.h"
+#include "ParticleSystem.h"
 
 #include "TestCameraScript.h"
 #include "TestRotationScript.h"
@@ -35,9 +36,6 @@ void SceneManager::Update()
 		mCurrTime = 0.f;
 	}
 
-	shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Compute");
-	material->Dispatch(1, 1024, 1);
-
 	mActiveScene->Update();
 	mActiveScene->LateUpdate();
 	mActiveScene->FinalUpdate();
@@ -45,6 +43,9 @@ void SceneManager::Update()
 
 void SceneManager::Render()
 {
+	//shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Compute");
+	//material->Dispatch(1, 1024, 1);
+
 	if (mActiveScene)
 		mActiveScene->Render();
 }
@@ -224,7 +225,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("particle");
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("leather");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -234,6 +235,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	scene->AddGameObject(gameObject);
 }
 #pragma endregion
+
 //============================================================================== UI
 #pragma region UIPos
 {
@@ -330,25 +332,25 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	scene->AddGameObject(gameObject);
 }
 #pragma endregion
-#pragma region UICompute
-{
-	sptr<GameObject> gameObject = make_shared<GameObject>();
-	gameObject->Init();
-	gameObject->SetCheckFrustum(false);
-	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
-	gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-	gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f + (5 * 100), 250.f, 500.f));
-	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-	{
-		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
-		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("UAVMaterial");
-		meshRenderer->SetMaterial(material);
-	}
-	gameObject->AddComponent(meshRenderer);
-	scene->AddGameObject(gameObject);
-}
-#pragma endregion
+//#pragma region UICompute
+//{
+//	sptr<GameObject> gameObject = make_shared<GameObject>();
+//	gameObject->Init();
+//	gameObject->SetCheckFrustum(false);
+//	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+//	gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+//	gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f + (5 * 100), 250.f, 500.f));
+//	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+//	{
+//		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+//		meshRenderer->SetMesh(mesh);
+//		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("UAVMaterial");
+//		meshRenderer->SetMaterial(material);
+//	}
+//	gameObject->AddComponent(meshRenderer);
+//	scene->AddGameObject(gameObject);
+//}
+//#pragma endregion
 //============================================================================== Light
 #pragma region Directional Light
 	{
@@ -388,11 +390,22 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 		flashLightScript->SetCameraObject(scene->GetMainCamera());
 		light->AddComponent(flashLightScript);
 		
-		
 		scene->AddGameObject(light);
 	}
 #pragma endregion
+//============================================================================== ParticleSystem
+#pragma region ParticleSystem
+	{
+		shared_ptr<GameObject> particle = make_shared<GameObject>();
+		particle->AddComponent(make_shared<Transform>());
+		particle->AddComponent(make_shared<ParticleSystem>());
+		particle->SetCheckFrustum(false);
+		particle->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 100.f));
+		particle->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
 
+		scene->AddGameObject(particle);
+	}
+#pragma endregion
 
 	return scene;
 }

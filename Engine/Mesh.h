@@ -9,7 +9,7 @@ public:
 
 public:
 	void Init(const vector<Vertex>& vertexBuffer, const vector<uint32>& indexBuffer);
-	void Render();
+	void Render(uint32 instanceCount = 1);
 
 	BoundingOrientedBox& GetBoundingBox() { return mBoundingBox; }
 

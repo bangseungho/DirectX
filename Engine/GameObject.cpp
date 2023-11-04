@@ -6,6 +6,7 @@
 #include "Light.h"
 #include "MonoBehaviour.h"
 #include "Collider.h"
+#include "ParticleSystem.h"
 #include "Resources.h"
 
 uint32 GameObject::ObjCBIndex = 0;
@@ -144,6 +145,12 @@ sptr<Collider> GameObject::GetCollider()
 {
 	uint8 index = static_cast<uint8>(COMPONENT_TYPE::COLLIDER);
 	return static_pointer_cast<Collider>(mComponents[index]);
+}
+
+sptr<ParticleSystem> GameObject::GetParticleSystem()
+{
+	uint8 index = static_cast<uint8>(COMPONENT_TYPE::PARTICLE_SYSTEM);
+	return static_pointer_cast<ParticleSystem>(mComponents[index]);
 }
 
 void GameObject::AddComponent(sptr<Component> component)

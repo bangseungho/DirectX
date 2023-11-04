@@ -25,6 +25,7 @@ public:
 	void SortGameObject();
 	void Render_Deferred();
 	void Render_Forward();
+	//void Render_Transparent();
 
 	void SetCullingMaskLayerOnOff(uint8 layer, bool on)
 	{
@@ -54,6 +55,7 @@ private:
 private:
 	vector<shared_ptr<GameObject>>	mDeferredObjects;
 	vector<shared_ptr<GameObject>>	mForwardObjects;
+	vector<shared_ptr<GameObject>>	mParticleObjects;
 
 public:
 	static Matrix sMatView;

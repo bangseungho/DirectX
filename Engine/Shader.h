@@ -42,7 +42,7 @@ struct ShaderInfo
 	RASTERIZER_TYPE					RasterizerType = RASTERIZER_TYPE::CULL_BACK;
 	DEPTH_STENCIL_TYPE				DepthStencilType = DEPTH_STENCIL_TYPE::LESS;
 	BLEND_TYPE						BlendType = BLEND_TYPE::DEFAULT;
-	D3D12_PRIMITIVE_TOPOLOGY_TYPE	TopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	D3D_PRIMITIVE_TOPOLOGY			TopologyType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 };
 
 class Shader : public Object
@@ -59,14 +59,16 @@ public:
 
 	void Update();
 
-	SHADER_TYPE GetShaderType() { return mWindow.ShaderType; }
+	SHADER_TYPE GetShaderType() { return mInfo.ShaderType; }
+
+	static D3D12_PRIMITIVE_TOPOLOGY_TYPE GetTopologyType(D3D_PRIMITIVE_TOPOLOGY topology);
 
 private:
 	void CreateComputeShader();
 	void CreateGraphicsShader();
 
 private:
-	ShaderInfo							mWindow;
+	ShaderInfo							mInfo;
 	ComPtr<ID3D12PipelineState>			mPipelineState;
 
 	ComPtr<ID3DBlob>					mVsBlob;

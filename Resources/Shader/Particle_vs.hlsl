@@ -6,14 +6,14 @@
 struct VS_IN
 {
     float3 posL : Position;
-    float2 Uv : TEXCOORD;
+    float2 uv : TEXCOORD;
     uint id : SV_InstanceID;
 };
 
 struct VS_OUT
 {
     float3 posW : Position;
-    float2 Uv : TEXCOORD;
+    float2 uv : TEXCOORD;
     float id : ID;
 };
 
@@ -26,8 +26,8 @@ VS_OUT VS_Main(VS_IN vin)
     float4 posW = mul(float4(vin.posL, 1.0f), gObjConstants.world);
     vout.posW = posW.xyz;
     
-    float4 Uv = mul(float4(vin.Uv, 0.f, 1.f), gObjConstants.texTransform);
-    vout.Uv = mul(Uv, matData.matTransform).xy;
+    float4 uv = mul(float4(vin.uv, 0.f, 1.f), gObjConstants.texTransform);
+    vout.uv = mul(uv, matData.matTransform).xy;
  
     return vout;
 }

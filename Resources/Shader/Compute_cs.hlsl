@@ -9,14 +9,10 @@ RWTexture2D<float4> gRwTex0 : register(u0);
 [numthreads(1024, 1, 1)]
 void CS_Main(int3 threadIndex : SV_DispatchThreadID)
 {
-    MaterialData matData = gMaterialData[gObjConstants.materialIndex];
-    
     if (threadIndex.y % 2 == 0)
         gRwTex0[threadIndex.xy] = float4(1.f, 0.f, 0.f, 1.f);
     else 
         gRwTex0[threadIndex.xy] = float4(0.f, 1.f, 0.f, 1.f);
-    
-    //gRwTex0[threadIndex.xy] = gMaterialData[gObjConstants.materialIndex].diffuseAlbedo;
 }
 
 #endif

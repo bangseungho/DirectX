@@ -38,6 +38,25 @@ void Resources::Init()
 	CreateDefaultMaterial();
 }
 
+sptr<Mesh> Resources::LoadPointMesh()
+{
+	shared_ptr<Mesh> findMesh = Get<Mesh>("Point");
+	if (findMesh)
+		return findMesh;
+
+	vector<Vertex> vec(1);
+	vec[0] = Vertex(Vec3(0, 0, 0), Vec2(0.5f, 0.5f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
+
+	vector<uint32> idx(1);
+	idx[0] = 0;
+
+	shared_ptr<Mesh> mesh = make_shared<Mesh>();
+	mesh->Init(vec, idx);
+	Add("Point", mesh);
+
+	return mesh;
+}
+
 sptr<Mesh> Resources::LoadRectMesh()
 {
 	sptr<Mesh> findMesh = Get<Mesh>("Rectangle");
@@ -483,18 +502,29 @@ void Resources::CreateDefaultShader()
 			RASTERIZER_TYPE::CULL_NONE,
 			DEPTH_STENCIL_TYPE::LESS_NO_WRITE,
 			BLEND_TYPE::ALPHA_BLEND,
-		};
-
-		const D3D_SHADER_MACRO defines[] =
-		{
-			"NO_LIGHTING", "1",
-			NULL, NULL
+			D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_POINTLIST,
 		};
 
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso");
+		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Particle_vs.cso", L"..\\Output\\cso\\Particle_ps.cso", L"..\\Output\\cso\\Particle_gs.cso");
 		Add<Shader>("Particle", shader);
 	}
+
+	//// Particle2
+	//{
+	//	ShaderInfo info =
+	//	{
+	//		SHADER_TYPE::FORWARD,
+	//		RASTERIZER_TYPE::CULL_NONE,
+	//		DEPTH_STENCIL_TYPE::LESS_NO_WRITE,
+	//		BLEND_TYPE::ALPHA_BLEND,
+	//	};
+
+	//	shared_ptr<Shader> shader = make_shared<Shader>();
+	//	shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Particle_vs.cso", L"..\\Output\\cso\\Particle_ps.cso");
+	//	Add<Shader>("Particle2", shader);
+	//}
+
 
 	// Final
 	{
@@ -757,6 +787,15 @@ void Resources::CreateDefaultMaterial()
 		material->SetDiffuseSrvHeapIndex(Get<Texture>("UAVTexture")->GetTexHeapIndex());
 		Add<Material>("UAVMaterial", move(material));
 	}
+
+	//{
+	//	shared_ptr<Shader> shader = Get<Shader>("Particle");
+	//	auto particle = make_shared<Material>();
+	//	particle->SetMatCBIndex(19);
+	//	particle->SetDiffuseSrvHeapIndex(Get<Texture>("particle")->GetTexHeapIndex());
+	//	particle->SetShader(shader);
+	//	Add<Material>("particle", move(particle));
+	//}
 
 	{
 		shared_ptr<Shader> shader = Get<Shader>("Particle");

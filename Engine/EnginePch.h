@@ -204,6 +204,9 @@ struct PassConstants
 	uint32		LightCount;
 	Vec3		Padding2;
 	LightInfo	Lights[MAX_LIGHTS];
+
+	Vec3		CameraRight = { 0.f, 0.f, 0.f };
+	float		Padding3;
 };
 
 struct ObjectData
@@ -227,7 +230,7 @@ struct MaterialData
 	int32	LightIndex = -1;
 };
 
-struct ComputeParticleData
+struct ParticleSystemData
 {
 	float DeltaTime = 0.f;
 	float AccTime = 0.f;
@@ -253,8 +256,9 @@ struct ComputeParticleData
 #define GRAPHICS_ROOT_SIGNATURE			gEngine->GetRootSignature()->GetGraphicsRootSignature()
 #define COMPUTE_ROOT_SIGNATURE			gEngine->GetRootSignature()->GetComputeRootSignature()
 
-#define OBJECT_CB gEngine->GetCurrFrameResource()->mObjectCB
-#define PASS_CB gEngine->GetCurrFrameResource()->mPassCB
-#define MATERIAL_CB gEngine->GetCurrFrameResource()->mMatData
+#define OBJECT_CB						gEngine->GetCurrFrameResource()->mObjectCB
+#define PASS_CB							gEngine->GetCurrFrameResource()->mPassCB
+#define MATERIAL_DATA					gEngine->GetCurrFrameResource()->mMatData
+#define PARTICLE_DATA					gEngine->GetCurrFrameResource()->mParticleSystemData
 
 extern unique_ptr<class Engine> gEngine;

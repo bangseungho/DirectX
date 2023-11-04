@@ -53,6 +53,8 @@ struct PassConstants
     int		            lightCount;
 	float3	            padding3;
 	LightInfo	        lights[MAX_LIGHTS];
+    float3              CameraRight;
+    float               padding4;
 };
 
 struct ObjectData
@@ -76,7 +78,7 @@ struct MaterialData
     int                 lightIndex;
 };
 
-struct ParticleMatData
+struct ParticleSystemData
 {
     float DeltaTime;
 	float AccTime;
@@ -108,7 +110,7 @@ ConstantBuffer<PassConstants> gPassConstants : register(b0);
 ConstantBuffer<ObjectData> gObjConstants : register(b1);
 StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
 
-//StructuredBuffer<ParticleMatData> gParticleMatData : register(t0, space2);
+StructuredBuffer<ParticleSystemData> gParticleMatData : register(t0, space0);
 //RWStructuredBuffer<Particle> gParticle : register(u0);
 //StructuredBuffer<Particle> gData : register(t0, space3);
 //RWStructuredBuffer<ComputeShared> gShared : register(u1);

@@ -144,6 +144,7 @@ void Scene::PushPassData()
 	passConstants.Proj = mMainCamera->mMatProjection;
 	passConstants.ViewProj = passConstants.View * passConstants.Proj;
 	passConstants.EyePosW = mMainCamera->GetTransform()->GetLocalPosition();
+	passConstants.CameraRight = mMainCamera->GetTransform()->GetRight();
 	passConstants.NearZ = mMainCamera->mNear;
 	passConstants.FarZ = mMainCamera->mFar;
 	passConstants.Width = static_cast<float>(gEngine->GetWindow().Width);

@@ -18,13 +18,12 @@ void Mesh::Init(const vector<Vertex>& vertexBuffer, const vector<uint32>& indexB
 	CreateIndexBuffer(indexBuffer);
 }
 
-void Mesh::Render()
+void Mesh::Render(uint32 instanceCount)
 {
-	CMD_LIST->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	CMD_LIST->IASetVertexBuffers(0, 1, &mVertexBufferView);
 	CMD_LIST->IASetIndexBuffer(&mIndexBufferView);
 
-	CMD_LIST->DrawIndexedInstanced(mIndexCount, 1, 0, 0, 0);
+	CMD_LIST->DrawIndexedInstanced(mIndexCount, instanceCount, 0, 0, 0);
 }
 
 void Mesh::CreateVertexBuffer(const vector<Vertex>& buffer)

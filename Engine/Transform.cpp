@@ -50,7 +50,6 @@ void Transform::PushData()
 	CMD_LIST->SetGraphicsRootConstantBufferView(1, objCBAddress);
 }
 
-
 void Transform::LookAt(const Vec3& dir)
 {
 	Vec3 front = dir;
