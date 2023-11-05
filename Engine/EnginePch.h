@@ -242,13 +242,28 @@ struct ParticleSystemData
 	float MaxSpeed = 0.f;
 };
 
+struct ParticleData
+{
+	Vec3	WorldPos = { 1.f, 1.f, 1.f };
+	float	CurTime = 0.f;
+	Vec3	WorldDir = { 1.f, 1.f, 1.f };
+	float	LifeTime = 0.f;
+	int32	Alive = 0;
+	Vec3	Padding;
+};
+
 #define DEVICE							gEngine->GetDevice()->GetDevice()
 
 #define DESCHEAP						gEngine->GetTableDescHeap()
 
-#define CMD_QUEUE						gEngine->GetCmdQueue()->GetCmdQueue()
-#define CMD_LIST						gEngine->GetCmdQueue()->GetCmdList()
-#define CMD_ALLOC						gEngine->GetCmdQueue()->GetCmdAlloc()
+#define GRAPHICS_CMD_QUEUE				gEngine->GetGraphicsCmdQueue()->GetCmdQueue()
+#define GRAPHICS_CMD_LIST				gEngine->GetGraphicsCmdQueue()->GetCmdList()
+#define GRAPHICS_RES_CMD_LIST			gEngine->GetGraphicsCmdQueue()->GetResCmdList()
+#define GRAPHICS_CMD_ALLOC				gEngine->GetGraphicsCmdQueue()->GetCmdAlloc()
+
+#define COMPUTE_CMD_QUEUE				gEngine->GetComputeCmdQueue()->GetCmdQueue()
+#define COMPUTE_CMD_LIST				gEngine->GetComputeCmdQueue()->GetCmdList()
+#define COMPUTE_CMD_ALLOC				gEngine->GetComputeCmdQueue()->GetCmdAlloc()
 
 #define CURR_FRAMERESOURCE				gEngine->GetCurrFrameResource()
 #define CURR_OBJECT_CB					gEngine->GetCurrFrameResource()->mObjectCB
@@ -259,6 +274,6 @@ struct ParticleSystemData
 #define OBJECT_CB						gEngine->GetCurrFrameResource()->mObjectCB
 #define PASS_CB							gEngine->GetCurrFrameResource()->mPassCB
 #define MATERIAL_DATA					gEngine->GetCurrFrameResource()->mMatData
-#define PARTICLE_DATA					gEngine->GetCurrFrameResource()->mParticleSystemData
+#define PARTICLE_SYSTEM_DATA			gEngine->GetCurrFrameResource()->mParticleSystemData
 
 extern unique_ptr<class Engine> gEngine;

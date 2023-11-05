@@ -45,20 +45,20 @@ void MultipleRenderTarget::Create(RENDER_TARGET_GROUP_TYPE groupType, vector<Ren
 void MultipleRenderTarget::OMSetRenderTargets(uint32 count, uint32 offset)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(_rtvHeapBegin, offset * _rtvHeapSize);
-	CMD_LIST->OMSetRenderTargets(count, &rtvHandle, FALSE, &_dsvHeapBegin);
+	GRAPHICS_CMD_LIST->OMSetRenderTargets(count, &rtvHandle, FALSE, &_dsvHeapBegin);
 }
 
 void MultipleRenderTarget::OMSetRenderTargets()
 {
-	CMD_LIST->OMSetRenderTargets(mRtCount, &_rtvHeapBegin, TRUE, &_dsvHeapBegin);
+	GRAPHICS_CMD_LIST->OMSetRenderTargets(mRtCount, &_rtvHeapBegin, TRUE, &_dsvHeapBegin);
 }
 
 void MultipleRenderTarget::ClearRenderTargetView(uint32 index)
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(_rtvHeapBegin, index * _rtvHeapSize);
-	CMD_LIST->ClearRenderTargetView(rtvHandle, mRtVec[index].clearColor, 0, nullptr);
+	GRAPHICS_CMD_LIST->ClearRenderTargetView(rtvHandle, mRtVec[index].clearColor, 0, nullptr);
 
-	CMD_LIST->ClearDepthStencilView(_dsvHeapBegin, D3D12_CLEAR_FLAG_DEPTH, 1.f, 0, 0, nullptr);
+	GRAPHICS_CMD_LIST->ClearDepthStencilView(_dsvHeapBegin, D3D12_CLEAR_FLAG_DEPTH, 1.f, 0, 0, nullptr);
 }
 
 void MultipleRenderTarget::ClearRenderTargetView()
@@ -67,18 +67,18 @@ void MultipleRenderTarget::ClearRenderTargetView()
 
 	for (uint32 i = 0; i < mRtCount; ++i) {
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(_rtvHeapBegin, i * _rtvHeapSize);
-		CMD_LIST->ClearRenderTargetView(rtvHandle, mRtVec[i].clearColor, 0, nullptr);
+		GRAPHICS_CMD_LIST->ClearRenderTargetView(rtvHandle, mRtVec[i].clearColor, 0, nullptr);
 	}
 
-	CMD_LIST->ClearDepthStencilView(_dsvHeapBegin, D3D12_CLEAR_FLAG_DEPTH, 1.f, 0, 0, nullptr);
+	GRAPHICS_CMD_LIST->ClearDepthStencilView(_dsvHeapBegin, D3D12_CLEAR_FLAG_DEPTH, 1.f, 0, 0, nullptr);
 }
 
 void MultipleRenderTarget::WaitTargetToResource()
 {
-	CMD_LIST->ResourceBarrier(mRtCount, _targetToResource);
+	GRAPHICS_CMD_LIST->ResourceBarrier(mRtCount, _targetToResource);
 }
 
 void MultipleRenderTarget::WaitResourceToTarget()
 {
-	CMD_LIST->ResourceBarrier(mRtCount, _resourceToTarget);
+	GRAPHICS_CMD_LIST->ResourceBarrier(mRtCount, _resourceToTarget);
 }

@@ -80,40 +80,39 @@ struct MaterialData
 
 struct ParticleSystemData
 {
-    float DeltaTime;
-	float AccTime;
-	uint MaxCount;
-	uint AddCount;
-	float MinLifeTime;
-	float MaxLifeTime;
-	float MinSpeed;
-	float MaxSpeed;
+    float   DeltaTime;
+	float   AccTime;
+	uint    MaxCount;
+	uint    AddCount;
+	float   MinLifeTime;
+	float   MaxLifeTime;
+	float   MinSpeed;
+	float   MaxSpeed;
 };
 
 struct Particle
 {
-    float3 worldPos;
-    float curTime;
-    float3 worldDir;
-    float lifeTime; 
-    int alive;
-    float3 Padding;
+    float3  WorldPos;
+    float   CurTime;
+    float3  WorldDir;
+    float   LifeTime; 
+    int     Alive;
+    float3  Padding;
 };
 
 struct ComputeShared
 {
-    int AddCount;
-    float3 Padding;
+    int     AddCount;
+    float3  Padding;
 };
 
 ConstantBuffer<PassConstants> gPassConstants : register(b0);
 ConstantBuffer<ObjectData> gObjConstants : register(b1);
 StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
 
-StructuredBuffer<ParticleSystemData> gParticleMatData : register(t0, space0);
-//RWStructuredBuffer<Particle> gParticle : register(u0);
-//StructuredBuffer<Particle> gData : register(t0, space3);
-//RWStructuredBuffer<ComputeShared> gShared : register(u1);
+//StructuredBuffer<ParticleSystemData> gParticleSystemData : register(t0);
+//StructuredBuffer<Particle> gInputParticleData : register(t9, space1);
+//RWStructuredBuffer<Particle> gOutputParticleData : register(u0);
 
 TextureCube gCubeMap : register(t0);
 Texture2D gTextureMaps[TEXTURE2D_COUNT] : register(t1);

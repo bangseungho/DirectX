@@ -9,11 +9,13 @@ public:
 
 public:
     uint64                                   mFence = 0;
-    ComPtr<ID3D12CommandAllocator>           mCmdAlloc;
+    uint64                                   mComputeFence = 0;
+
+    ComPtr<ID3D12CommandAllocator>           mGraphicsCmdAlloc;
+    ComPtr<ID3D12CommandAllocator>           mComputeCmdAlloc;
 
     sptr<UploadBuffer<PassConstants>>        mPassCB;
     sptr<UploadBuffer<ObjectData>>           mObjectCB;
     sptr<UploadBuffer<MaterialData>>         mMatData;
     sptr<UploadBuffer<ParticleSystemData>>   mParticleSystemData;
-
 };

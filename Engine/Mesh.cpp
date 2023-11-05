@@ -20,10 +20,10 @@ void Mesh::Init(const vector<Vertex>& vertexBuffer, const vector<uint32>& indexB
 
 void Mesh::Render(uint32 instanceCount)
 {
-	CMD_LIST->IASetVertexBuffers(0, 1, &mVertexBufferView);
-	CMD_LIST->IASetIndexBuffer(&mIndexBufferView);
+	GRAPHICS_CMD_LIST->IASetVertexBuffers(0, 1, &mVertexBufferView);
+	GRAPHICS_CMD_LIST->IASetIndexBuffer(&mIndexBufferView);
 
-	CMD_LIST->DrawIndexedInstanced(mIndexCount, instanceCount, 0, 0, 0);
+	GRAPHICS_CMD_LIST->DrawIndexedInstanced(mIndexCount, instanceCount, 0, 0, 0);
 }
 
 void Mesh::CreateVertexBuffer(const vector<Vertex>& buffer)
@@ -31,7 +31,7 @@ void Mesh::CreateVertexBuffer(const vector<Vertex>& buffer)
 	mVertexCount = static_cast<uint32>(buffer.size());
 	uint32 bufferSize = mVertexCount * sizeof(Vertex);
 
-	mVertexBuffer = d3dUtil::CreateDefaultBuffer(DEVICE, CMD_LIST, buffer.data(), bufferSize, mVertexBufferUploader);
+	mVertexBuffer = d3dUtil::CreateDefaultBuffer(DEVICE, GRAPHICS_CMD_LIST, buffer.data(), bufferSize, mVertexBufferUploader);
 
 	mVertexBufferView.BufferLocation = mVertexBuffer->GetGPUVirtualAddress();
 	mVertexBufferView.StrideInBytes = sizeof(Vertex);
@@ -44,7 +44,7 @@ void Mesh::CreateIndexBuffer(const vector<uint32>& buffer)
 	mIndexCount = static_cast<uint32>(buffer.size());
 	uint32 bufferSize = mIndexCount * sizeof(uint32);
 
-	mIndexBuffer = d3dUtil::CreateDefaultBuffer(DEVICE, CMD_LIST, buffer.data(), bufferSize, mIndexBufferUploader);
+	mIndexBuffer = d3dUtil::CreateDefaultBuffer(DEVICE, GRAPHICS_CMD_LIST, buffer.data(), bufferSize, mIndexBufferUploader);
 
 	mIndexBufferView.BufferLocation = mIndexBuffer->GetGPUVirtualAddress();
 	mIndexBufferView.Format = DXGI_FORMAT_R32_UINT;

@@ -45,12 +45,11 @@ void RootSignature::CreateComputeRootSignature()
 	CD3DX12_DESCRIPTOR_RANGE uavTable;
 	uavTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, COMPUTE_TEXTURE_COUNT, 0);
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[3];
-	slotRootParameter[0].InitAsConstantBufferView(0);
-	slotRootParameter[1].InitAsShaderResourceView(0, 1);
-	slotRootParameter[2].InitAsDescriptorTable(1, &uavTable);
+	CD3DX12_ROOT_PARAMETER slotRootParameter[1];
+	//slotRootParameter[0].InitAsShaderResourceView(0, 0);
+	slotRootParameter[0].InitAsDescriptorTable(1, &uavTable);
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(3, slotRootParameter,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(1, slotRootParameter,
 		0, nullptr,
 		D3D12_ROOT_SIGNATURE_FLAG_NONE);
 
@@ -64,6 +63,8 @@ void RootSignature::CreateComputeRootSignature()
 	ThrowIfFailed(hr);
 
 	ThrowIfFailed(DEVICE->CreateRootSignature(0, blobSignature->GetBufferPointer(), blobSignature->GetBufferSize(), IID_PPV_ARGS(&mComputeRootSignature)));
+
+	COMPUTE_CMD_LIST->SetComputeRootSignature(COMPUTE_ROOT_SIGNATURE.Get());
 }
 
 array<const CD3DX12_STATIC_SAMPLER_DESC, STATIC_SAMPLER_COUNT> RootSignature::GetStaticSamplers()

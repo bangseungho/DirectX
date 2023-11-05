@@ -43,8 +43,8 @@ void SceneManager::Update()
 
 void SceneManager::Render()
 {
-	//shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Compute");
-	//material->Dispatch(1, 1024, 1);
+	shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Compute");
+	material->Dispatch(1, 1024, 1);
 
 	if (mActiveScene)
 		mActiveScene->Render();
@@ -332,25 +332,25 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	scene->AddGameObject(gameObject);
 }
 #pragma endregion
-//#pragma region UICompute
-//{
-//	sptr<GameObject> gameObject = make_shared<GameObject>();
-//	gameObject->Init();
-//	gameObject->SetCheckFrustum(false);
-//	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
-//	gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-//	gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f + (5 * 100), 250.f, 500.f));
-//	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-//	{
-//		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
-//		meshRenderer->SetMesh(mesh);
-//		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("UAVMaterial");
-//		meshRenderer->SetMaterial(material);
-//	}
-//	gameObject->AddComponent(meshRenderer);
-//	scene->AddGameObject(gameObject);
-//}
-//#pragma endregion
+#pragma region UICompute
+{
+	sptr<GameObject> gameObject = make_shared<GameObject>();
+	gameObject->Init();
+	gameObject->SetCheckFrustum(false);
+	gameObject->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+	gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+	gameObject->GetTransform()->SetLocalPosition(Vec3(-350.f + (5 * 100), 250.f, 500.f));
+	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	{
+		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+		meshRenderer->SetMesh(mesh);
+		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("UAVMaterial");
+		meshRenderer->SetMaterial(material);
+	}
+	gameObject->AddComponent(meshRenderer);
+	scene->AddGameObject(gameObject);
+}
+#pragma endregion
 //============================================================================== Light
 #pragma region Directional Light
 	{

@@ -26,7 +26,8 @@ public:
 
 public:
 	sptr<Device> GetDevice() { return mDevice; }
-	sptr<CommandQueue> GetCmdQueue() { return mCmdQueue; }
+	sptr<GraphicsCommandqueue> GetGraphicsCmdQueue() { return mGraphicsCmdQueue; }
+	sptr<ComputeCommandQueue> GetComputeCmdQueue() { return mComputeCmdQueue; }
 	sptr<SwapChain> GetSwapChain() { return mSwapChain; }
 	sptr<RootSignature> GetRootSignature() { return mRootSignature; }
 	sptr<DescriptorHeap> GetTableDescHeap() { return mDescHeap; }
@@ -43,15 +44,16 @@ private:
 	void CreateMultipleRenderTarget();
 
 private:
-	WindowInfo				mWindow = {};
-	D3D12_VIEWPORT			mViewport = {};
-	D3D12_RECT				mScissorRect = {};
+	WindowInfo						mWindow = {};
+	D3D12_VIEWPORT					mViewport = {};
+	D3D12_RECT						mScissorRect = {};
 
-	sptr<Device>			mDevice = make_shared<Device>();
-	sptr<CommandQueue>		mCmdQueue = make_shared<CommandQueue>();
-	sptr<SwapChain>			mSwapChain = make_shared<SwapChain>();
-	sptr<RootSignature>		mRootSignature = make_shared<RootSignature>();
-	sptr<DescriptorHeap>	mDescHeap = make_shared<DescriptorHeap>();
+	sptr<Device>					mDevice = make_shared<Device>();
+	sptr<GraphicsCommandqueue>		mGraphicsCmdQueue = make_shared<GraphicsCommandqueue>();
+	sptr<ComputeCommandQueue>		mComputeCmdQueue = make_shared<ComputeCommandQueue>();
+	sptr<SwapChain>					mSwapChain = make_shared<SwapChain>();
+	sptr<RootSignature>				mRootSignature = make_shared<RootSignature>();
+	sptr<DescriptorHeap>			mDescHeap = make_shared<DescriptorHeap>();
 
 	array<sptr<MultipleRenderTarget>, RENDER_TARGET_GROUP_COUNT> mMrtGroup;
 

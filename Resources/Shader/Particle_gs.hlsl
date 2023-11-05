@@ -26,7 +26,7 @@ void GS_Main(point VS_OUT gin[1], inout TriangleStream<GS_OUT> triStream)
     };
     
     uint id = (uint)gin[0].id;
-    //if(0 == gData[id].alive)
+    //if(0 == gInputParticleData[id].Alive)
     //    return;
     
     //float3 up = float3(0.f, 1.f, 0.f);

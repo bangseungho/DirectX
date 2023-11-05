@@ -28,7 +28,8 @@ VS_OUT VS_Main(VS_IN vin)
     
     float4 uv = mul(float4(vin.uv, 0.f, 1.f), gObjConstants.texTransform);
     vout.uv = mul(uv, matData.matTransform).xy;
- 
+    //output.id = input.id;
+    
     return vout;
 }
 

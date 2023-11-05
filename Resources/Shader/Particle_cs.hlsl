@@ -4,6 +4,8 @@
 #include "Params.hlsl"
 #include "Utils.hlsl"
 
+//StructuredBuffer<Particle> gData : register(t0, space3);
+
 // Require
 // DeltaTime / AccTime
 // Particle Max Count
@@ -12,9 +14,11 @@
 [numthreads(1024, 1, 1)]
 void CS_Main(int3 threadIndex : SV_DispatchThreadID)
 {
-    //ParticleMatData particle = gParticleMatData[gObjConstants.materialIndex];
+    //ParticleSystemData particleSystem = gParticleSystemData[0];
     
-    //if (threadIndex.x >= particle.MaxCount)
+    //gOutputParticleData[threadIndex.x].WorldPos.x += 1;
+    
+    //if(threadIndex.x >= particleSystem.MaxCount)
     //    return;
     
     //gShared[0].AddCount = particle.AddCount; // AddCount는 공유 자원임

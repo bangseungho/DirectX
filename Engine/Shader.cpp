@@ -224,8 +224,13 @@ void Shader::CreateComputeShader()
 
 void Shader::Update()
 {
-	CMD_LIST->IASetPrimitiveTopology(mInfo.TopologyType);
-	CMD_LIST->SetPipelineState(mPipelineState.Get());
+	if (GetShaderType() == SHADER_TYPE::COMPUTE)
+		COMPUTE_CMD_LIST->SetPipelineState(mPipelineState.Get());
+	else
+	{
+		GRAPHICS_CMD_LIST->IASetPrimitiveTopology(mInfo.TopologyType);
+		GRAPHICS_CMD_LIST->SetPipelineState(mPipelineState.Get());
+	}
 }
 
 D3D12_PRIMITIVE_TOPOLOGY_TYPE Shader::GetTopologyType(D3D_PRIMITIVE_TOPOLOGY topology)

@@ -7,12 +7,12 @@
 
 //===================================================================GraphicsCommandQueue
 
-CommandQueue::~CommandQueue()
+GraphicsCommandqueue::~GraphicsCommandqueue()
 {
 	::CloseHandle(mFenceEvent);
 }
 
-void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapChain)
+void GraphicsCommandqueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapChain)
 {
 	mSwapChain = swapChain;
 
@@ -21,14 +21,18 @@ void CommandQueue::Init(ComPtr<ID3D12Device> device, shared_ptr<SwapChain> swapC
 	queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
 	device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&mCmdQueue));
 
-	device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&mCmdAlloc));
-	device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mCmdAlloc.Get(), nullptr, IID_PPV_ARGS(&mCmdList));
+	device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&mGraphicsCmdAlloc));
+	device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mGraphicsCmdAlloc.Get(), nullptr, IID_PPV_ARGS(&mCmdList));
+	mCmdList->Close();
+
+	device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&mResCmdAlloc));
+	device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, mResCmdAlloc.Get(), nullptr, IID_PPV_ARGS(&mResCmdList));
 
 	device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence));
 	mFenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
 }
 
-void CommandQueue::WaitSync()
+void GraphicsCommandqueue::WaitSync()
 {
 	mFenceValue++;
 
@@ -42,10 +46,22 @@ void CommandQueue::WaitSync()
 	}
 }
 
-
-void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
+void GraphicsCommandqueue::FlushResourceCommandQueue()
 {
-	auto cmdAlloc = CURR_FRAMERESOURCE->mCmdAlloc;
+	mResCmdList->Close();
+
+	ID3D12CommandList* cmdListArr[] = { mResCmdList.Get() };
+	mCmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
+
+	WaitSync();
+
+	mResCmdAlloc->Reset();
+	mResCmdList->Reset(mResCmdAlloc.Get(), nullptr);
+}
+
+void GraphicsCommandqueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
+{
+	auto cmdAlloc = CURR_FRAMERESOURCE->mGraphicsCmdAlloc;
 
 	cmdAlloc->Reset();
 	mCmdList->Reset(cmdAlloc.Get(), nullptr);
@@ -76,27 +92,19 @@ void CommandQueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
 	mCmdList->SetGraphicsRootDescriptorTable(4, DESCHEAP->GetSRV()->GetGPUDescriptorHandleForHeapStart());
 #pragma endregion
 
-#pragma region Compute
-	CMD_LIST->SetComputeRootSignature(COMPUTE_ROOT_SIGNATURE.Get());
-
-	mCmdList->SetComputeRootConstantBufferView(0, passCB->GetGPUVirtualAddress());
-
-	auto particleData = PARTICLE_DATA->Resource();
-	mCmdList->SetComputeRootShaderResourceView(1, particleData->GetGPUVirtualAddress());
-
-	descHeap = gEngine->GetTableDescHeap()->GetUAV().Get();
-	CMD_LIST->SetDescriptorHeaps(1, &descHeap);
-
-	D3D12_GPU_DESCRIPTOR_HANDLE handle = descHeap->GetGPUDescriptorHandleForHeapStart();
-	CMD_LIST->SetComputeRootDescriptorTable(2, handle);
-#pragma endregion
+//#pragma region Compute
+//	GRAPHICS_CMD_LIST->SetComputeRootSignature(COMPUTE_ROOT_SIGNATURE.Get());
+//
+//	auto particleData = PARTICLE_SYSTEM_DATA->Resource();
+//	mCmdList->SetComputeRootShaderResourceView(0, particleData->GetGPUVirtualAddress());
+//#pragma endregion
 
 	mCmdList->ResourceBarrier(1, &barrier);
 	mCmdList->RSSetViewports(1, vp);
 	mCmdList->RSSetScissorRects(1, rect);
 }
 
-void CommandQueue::RenderEnd()
+void GraphicsCommandqueue::RenderEnd()
 {
 	int8 backIndex = mSwapChain->GetBackBufferIndex();
 
@@ -116,5 +124,71 @@ void CommandQueue::RenderEnd()
 	mSwapChain->SwapIndex();
 
 	CURR_FRAMERESOURCE->mFence = ++mFenceValue;
+	mCmdQueue->Signal(mFence.Get(), mFenceValue);
+}
+
+// compute command queue
+
+ComputeCommandQueue::~ComputeCommandQueue()
+{
+	::CloseHandle(mFenceEvent);
+}
+
+void ComputeCommandQueue::Init(ComPtr<ID3D12Device> device)
+{
+	D3D12_COMMAND_QUEUE_DESC computeQueueDesc = {};
+	computeQueueDesc.Type = D3D12_COMMAND_LIST_TYPE_COMPUTE;
+	computeQueueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+	device->CreateCommandQueue(&computeQueueDesc, IID_PPV_ARGS(&mCmdQueue));
+
+	device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_COMPUTE, IID_PPV_ARGS(&mCmdAlloc));
+	device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COMPUTE, mCmdAlloc.Get(), nullptr, IID_PPV_ARGS(&mCmdList));
+
+	device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence));
+
+	device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence));
+	mFenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
+}
+
+void ComputeCommandQueue::WaitSync()
+{
+	mFenceValue++;
+
+	mCmdQueue->Signal(mFence.Get(), mFenceValue);
+
+	if (mFence->GetCompletedValue() < mFenceValue)
+	{
+		mFence->SetEventOnCompletion(mFenceValue, mFenceEvent);
+		::WaitForSingleObject(mFenceEvent, INFINITE);
+	}
+}
+
+void ComputeCommandQueue::FlushComputeCommandQueue()
+{
+	auto cmdAlloc = CURR_FRAMERESOURCE->mComputeCmdAlloc;
+	mCmdList->Close();
+
+	ID3D12CommandList* cmdListArr[] = { mCmdList.Get() };
+	auto t = _countof(cmdListArr);
+	mCmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
+
+	cmdAlloc->Reset();
+	mCmdList->Reset(cmdAlloc.Get(), nullptr);
+
+	COMPUTE_CMD_LIST->SetComputeRootSignature(COMPUTE_ROOT_SIGNATURE.Get());
+}
+
+void ComputeCommandQueue::RenderBegin()
+{
+	auto descHeap = gEngine->GetTableDescHeap()->GetUAV().Get();
+	mCmdList->SetDescriptorHeaps(1, &descHeap);
+
+	D3D12_GPU_DESCRIPTOR_HANDLE handle = descHeap->GetGPUDescriptorHandleForHeapStart();
+	mCmdList->SetComputeRootDescriptorTable(0, handle);
+}
+
+void ComputeCommandQueue::RenderEnd()
+{
+	CURR_FRAMERESOURCE->mComputeFence = ++mFenceValue;
 	mCmdQueue->Signal(mFence.Get(), mFenceValue);
 }

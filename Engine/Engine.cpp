@@ -6,7 +6,7 @@
 Engine::~Engine()
 {
 	if (mDevice != nullptr)
-		mCmdQueue->WaitSync();
+		mGraphicsCmdQueue->WaitSync();
 }
 
 void Engine::Init(const WindowInfo& info)
@@ -17,8 +17,9 @@ void Engine::Init(const WindowInfo& info)
 	mScissorRect = CD3DX12_RECT(0, 0, info.Width, info.Height);
 
 	mDevice->Init();
-	mCmdQueue->Init(mDevice->GetDevice(), mSwapChain);
-	mSwapChain->Init(info, mDevice->GetDevice(), mDevice->GetDXGI(), mCmdQueue->GetCmdQueue());
+	mGraphicsCmdQueue->Init(mDevice->GetDevice(), mSwapChain);
+	mComputeCmdQueue->Init(mDevice->GetDevice());
+	mSwapChain->Init(info, mDevice->GetDevice(), mDevice->GetDXGI(), mGraphicsCmdQueue->GetCmdQueue());
 	mRootSignature->Init();
 	mDescHeap->Init();
 
@@ -36,14 +37,23 @@ void Engine::Update()
 	mCurrFrameResourceIndex = (mCurrFrameResourceIndex + 1) % FRAME_RESOURCE_COUNT;
 	mCurrFrameResource = mFrameResources[mCurrFrameResourceIndex].get();
 
-	if (mCurrFrameResource->mFence != 0 && mCmdQueue->GetFence()->GetCompletedValue() < mCurrFrameResource->mFence)
+	if (mCurrFrameResource->mFence != 0 && mGraphicsCmdQueue->GetFence()->GetCompletedValue() < mCurrFrameResource->mFence)
 	{
 		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
-		ThrowIfFailed(mCmdQueue->GetFence()->SetEventOnCompletion(mCurrFrameResource->mFence, eventHandle));
+		ThrowIfFailed(mGraphicsCmdQueue->GetFence()->SetEventOnCompletion(mCurrFrameResource->mFence, eventHandle));
 		WaitForSingleObject(eventHandle, INFINITE);
 		CloseHandle(eventHandle);
 	}
 
+	if (mCurrFrameResource->mComputeFence != 0 && mComputeCmdQueue->GetFence()->GetCompletedValue() < mCurrFrameResource->mComputeFence)
+	{
+		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
+		ThrowIfFailed(mComputeCmdQueue->GetFence()->SetEventOnCompletion(mCurrFrameResource->mComputeFence, eventHandle));
+		WaitForSingleObject(eventHandle, INFINITE);
+		CloseHandle(eventHandle);
+	}
+
+	GET_SINGLE(SceneManager)->Update();
 	GET_SINGLE(InputManager)->Update();
 	GET_SINGLE(Timer)->Update();
 
@@ -54,7 +64,6 @@ void Engine::Render()
 {
 	RenderBegin();
 
-	GET_SINGLE(SceneManager)->Update();
 	GET_SINGLE(SceneManager)->Render();
 
 	RenderEnd();
@@ -70,12 +79,14 @@ void Engine::BuildFrameResource(ComPtr<ID3D12Device> device, uint32 objectCount,
 
 void Engine::RenderBegin()
 {
-	mCmdQueue->RenderBegin(&mViewport, &mScissorRect);
+	mComputeCmdQueue->RenderBegin();
+	mGraphicsCmdQueue->RenderBegin(&mViewport, &mScissorRect);
 }
 
 void Engine::RenderEnd()
 {
-	mCmdQueue->RenderEnd();
+	mComputeCmdQueue->RenderEnd();
+	mGraphicsCmdQueue->RenderEnd();
 }
 
 void Engine::ResizeWindow(int32 Width, int32 Height)

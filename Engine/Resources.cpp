@@ -510,6 +510,13 @@ void Resources::CreateDefaultShader()
 		Add<Shader>("Particle", shader);
 	}
 
+	// ComputeParticle
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->LoadComputeShader(L"..\\Output\\cso\\Particle_cs.cso");
+		Add<Shader>("ComputeParticle", shader);
+	}
+
 	//// Particle2
 	//{
 	//	ShaderInfo info =
@@ -563,7 +570,7 @@ void Resources::CreateDefaultTexture()
 		"wall_normal",
 		"wall_roughness",
 
-		"particle",
+		"Particle",
 
 		"skybox",
 	};
@@ -801,8 +808,16 @@ void Resources::CreateDefaultMaterial()
 		shared_ptr<Shader> shader = Get<Shader>("Particle");
 		auto particle = make_shared<Material>();
 		particle->SetMatCBIndex(19);
-		particle->SetDiffuseSrvHeapIndex(Get<Texture>("particle")->GetTexHeapIndex());
+		particle->SetDiffuseSrvHeapIndex(Get<Texture>("Particle")->GetTexHeapIndex());
 		particle->SetShader(shader);
-		Add<Material>("particle", move(particle));
+		Add<Material>("Particle", move(particle));
+	}
+
+	{
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("ComputeParticle");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(shader);
+
+		Add<Material>("ComputeParticle", material);
 	}
 }
