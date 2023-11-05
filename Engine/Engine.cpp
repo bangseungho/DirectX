@@ -45,10 +45,13 @@ void Engine::Update()
 		CloseHandle(eventHandle);
 	}
 
-	if (mCurrFrameResource->mComputeFence != 0 && mComputeCmdQueue->GetFence()->GetCompletedValue() < mCurrFrameResource->mComputeFence)
+	mCurrComputeFrameResourceIndex = (mCurrComputeFrameResourceIndex + 1) % FRAME_RESOURCE_COUNT;
+	mCurrComputeFrameResource = mComputeFrameResources[mCurrComputeFrameResourceIndex].get();
+
+	if (mCurrComputeFrameResource->mFence != 0 && mComputeCmdQueue->GetFence()->GetCompletedValue() < mCurrComputeFrameResource->mFence)
 	{
 		HANDLE eventHandle = CreateEventEx(nullptr, false, false, EVENT_ALL_ACCESS);
-		ThrowIfFailed(mComputeCmdQueue->GetFence()->SetEventOnCompletion(mCurrFrameResource->mComputeFence, eventHandle));
+		ThrowIfFailed(mComputeCmdQueue->GetFence()->SetEventOnCompletion(mCurrComputeFrameResource->mFence, eventHandle));
 		WaitForSingleObject(eventHandle, INFINITE);
 		CloseHandle(eventHandle);
 	}
@@ -74,6 +77,7 @@ void Engine::BuildFrameResource(ComPtr<ID3D12Device> device, uint32 objectCount,
 	for (int i = 0; i < FRAME_RESOURCE_COUNT; ++i)
 	{
 		mFrameResources[i] = std::make_unique<FrameResource>(device, objectCount, materialCount);
+		mComputeFrameResources[i] = std::make_unique<ComputeFrameResource>(device, 0, 0);
 	}
 }
 

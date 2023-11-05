@@ -33,7 +33,7 @@ void ParticleSystem::FinalUpdate()
 	}
 
 	ParticleSystemData particleSystemData;
-	particleSystemData.MaxCount = mMaxParticle;
+	particleSystemData.MaxCount = TOTAL_TIME;
 	particleSystemData.AddCount = addCount;
 	particleSystemData.AccTime = mAccTime;
 	particleSystemData.DeltaTime = DELTA_TIME;
@@ -43,13 +43,12 @@ void ParticleSystem::FinalUpdate()
 	particleSystemData.MaxSpeed = mMaxSpeed;
 
 	PARTICLE_SYSTEM_DATA->CopyData(0, particleSystemData);
-
-
-	//mComputeMaterial->Dispatch(1, 1, 1);
 }
 
 void ParticleSystem::Render()
 {
+	mComputeMaterial->Dispatch(1, 1024, 1);
+
 	GetTransform()->PushData();
 
 	mMaterial->Update();

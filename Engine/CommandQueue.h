@@ -55,6 +55,7 @@ public:
 
 	ComPtr<ID3D12CommandQueue> GetCmdQueue() { return mCmdQueue; }
 	ComPtr<ID3D12GraphicsCommandList> GetCmdList() { return mCmdList; }
+	ComPtr<ID3D12CommandAllocator> GetCmdAlloc() { return mCmdAlloc; }
 
 	ComPtr<ID3D12Fence> GetFence() { return	mFence; }
 

@@ -43,8 +43,8 @@ void SceneManager::Update()
 
 void SceneManager::Render()
 {
-	shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Compute");
-	material->Dispatch(1, 1024, 1);
+	//shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Compute");
+	//material->Dispatch(1, 1024, 1);
 
 	if (mActiveScene)
 		mActiveScene->Render();

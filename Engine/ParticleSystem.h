@@ -18,7 +18,7 @@ private:
 	shared_ptr<class Material>	mComputeMaterial;
 	shared_ptr<class Mesh>		mMesh;
 
-	uint32	mMaxParticle = 1000;
+	uint32	mMaxParticle = 1;
 	float	mCreateInterval = 0.005f;
 	float	mAccTime = 0.f;
 	float	mMinLifeTime = 0.5f;

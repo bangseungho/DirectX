@@ -5,6 +5,8 @@
 #include "Utils.hlsl"
 
 //StructuredBuffer<Particle> gData : register(t0, space3);
+RWTexture2D<float4> gRwTex0 : register(u0);
+StructuredBuffer<ParticleSystemData> gParticleSystemData : register(t9);
 
 // Require
 // DeltaTime / AccTime
@@ -14,7 +16,13 @@
 [numthreads(1024, 1, 1)]
 void CS_Main(int3 threadIndex : SV_DispatchThreadID)
 {
-    //ParticleSystemData particleSystem = gParticleSystemData[0];
+    ParticleSystemData particleSystem = gParticleSystemData[0];
+
+    if (threadIndex.y % 2 == 0)
+        gRwTex0[threadIndex.xy] = float4(1.f, particleSystem.AccTime, 0.f, 1.f);
+    else 
+        gRwTex0[threadIndex.xy] = float4(0.f, 1.f, 0.f, 1.f);
+
     
     //gOutputParticleData[threadIndex.x].WorldPos.x += 1;
     

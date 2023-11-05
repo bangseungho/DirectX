@@ -33,6 +33,7 @@ public:
 	sptr<DescriptorHeap> GetTableDescHeap() { return mDescHeap; }
 	sptr<MultipleRenderTarget> GetMRT(RENDER_TARGET_GROUP_TYPE type) { return mMrtGroup[static_cast<uint8>(type)]; }
 	FrameResource* GetCurrFrameResource() { return	mCurrFrameResource; }
+	ComputeFrameResource* GetCurrComputeFrameResource() { return mCurrComputeFrameResource; }
 	WindowInfo GetWindow() const { return mWindow; }
 
 public:
@@ -58,7 +59,10 @@ private:
 	array<sptr<MultipleRenderTarget>, RENDER_TARGET_GROUP_COUNT> mMrtGroup;
 
 	std::array<uptr<FrameResource>, FRAME_RESOURCE_COUNT> mFrameResources;
+	std::array<uptr<ComputeFrameResource>, FRAME_RESOURCE_COUNT> mComputeFrameResources;
 	FrameResource* mCurrFrameResource = nullptr;
+	ComputeFrameResource* mCurrComputeFrameResource = nullptr;
 	int mCurrFrameResourceIndex = 0;
+	int mCurrComputeFrameResourceIndex = 0;
 };
 

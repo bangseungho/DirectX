@@ -110,7 +110,6 @@ ConstantBuffer<PassConstants> gPassConstants : register(b0);
 ConstantBuffer<ObjectData> gObjConstants : register(b1);
 StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
 
-//StructuredBuffer<ParticleSystemData> gParticleSystemData : register(t0);
 //StructuredBuffer<Particle> gInputParticleData : register(t9, space1);
 //RWStructuredBuffer<Particle> gOutputParticleData : register(u0);
 

@@ -266,6 +266,8 @@ struct ParticleData
 #define COMPUTE_CMD_ALLOC				gEngine->GetComputeCmdQueue()->GetCmdAlloc()
 
 #define CURR_FRAMERESOURCE				gEngine->GetCurrFrameResource()
+#define CURR_COMPUTE_FRAMERESOURCE		gEngine->GetCurrComputeFrameResource()
+
 #define CURR_OBJECT_CB					gEngine->GetCurrFrameResource()->mObjectCB
 
 #define GRAPHICS_ROOT_SIGNATURE			gEngine->GetRootSignature()->GetGraphicsRootSignature()
@@ -274,6 +276,6 @@ struct ParticleData
 #define OBJECT_CB						gEngine->GetCurrFrameResource()->mObjectCB
 #define PASS_CB							gEngine->GetCurrFrameResource()->mPassCB
 #define MATERIAL_DATA					gEngine->GetCurrFrameResource()->mMatData
-#define PARTICLE_SYSTEM_DATA			gEngine->GetCurrFrameResource()->mParticleSystemData
+#define PARTICLE_SYSTEM_DATA			gEngine->GetCurrComputeFrameResource()->mParticleSystemData
 
 extern unique_ptr<class Engine> gEngine;

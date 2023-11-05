@@ -73,7 +73,6 @@ void GraphicsCommandqueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_REC
 		D3D12_RESOURCE_STATE_PRESENT,
 		D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-#pragma region Graphics
 	mCmdList->SetGraphicsRootSignature(GRAPHICS_ROOT_SIGNATURE.Get());
 
 	ID3D12DescriptorHeap* descHeap = gEngine->GetTableDescHeap()->GetSRV().Get();
@@ -90,14 +89,6 @@ void GraphicsCommandqueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_REC
 	mCmdList->SetGraphicsRootDescriptorTable(3, skyTexDescriptor);
 
 	mCmdList->SetGraphicsRootDescriptorTable(4, DESCHEAP->GetSRV()->GetGPUDescriptorHandleForHeapStart());
-#pragma endregion
-
-//#pragma region Compute
-//	GRAPHICS_CMD_LIST->SetComputeRootSignature(COMPUTE_ROOT_SIGNATURE.Get());
-//
-//	auto particleData = PARTICLE_SYSTEM_DATA->Resource();
-//	mCmdList->SetComputeRootShaderResourceView(0, particleData->GetGPUVirtualAddress());
-//#pragma endregion
 
 	mCmdList->ResourceBarrier(1, &barrier);
 	mCmdList->RSSetViewports(1, vp);
@@ -145,8 +136,6 @@ void ComputeCommandQueue::Init(ComPtr<ID3D12Device> device)
 	device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_COMPUTE, mCmdAlloc.Get(), nullptr, IID_PPV_ARGS(&mCmdList));
 
 	device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence));
-
-	device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&mFence));
 	mFenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
 }
 
@@ -165,30 +154,37 @@ void ComputeCommandQueue::WaitSync()
 
 void ComputeCommandQueue::FlushComputeCommandQueue()
 {
-	auto cmdAlloc = CURR_FRAMERESOURCE->mComputeCmdAlloc;
+
+}
+
+void ComputeCommandQueue::RenderBegin()
+{
+	auto cmdAlloc = CURR_COMPUTE_FRAMERESOURCE->mComputeCmdAlloc;
+
+	cmdAlloc->Reset();
+	mCmdList->Reset(cmdAlloc.Get(), nullptr);
+
+	mCmdList->SetComputeRootSignature(COMPUTE_ROOT_SIGNATURE.Get());
+
+	auto particleSystemData = PARTICLE_SYSTEM_DATA->Resource();
+	mCmdList->SetComputeRootShaderResourceView(0, particleSystemData->GetGPUVirtualAddress());
+
+	auto descHeap = gEngine->GetTableDescHeap()->GetUAV().Get();
+	mCmdList->SetDescriptorHeaps(1, &descHeap);
+
+	D3D12_GPU_DESCRIPTOR_HANDLE handle = descHeap->GetGPUDescriptorHandleForHeapStart();
+	mCmdList->SetComputeRootDescriptorTable(1, handle);
+}
+
+void ComputeCommandQueue::RenderEnd()
+{
+	auto cmdAlloc = CURR_COMPUTE_FRAMERESOURCE->mComputeCmdAlloc;
 	mCmdList->Close();
 
 	ID3D12CommandList* cmdListArr[] = { mCmdList.Get() };
 	auto t = _countof(cmdListArr);
 	mCmdQueue->ExecuteCommandLists(_countof(cmdListArr), cmdListArr);
 
-	cmdAlloc->Reset();
-	mCmdList->Reset(cmdAlloc.Get(), nullptr);
-
-	COMPUTE_CMD_LIST->SetComputeRootSignature(COMPUTE_ROOT_SIGNATURE.Get());
-}
-
-void ComputeCommandQueue::RenderBegin()
-{
-	auto descHeap = gEngine->GetTableDescHeap()->GetUAV().Get();
-	mCmdList->SetDescriptorHeaps(1, &descHeap);
-
-	D3D12_GPU_DESCRIPTOR_HANDLE handle = descHeap->GetGPUDescriptorHandleForHeapStart();
-	mCmdList->SetComputeRootDescriptorTable(0, handle);
-}
-
-void ComputeCommandQueue::RenderEnd()
-{
-	CURR_FRAMERESOURCE->mComputeFence = ++mFenceValue;
+	CURR_COMPUTE_FRAMERESOURCE->mFence = ++mFenceValue;
 	mCmdQueue->Signal(mFence.Get(), mFenceValue);
 }

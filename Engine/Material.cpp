@@ -30,5 +30,5 @@ void Material::Dispatch(uint32 x, uint32 y, uint32 z)
 
 	COMPUTE_CMD_LIST->Dispatch(x, y, z);
 
-	gEngine->GetComputeCmdQueue()->FlushComputeCommandQueue();
+	//gEngine->GetComputeCmdQueue()->FlushComputeCommandQueue();
 }
