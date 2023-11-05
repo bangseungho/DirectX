@@ -152,11 +152,6 @@ void ComputeCommandQueue::WaitSync()
 	}
 }
 
-void ComputeCommandQueue::FlushComputeCommandQueue()
-{
-
-}
-
 void ComputeCommandQueue::RenderBegin()
 {
 	auto cmdAlloc = CURR_COMPUTE_FRAMERESOURCE->mComputeCmdAlloc;
@@ -173,7 +168,7 @@ void ComputeCommandQueue::RenderBegin()
 	mCmdList->SetDescriptorHeaps(1, &descHeap);
 
 	D3D12_GPU_DESCRIPTOR_HANDLE handle = descHeap->GetGPUDescriptorHandleForHeapStart();
-	mCmdList->SetComputeRootDescriptorTable(1, handle);
+	mCmdList->SetComputeRootDescriptorTable(2, handle);
 }
 
 void ComputeCommandQueue::RenderEnd()

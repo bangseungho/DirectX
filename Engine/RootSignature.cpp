@@ -45,11 +45,12 @@ void RootSignature::CreateComputeRootSignature()
 	CD3DX12_DESCRIPTOR_RANGE uavTable;
 	uavTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, COMPUTE_TEXTURE_COUNT, 0);
 
-	CD3DX12_ROOT_PARAMETER slotRootParameter[2];
-	slotRootParameter[0].InitAsShaderResourceView(9);
-	slotRootParameter[1].InitAsDescriptorTable(1, &uavTable);
+	CD3DX12_ROOT_PARAMETER slotRootParameter[3];
+	slotRootParameter[0].InitAsShaderResourceView(0);
+	slotRootParameter[1].InitAsUnorderedAccessView(1, 0);
+	slotRootParameter[2].InitAsDescriptorTable(1, &uavTable);
 
-	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(2, slotRootParameter,
+	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(3, slotRootParameter,
 		0, nullptr,
 		D3D12_ROOT_SIGNATURE_FLAG_NONE);
 

@@ -5,8 +5,30 @@
 #include "Utils.hlsl"
 
 //StructuredBuffer<Particle> gData : register(t0, space3);
+
+struct ParticleSystemData
+{
+    float   DeltaTime;
+	float   AccTime;
+	uint    MaxCount;
+	float   MinLifeTime;
+	float   MaxLifeTime;
+	float   MinSpeed;
+	float   MaxSpeed;
+    float   Padding;
+};
+
+struct ComputeShared
+{
+    int     AddCount;
+    float3  Padding;
+};
+
+StructuredBuffer<ParticleSystemData> gParticleSystemData : register(t0);
+RWStructuredBuffer<ComputeShared> gSharedData : register(u1);
+
+// temp
 RWTexture2D<float4> gRwTex0 : register(u0);
-StructuredBuffer<ParticleSystemData> gParticleSystemData : register(t9);
 
 // Require
 // DeltaTime / AccTime
@@ -17,11 +39,12 @@ StructuredBuffer<ParticleSystemData> gParticleSystemData : register(t9);
 void CS_Main(int3 threadIndex : SV_DispatchThreadID)
 {
     ParticleSystemData particleSystem = gParticleSystemData[0];
-
+    ComputeShared sharedData = gSharedData[0];
+    
     if (threadIndex.y % 2 == 0)
-        gRwTex0[threadIndex.xy] = float4(1.f, particleSystem.AccTime, 0.f, 1.f);
+        gRwTex0[threadIndex.xy] = float4(1.f, 0.f, 0.f, 1.f);
     else 
-        gRwTex0[threadIndex.xy] = float4(0.f, 1.f, 0.f, 1.f);
+        gRwTex0[threadIndex.xy] = float4(0.f, 1.f, sharedData.AddCount, 1.f);
 
     
     //gOutputParticleData[threadIndex.x].WorldPos.x += 1;

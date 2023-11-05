@@ -78,18 +78,6 @@ struct MaterialData
     int                 lightIndex;
 };
 
-struct ParticleSystemData
-{
-    float   DeltaTime;
-	float   AccTime;
-	uint    MaxCount;
-	uint    AddCount;
-	float   MinLifeTime;
-	float   MaxLifeTime;
-	float   MinSpeed;
-	float   MaxSpeed;
-};
-
 struct Particle
 {
     float3  WorldPos;
@@ -97,12 +85,6 @@ struct Particle
     float3  WorldDir;
     float   LifeTime; 
     int     Alive;
-    float3  Padding;
-};
-
-struct ComputeShared
-{
-    int     AddCount;
     float3  Padding;
 };
 

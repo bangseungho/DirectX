@@ -11,6 +11,8 @@ ParticleSystem::ParticleSystem() : Component(COMPONENT_TYPE::PARTICLE_SYSTEM)
 	mMesh = GET_SINGLE(Resources)->LoadPointMesh();
 	mMaterial = GET_SINGLE(Resources)->Get<Material>("Particle");
 	mComputeMaterial = GET_SINGLE(Resources)->Get<Material>("ComputeParticle");
+
+	mSharedDataBuffer = std::make_shared<UploadBuffer<ParticleSharedData>>(DEVICE, 1, false);
 }
 
 ParticleSystem::~ParticleSystem()
@@ -32,9 +34,13 @@ void ParticleSystem::FinalUpdate()
 		addCount = 1;
 	}
 
+	ParticleSharedData particleSaredData;
+	particleSaredData.AddCount = 1;
+	mSharedDataBuffer->CopyData(0, particleSaredData);
+	COMPUTE_CMD_LIST->SetComputeRootUnorderedAccessView(1, mSharedDataBuffer->Resource()->GetGPUVirtualAddress());
+
 	ParticleSystemData particleSystemData;
 	particleSystemData.MaxCount = TOTAL_TIME;
-	particleSystemData.AddCount = addCount;
 	particleSystemData.AccTime = mAccTime;
 	particleSystemData.DeltaTime = DELTA_TIME;
 	particleSystemData.MinLifeTime = mMinLifeTime;
@@ -48,7 +54,6 @@ void ParticleSystem::FinalUpdate()
 void ParticleSystem::Render()
 {
 	mComputeMaterial->Dispatch(1, 1024, 1);
-
 	GetTransform()->PushData();
 
 	mMaterial->Update();

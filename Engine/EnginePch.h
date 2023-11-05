@@ -235,11 +235,11 @@ struct ParticleSystemData
 	float DeltaTime = 0.f;
 	float AccTime = 0.f;
 	int32 MaxCount = 0;
-	int32 AddCount = 0;
 	float MinLifeTime = 0.f;
 	float MaxLifeTime = 0.f;
 	float MinSpeed = 0.f;
 	float MaxSpeed = 0.f;
+	float Padding;
 };
 
 struct ParticleData
@@ -249,6 +249,12 @@ struct ParticleData
 	Vec3	WorldDir = { 1.f, 1.f, 1.f };
 	float	LifeTime = 0.f;
 	int32	Alive = 0;
+	Vec3	Padding;
+};
+
+struct ParticleSharedData
+{
+	int32	AddCount = 0;
 	Vec3	Padding;
 };
 

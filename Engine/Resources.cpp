@@ -547,12 +547,12 @@ void Resources::CreateDefaultShader()
 		Add<Shader>("Final", shader);
 	}
 
-	// Compute Shader
-	{
-		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->LoadComputeShader(L"..\\Output\\cso\\Compute_cs.cso");
-		Add<Shader>("Compute", shader);
-	}
+	//// Compute Shader
+	//{
+	//	shared_ptr<Shader> shader = make_shared<Shader>();
+	//	shader->LoadComputeShader(L"..\\Output\\cso\\Compute_cs.cso");
+	//	Add<Shader>("Compute", shader);
+	//}
 }
 
 void Resources::CreateDefaultTexture()
@@ -778,13 +778,13 @@ void Resources::CreateDefaultMaterial()
 		Add<Material>("Final", move(finalMaterial));
 	}
 
-	{
-		shared_ptr<Shader> shader = Get<Shader>("Compute");
-		auto material = make_shared<Material>();
-		material->SetMatCBIndex(17);
-		material->SetShader(shader);
-		Add<Material>("Compute", move(material));
-	}
+	//{
+	//	shared_ptr<Shader> shader = Get<Shader>("Compute");
+	//	auto material = make_shared<Material>();
+	//	material->SetMatCBIndex(17);
+	//	material->SetShader(shader);
+	//	Add<Material>("Compute", move(material));
+	//}
 
 	{
 		shared_ptr<Shader> tex = Get<Shader>("Tex");

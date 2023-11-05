@@ -27,5 +27,7 @@ private:
 	float	mMaxSpeed = 50;
 	float	mStartScale = 10.f;
 	float	mEndScale = 5.f;
+
+	sptr<UploadBuffer<ParticleSharedData>> mSharedDataBuffer;
 };
 

@@ -48,7 +48,6 @@ public:
 
 	void Init(ComPtr<ID3D12Device> device);
 	void WaitSync();
-	void FlushComputeCommandQueue();
 
 	void RenderBegin();
 	void RenderEnd();
