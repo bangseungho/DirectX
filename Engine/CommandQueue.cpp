@@ -163,12 +163,6 @@ void ComputeCommandQueue::RenderBegin()
 
 	auto particleSystemData = PARTICLE_SYSTEM_DATA->Resource();
 	mCmdList->SetComputeRootShaderResourceView(0, particleSystemData->GetGPUVirtualAddress());
-
-	auto descHeap = gEngine->GetTableDescHeap()->GetUAV().Get();
-	mCmdList->SetDescriptorHeaps(1, &descHeap);
-
-	D3D12_GPU_DESCRIPTOR_HANDLE handle = descHeap->GetGPUDescriptorHandleForHeapStart();
-	mCmdList->SetComputeRootDescriptorTable(2, handle);
 }
 
 void ComputeCommandQueue::RenderEnd()

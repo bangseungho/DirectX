@@ -517,22 +517,6 @@ void Resources::CreateDefaultShader()
 		Add<Shader>("ComputeParticle", shader);
 	}
 
-	//// Particle2
-	//{
-	//	ShaderInfo info =
-	//	{
-	//		SHADER_TYPE::FORWARD,
-	//		RASTERIZER_TYPE::CULL_NONE,
-	//		DEPTH_STENCIL_TYPE::LESS_NO_WRITE,
-	//		BLEND_TYPE::ALPHA_BLEND,
-	//	};
-
-	//	shared_ptr<Shader> shader = make_shared<Shader>();
-	//	shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Particle_vs.cso", L"..\\Output\\cso\\Particle_ps.cso");
-	//	Add<Shader>("Particle2", shader);
-	//}
-
-
 	// Final
 	{
 		ShaderInfo info =
@@ -546,13 +530,6 @@ void Resources::CreateDefaultShader()
 		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Final_vs.cso", L"..\\Output\\cso\\Final_ps.cso");
 		Add<Shader>("Final", shader);
 	}
-
-	//// Compute Shader
-	//{
-	//	shared_ptr<Shader> shader = make_shared<Shader>();
-	//	shader->LoadComputeShader(L"..\\Output\\cso\\Compute_cs.cso");
-	//	Add<Shader>("Compute", shader);
-	//}
 }
 
 void Resources::CreateDefaultTexture()
@@ -778,36 +755,10 @@ void Resources::CreateDefaultMaterial()
 		Add<Material>("Final", move(finalMaterial));
 	}
 
-	//{
-	//	shared_ptr<Shader> shader = Get<Shader>("Compute");
-	//	auto material = make_shared<Material>();
-	//	material->SetMatCBIndex(17);
-	//	material->SetShader(shader);
-	//	Add<Material>("Compute", move(material));
-	//}
-
-	{
-		shared_ptr<Shader> tex = Get<Shader>("Tex");
-		auto material = make_shared<Material>();
-		material->SetMatCBIndex(18);
-		material->SetShader(tex);
-		material->SetDiffuseSrvHeapIndex(Get<Texture>("UAVTexture")->GetTexHeapIndex());
-		Add<Material>("UAVMaterial", move(material));
-	}
-
-	//{
-	//	shared_ptr<Shader> shader = Get<Shader>("Particle");
-	//	auto particle = make_shared<Material>();
-	//	particle->SetMatCBIndex(19);
-	//	particle->SetDiffuseSrvHeapIndex(Get<Texture>("particle")->GetTexHeapIndex());
-	//	particle->SetShader(shader);
-	//	Add<Material>("particle", move(particle));
-	//}
-
 	{
 		shared_ptr<Shader> shader = Get<Shader>("Particle");
 		auto particle = make_shared<Material>();
-		particle->SetMatCBIndex(19);
+		particle->SetMatCBIndex(17);
 		particle->SetDiffuseSrvHeapIndex(Get<Texture>("Particle")->GetTexHeapIndex());
 		particle->SetShader(shader);
 		Add<Material>("Particle", move(particle));

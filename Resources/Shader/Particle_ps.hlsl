@@ -21,8 +21,12 @@ float4 PS_Main(GS_OUT pin) : SV_Target
     uint normalMapIndex = matData.normalMapIndex;
     uint roughnessMapIndex = matData.roughnessMapIndex;
     
+    uint id = (uint)pin.id;
+    float ratio = gOutputParticle[id].CurTime / gOutputParticle[id].LifeTime;
+    
     diffuseAlbedo = gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.uv) * diffuseAlbedo;
-
+    diffuseAlbedo.a *= (1 - ratio);
+    
     return diffuseAlbedo;
 }
 

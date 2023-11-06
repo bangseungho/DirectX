@@ -24,6 +24,21 @@ using uptr = std::unique_ptr<T>;
 template<class T>
 using wptr = std::weak_ptr<T>;
 
+enum
+{
+	SWAP_CHAIN_BUFFER_COUNT = 2,
+};
+
+enum
+{
+	STATIC_SAMPLER_COUNT = 6,
+};
+
+enum
+{
+	FRAME_RESOURCE_COUNT = 3
+};
+
 enum class CBV_REGISTER : uint8
 {
 	b0,
@@ -46,19 +61,15 @@ enum class SRV_REGISTER : uint8
 	END
 };
 
-enum
+enum class UAV_REGISTER : uint8
 {
-	SWAP_CHAIN_BUFFER_COUNT = 2,
-};
+	u0,
+	u1,
+	u2,
+	u3,
+	u4,
 
-enum
-{
-	STATIC_SAMPLER_COUNT = 6,
-};
-
-enum
-{
-	FRAME_RESOURCE_COUNT = 3
+	END,
 };
 
 enum class RENDER_TARGET_GROUP_TYPE : uint8
@@ -233,13 +244,16 @@ struct MaterialData
 struct ParticleSystemData
 {
 	float DeltaTime = 0.f;
+	int32 AddCount = 0;
 	float AccTime = 0.f;
 	int32 MaxCount = 0;
 	float MinLifeTime = 0.f;
 	float MaxLifeTime = 0.f;
 	float MinSpeed = 0.f;
 	float MaxSpeed = 0.f;
-	float Padding;
+	float StartScale = 0.f;
+	float EndScale = 0.f;
+	Vec2  Padding;
 };
 
 struct ParticleData
@@ -248,8 +262,9 @@ struct ParticleData
 	float	CurTime = 0.f;
 	Vec3	WorldDir = { 1.f, 1.f, 1.f };
 	float	LifeTime = 0.f;
-	int32	Alive = 0;
-	Vec3	Padding;
+	int32	Alive = 1;
+	Vec2	StartEndScale = { 0.f, 0.f };
+	float   Padding;
 };
 
 struct ParticleSharedData

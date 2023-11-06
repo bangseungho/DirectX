@@ -159,6 +159,9 @@
     <ClCompile Include="ParticleSystem.cpp">
       <Filter>Object\Component</Filter>
     </ClCompile>
+    <ClCompile Include="StructuredBuffer.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -289,6 +292,9 @@
     </ClInclude>
     <ClInclude Include="ParticleSystem.h">
       <Filter>Object\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="StructuredBuffer.h">
+      <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

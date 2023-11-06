@@ -85,15 +85,14 @@ struct Particle
     float3  WorldDir;
     float   LifeTime; 
     int     Alive;
-    float3  Padding;
+    float2  StartEndScale;
+    float   Padding;
 };
+StructuredBuffer<Particle> gOutputParticle : register(t4, space2);
 
 ConstantBuffer<PassConstants> gPassConstants : register(b0);
 ConstantBuffer<ObjectData> gObjConstants : register(b1);
 StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
-
-//StructuredBuffer<Particle> gInputParticleData : register(t9, space1);
-//RWStructuredBuffer<Particle> gOutputParticleData : register(u0);
 
 TextureCube gCubeMap : register(t0);
 Texture2D gTextureMaps[TEXTURE2D_COUNT] : register(t1);

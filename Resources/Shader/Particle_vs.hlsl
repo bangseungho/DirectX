@@ -25,10 +25,8 @@ VS_OUT VS_Main(VS_IN vin)
     
     float4 posW = mul(float4(vin.posL, 1.0f), gObjConstants.world);
     vout.posW = posW.xyz;
-    
-    float4 uv = mul(float4(vin.uv, 0.f, 1.f), gObjConstants.texTransform);
-    vout.uv = mul(uv, matData.matTransform).xy;
-    //output.id = input.id;
+    vout.posW += gOutputParticle[vin.id].WorldPos;
+    vout.id = vin.id;
     
     return vout;
 }
