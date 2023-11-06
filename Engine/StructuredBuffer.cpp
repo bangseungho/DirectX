@@ -88,10 +88,4 @@ void StructuredBuffer::PushComputeData(UAV_REGISTER reg)
 void StructuredBuffer::PushGraphicsData(uint8 reg)
 {
 	GRAPHICS_CMD_LIST->SetGraphicsRootShaderResourceView(static_cast<uint8>(reg), mBuffer->GetGPUVirtualAddress());
-
-	//ID3D12DescriptorHeap* descHeap = mSrvHeap.Get();
-	//COMPUTE_CMD_LIST->SetDescriptorHeaps(1, &descHeap);
-
-	//D3D12_GPU_DESCRIPTOR_HANDLE handle = descHeap->GetGPUDescriptorHandleForHeapStart();
-	//GRAPHICS_CMD_LIST->SetComputeRootDescriptorTable(static_cast<uint8>(reg), handle);
 }

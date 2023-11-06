@@ -1,5 +1,7 @@
 #include "pch.h"
 #include "Resources.h"
+#include "Transform.h"
+#include "ParticleSystem.h"
 
 DECLARE_SINGLE(Resources)
 
@@ -499,7 +501,7 @@ void Resources::CreateDefaultShader()
 		ShaderInfo info =
 		{
 			SHADER_TYPE::FORWARD,
-			RASTERIZER_TYPE::CULL_NONE,
+			RASTERIZER_TYPE::CULL_BACK,
 			DEPTH_STENCIL_TYPE::LESS_NO_WRITE,
 			BLEND_TYPE::ALPHA_BLEND,
 			D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_POINTLIST,
@@ -547,7 +549,8 @@ void Resources::CreateDefaultTexture()
 		"wall_normal",
 		"wall_roughness",
 
-		"Particle",
+		"lightParticle",
+		"fireParticle",
 
 		"skybox",
 	};
@@ -565,7 +568,8 @@ void Resources::CreateDefaultTexture()
 		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_normal_BC7.dds",
 		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_roughness.dds",
 
-		L"..\\Resources\\Texture\\particle.dds",
+		L"..\\Resources\\Texture\\lightParticle.dds",
+		L"..\\Resources\\Texture\\fireParticle.dds",
 
 		L"..\\Resources\\Texture\\Sky.dds",
 	};
@@ -759,9 +763,18 @@ void Resources::CreateDefaultMaterial()
 		shared_ptr<Shader> shader = Get<Shader>("Particle");
 		auto particle = make_shared<Material>();
 		particle->SetMatCBIndex(17);
-		particle->SetDiffuseSrvHeapIndex(Get<Texture>("Particle")->GetTexHeapIndex());
+		particle->SetDiffuseSrvHeapIndex(Get<Texture>("lightParticle")->GetTexHeapIndex());
 		particle->SetShader(shader);
-		Add<Material>("Particle", move(particle));
+		Add<Material>("lightParticle", move(particle));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>("Particle");
+		auto particle = make_shared<Material>();
+		particle->SetMatCBIndex(18);
+		particle->SetDiffuseSrvHeapIndex(Get<Texture>("fireParticle")->GetTexHeapIndex());
+		particle->SetShader(shader);
+		Add<Material>("fireParticle", move(particle));
 	}
 
 	{

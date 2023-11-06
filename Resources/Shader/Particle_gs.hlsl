@@ -36,7 +36,7 @@ void GS_Main(point VS_OUT gin[1], inout TriangleStream<GS_OUT> triStream)
     //float3 up = float3(0.f, 1.f, 0.f);
     float3 look = gPassConstants.eyePosW.xyz - gin[0].posW;
     look = normalize(look);
-    float3 right = -gPassConstants.CameraRight;
+    float3 right = gPassConstants.CameraRight;
     float3 up = cross(right, look);
     //float3 right = cross(up, look);    
     
@@ -44,20 +44,20 @@ void GS_Main(point VS_OUT gin[1], inout TriangleStream<GS_OUT> triStream)
     float halfHeight = scale;
     
     float4 posW[4];
-    posW[0] = float4(gin[0].posW + halfWidth * right - halfHeight * up, 1.f);
+    posW[0] = float4(gin[0].posW - halfWidth * right + halfHeight * up, 1.f);
     posW[1] = float4(gin[0].posW + halfWidth * right + halfHeight * up, 1.f);
     posW[2] = float4(gin[0].posW - halfWidth * right - halfHeight * up, 1.f);
-    posW[3] = float4(gin[0].posW - halfWidth * right + halfHeight * up, 1.f);
+    posW[3] = float4(gin[0].posW + halfWidth * right - halfHeight * up, 1.f);
     
     gout[0].posH = mul(posW[0], gPassConstants.ViewProj);
     gout[1].posH = mul(posW[1], gPassConstants.ViewProj);
     gout[2].posH = mul(posW[2], gPassConstants.ViewProj);
     gout[3].posH = mul(posW[3], gPassConstants.ViewProj);
     
-    gout[0].Uv = float2(0.f, 1.f);
-    gout[1].Uv = float2(0.f, 0.f);
-    gout[2].Uv = float2(1.f, 1.f);
-    gout[3].Uv = float2(1.f, 0.f);
+    gout[0].Uv = float2(0.f, 0.f);
+    gout[1].Uv = float2(1.f, 0.f);
+    gout[2].Uv = float2(0.f, 1.f);
+    gout[3].Uv = float2(1.f, 1.f);
     
     gout[0].id = gin[0].id;
     gout[1].id = gin[0].id;

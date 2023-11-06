@@ -10,20 +10,22 @@ public:
 	virtual ~ParticleSystem();
 
 public:
+	void SetMaterial(sptr<class Material> material) { mMaterial = material; }
+
 	virtual void Start();
 	virtual void FinalUpdate();
 	void Render();
 	
 private:
-	shared_ptr<class Material>	mMaterial;
-	shared_ptr<class Material>	mComputeMaterial;
-	shared_ptr<class Mesh>		mMesh;
+	sptr<class Material>	mMaterial;
+	sptr<class Material>	mComputeMaterial;
+	sptr<class Mesh>		mMesh;
 
-	uint32	mMaxParticle = 1000;
+	uint32	mMaxParticle = 500;
 	float	mCreateInterval = 0.005f;
 	float	mAccTime = 0.f;
 	float	mMinLifeTime = 0.5f;
-	float	mMaxLifeTime = 1.f;
+	float	mMaxLifeTime = 5.f;
 	float	mMinSpeed = 100;
 	float	mMaxSpeed = 50;
 	float	mStartScale = 10.f;

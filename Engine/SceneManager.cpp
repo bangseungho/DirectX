@@ -375,18 +375,39 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	}
 #pragma endregion
 //============================================================================== ParticleSystem
+
 #pragma region ParticleSystem
 	{
 		shared_ptr<GameObject> particle = make_shared<GameObject>();
 		particle->AddComponent(make_shared<Transform>());
-		particle->AddComponent(make_shared<ParticleSystem>());
-		particle->SetCheckFrustum(false);
-		particle->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 100.f));
-		particle->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
 
+		auto particleSystem = make_shared<ParticleSystem>();
+		particleSystem->SetMaterial(GET_SINGLE(Resources)->Get<Material>("fireParticle"));
+		particle->AddComponent(particleSystem);
+
+		particle->SetCheckFrustum(false);
+		particle->GetTransform()->SetLocalPosition(Vec3(50.f, 100.f, 100.f));
+		particle->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
 		scene->AddGameObject(particle);
 	}
 #pragma endregion
+
+#pragma region ParticleSystem
+	{
+		shared_ptr<GameObject> particle = make_shared<GameObject>();
+		particle->AddComponent(make_shared<Transform>());
+
+		auto particleSystem = make_shared<ParticleSystem>();
+		particleSystem->SetMaterial(GET_SINGLE(Resources)->Get<Material>("lightParticle"));
+		particle->AddComponent(particleSystem);
+
+		particle->SetCheckFrustum(false);
+		particle->GetTransform()->SetLocalPosition(Vec3(-50.f, 100.f, 100.f));
+		particle->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+		scene->AddGameObject(particle);
+	}
+#pragma endregion
+
 
 	return scene;
 }

@@ -34,7 +34,7 @@ StructuredBuffer<ParticleSystemData> gParticleSystemData : register(t0);
 // Particle Max Count
 // AddCount
 // MinLifeTime / MaxLifeTime / MinSpeed / MaxSpeed
-[numthreads(1024, 1, 1)]
+[numthreads(512, 1, 1)]
 void CS_Main(int3 threadIndex : SV_DispatchThreadID)
 {
     ParticleSystemData particleSystem = gParticleSystemData[0];
