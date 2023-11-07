@@ -372,5 +372,17 @@
     <FxCompile Include="..\Resources\Shader\Particle_gs.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Tessellation_ps.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Tessellation_vs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Tessellation_ds.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Tessellation_hs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

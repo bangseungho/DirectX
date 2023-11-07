@@ -82,7 +82,7 @@ uint8 SceneManager::LayerNameToIndex(const wstring& name)
 	return findIt->second;
 }
 
-shared_ptr<Scene> SceneManager::LoadTestScene()
+sptr<Scene> SceneManager::LoadTestScene()
 {
 //============================================================================== LayerMask
 #pragma region LayerMask
@@ -91,11 +91,11 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 
 //============================================================================== Scene
-	shared_ptr<Scene> scene = make_shared<Scene>();
+	sptr<Scene> scene = make_shared<Scene>();
 //============================================================================== Camera
 #pragma region MainCamera
 	{
-		shared_ptr<GameObject> mainCamera = make_shared<GameObject>();
+		sptr<GameObject> mainCamera = make_shared<GameObject>();
 		mainCamera->Init();
 		mainCamera->SetName(L"Main_Camera");
 		mainCamera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
@@ -109,7 +109,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 #pragma region UICamera
 	{
-		shared_ptr<GameObject> camera = make_shared<GameObject>();
+		sptr<GameObject> camera = make_shared<GameObject>();
 		camera->Init();
 		camera->SetName(L"UI_Camera");
 		camera->AddComponent(make_shared<Camera>());
@@ -124,15 +124,15 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 //============================================================================== SkyBox
 #pragma region SkyBox
 	{
-		shared_ptr<GameObject> skybox = make_shared<GameObject>();
+		sptr<GameObject> skybox = make_shared<GameObject>();
 		skybox->Init();
 		skybox->SetCheckFrustum(false);
 
-		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 		{
-			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
+			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
 			meshRenderer->SetMesh(mesh);
-			shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("skybox");
+			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("skybox");
 			meshRenderer->SetMaterial(material);
 		}
 		skybox->AddComponent(meshRenderer);
@@ -142,18 +142,18 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 //============================================================================== Object
 #pragma region NewjeansCube
 	{
-		shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+		sptr<GameObject> gameObject = make_shared<GameObject>();
 		gameObject->Init();
 
-		shared_ptr<Transform> transform = gameObject->GetTransform();
+		sptr<Transform> transform = gameObject->GetTransform();
 		transform->SetLocalPosition(Vec3(-150.f, 0.f, 200.f));
 		transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
 
-		shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 		{
-			shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
+			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
 			meshRenderer->SetMesh(mesh);
-			shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("newjeans3");
+			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("newjeans3");
 			meshRenderer->SetMaterial(material);
 		}
 		gameObject->AddComponent(meshRenderer);
@@ -167,18 +167,18 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 #pragma region WallCube
 {
-	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+	sptr<GameObject> gameObject = make_shared<GameObject>();
 	gameObject->Init();
 
-	shared_ptr<Transform> transform = gameObject->GetTransform();
+	sptr<Transform> transform = gameObject->GetTransform();
 	transform->SetLocalPosition(Vec3(150.f, 0.f, -220.f));
 	transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
 
-	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 	{
-		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
+		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("wall");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("wall");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -190,18 +190,18 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 #pragma region NewjeansSphere
 {
-	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+	sptr<GameObject> gameObject = make_shared<GameObject>();
 	gameObject->Init();
 
-	shared_ptr<Transform> transform = gameObject->GetTransform();
+	sptr<Transform> transform = gameObject->GetTransform();
 	transform->SetLocalPosition(Vec3(0.f, 0.f, 200.f));
 	transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
 
-	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 	{
-		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
+		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("newjeans");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("newjeans");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -214,18 +214,18 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 #pragma region LeatherCube
 {
-	shared_ptr<GameObject> gameObject = make_shared<GameObject>();
+	sptr<GameObject> gameObject = make_shared<GameObject>();
 	gameObject->Init();
 
-	shared_ptr<Transform> transform = gameObject->GetTransform();
+	sptr<Transform> transform = gameObject->GetTransform();
 	transform->SetLocalPosition(Vec3(150.f, 0.f, 0.f));
 	transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
 
-	shared_ptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 	{
-		shared_ptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
+		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("leather");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("leather");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -249,7 +249,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("PositionTarget");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("PositionTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -268,7 +268,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("NormalTarget");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("NormalTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -287,7 +287,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("DiffuseTarget");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("DiffuseTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -306,7 +306,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("DiffuseLightTarget");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("DiffuseLightTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -325,7 +325,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("SpecularLightTarget");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("SpecularLightTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -335,7 +335,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 //============================================================================== Light
 #pragma region Directional Light
 	{
-		shared_ptr<GameObject> light = make_shared<GameObject>();
+		sptr<GameObject> light = make_shared<GameObject>();
 		light->AddComponent(make_shared<Transform>());
 		light->AddComponent(make_shared<Light>());
 		light->GetLight()->SetLightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
@@ -346,7 +346,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 #pragma region PointLight
 	{
-		shared_ptr<GameObject> light = make_shared<GameObject>();
+		sptr<GameObject> light = make_shared<GameObject>();
 		light->AddComponent(make_shared<Transform>());
 		light->AddComponent(make_shared<Light>());
 		light->GetLight()->SetLightType(LIGHT_TYPE::POINT_LIGHT);
@@ -358,7 +358,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 #pragma endregion
 #pragma region SpotLight
 	{
-		shared_ptr<GameObject> light = make_shared<GameObject>();
+		sptr<GameObject> light = make_shared<GameObject>();
 		light->AddComponent(make_shared<Transform>());
 		light->AddComponent(make_shared<Light>());
 		light->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
@@ -378,7 +378,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 
 #pragma region ParticleSystem
 	{
-		shared_ptr<GameObject> particle = make_shared<GameObject>();
+		sptr<GameObject> particle = make_shared<GameObject>();
 		particle->AddComponent(make_shared<Transform>());
 
 		auto particleSystem = make_shared<ParticleSystem>();
@@ -394,7 +394,7 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 
 #pragma region ParticleSystem
 	{
-		shared_ptr<GameObject> particle = make_shared<GameObject>();
+		sptr<GameObject> particle = make_shared<GameObject>();
 		particle->AddComponent(make_shared<Transform>());
 
 		auto particleSystem = make_shared<ParticleSystem>();
@@ -408,7 +408,25 @@ shared_ptr<Scene> SceneManager::LoadTestScene()
 	}
 #pragma endregion
 
+#pragma region Tessellation
+	{
+		sptr<GameObject> gameObject = make_shared<GameObject>();
+		gameObject->AddComponent(make_shared<Transform>());
+		gameObject->GetTransform()->SetLocalPosition(Vec3(0, 0, 300.f));
+		gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+		gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
 
+		sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		{
+			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+			meshRenderer->SetMesh(mesh);
+			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Tessellation");
+			meshRenderer->SetMaterial(material);
+		}
+		gameObject->AddComponent(meshRenderer);
+		scene->AddGameObject(gameObject);
+	}
+#pragma endregion
 	return scene;
 }
 

@@ -10,18 +10,24 @@ Shader::~Shader()
 {
 }
 
-void Shader::LoadGraphicsShader(ShaderInfo info, const wstring& vs, const wstring& ps, const wstring& gs)
+void Shader::LoadGraphicsShader(ShaderInfo info, ShaderPath path)
 {
 	mInfo = info;
 
-	if (!vs.empty())
-		mVsBlob = d3dUtil::LoadBinary(vs);
+	if (!path.VS.empty())
+		mVsBlob = d3dUtil::LoadBinary(path.VS);
 
-	if (!ps.empty())
-		mPsBlob = d3dUtil::LoadBinary(ps);
+	if (!path.PS.empty())
+		mPsBlob = d3dUtil::LoadBinary(path.PS);
 
-	if (!gs.empty())
-		mGsBlob = d3dUtil::LoadBinary(gs);
+	if (!path.GS.empty())
+		mGsBlob = d3dUtil::LoadBinary(path.GS);
+
+	if (!path.HS.empty())
+		mHsBlob = d3dUtil::LoadBinary(path.HS);
+
+	if (!path.DS.empty())
+		mDsBlob = d3dUtil::LoadBinary(path.DS);
 
 	CreateGraphicsShader();
 }
@@ -85,6 +91,20 @@ void Shader::CreateGraphicsShader()
 		{
 			reinterpret_cast<BYTE*>(mGsBlob->GetBufferPointer()),
 			mGsBlob->GetBufferSize()
+		};
+	}
+	if (mDsBlob != nullptr) {
+		mGraphicsPipelineDesc.DS =
+		{
+			reinterpret_cast<BYTE*>(mDsBlob->GetBufferPointer()),
+			mDsBlob->GetBufferSize()
+		};
+	}
+	if (mHsBlob != nullptr) {
+		mGraphicsPipelineDesc.HS =
+		{
+			reinterpret_cast<BYTE*>(mHsBlob->GetBufferPointer()),
+			mHsBlob->GetBufferSize()
 		};
 	}
 	mGraphicsPipelineDesc.RasterizerState = CD3DX12_RASTERIZER_DESC(D3D12_DEFAULT);

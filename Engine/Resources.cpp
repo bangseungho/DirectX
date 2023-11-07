@@ -400,8 +400,16 @@ void Resources::CreateDefaultShader()
 			DEPTH_STENCIL_TYPE::LESS_EQUAL
 		};
 
+		ShaderPath path = {
+			 L"..\\Output\\cso\\Sky_vs.cso",
+			 L"",
+			 L"",
+			 L"",
+			 L"..\\Output\\cso\\Sky_ps.cso"
+		};
+
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Sky_vs.cso", L"..\\Output\\cso\\Sky_ps.cso");
+		shader->LoadGraphicsShader(info, path);
 		Add<Shader>("SkyBox", shader);
 	}
 
@@ -413,8 +421,16 @@ void Resources::CreateDefaultShader()
 			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE
 		};
 
+		ShaderPath path = {
+			 L"..\\Output\\cso\\Tex_vs.cso",
+			 L"",
+			 L"",
+			 L"",
+			 L"..\\Output\\cso\\Tex_ps.cso"
+		};
+
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Tex_vs.cso", L"..\\Output\\cso\\Tex_ps.cso");
+		shader->LoadGraphicsShader(info, path);
 		Add<Shader>("Tex", shader);
 	}
 
@@ -424,8 +440,16 @@ void Resources::CreateDefaultShader()
 			SHADER_TYPE::FORWARD,
 		};
 
+		ShaderPath path = {
+			 L"..\\Output\\cso\\Forward_vs.cso",
+			 L"",
+			 L"",
+			 L"",
+			 L"..\\Output\\cso\\Forward_ps.cso"
+		};
+
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso");
+		shader->LoadGraphicsShader(info, path);
 		Add<Shader>("Forward", shader);
 	}
 
@@ -436,8 +460,16 @@ void Resources::CreateDefaultShader()
 			RASTERIZER_TYPE::CULL_NONE,
 		};
 
+		ShaderPath path = {
+			L"..\\Output\\cso\\Forward_vs.cso",
+			L"",
+			L"",
+			L"",
+			L"..\\Output\\cso\\Forward_ps.cso"
+		};
+
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Forward_vs.cso", L"..\\Output\\cso\\Forward_ps.cso");
+		shader->LoadGraphicsShader(info, path);
 		Add<Shader>("Grid", shader);
 	}
 
@@ -447,8 +479,16 @@ void Resources::CreateDefaultShader()
 			SHADER_TYPE::DEFERRED,
 		};
 
+		ShaderPath path = {
+			L"..\\Output\\cso\\Deferred_vs.cso",
+			L"",
+			L"",
+			L"",
+			L"..\\Output\\cso\\Deferred_ps.cso"
+		};
+
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Deferred_vs.cso", L"..\\Output\\cso\\Deferred_ps.cso");
+		shader->LoadGraphicsShader(info, path);
 		Add<Shader>("Deferred", shader);
 	}
 
@@ -461,8 +501,16 @@ void Resources::CreateDefaultShader()
 			BLEND_TYPE::ONE_TO_ONE_BLEND,
 		};
 
+		ShaderPath path = {
+			L"..\\Output\\cso\\DirLighting_vs.cso",
+			L"",
+			L"",
+			L"",
+			L"..\\Output\\cso\\DirLighting_ps.cso"
+		};
+
 		sptr<Shader> shader = make_shared<Shader>();
-		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\DirLighting_vs.cso", L"..\\Output\\cso\\DirLighting_ps.cso");
+		shader->LoadGraphicsShader(info, path);
 		Add<Shader>("DirLight", shader);
 	}
 
@@ -476,8 +524,16 @@ void Resources::CreateDefaultShader()
 			BLEND_TYPE::ONE_TO_ONE_BLEND
 		};
 
+		ShaderPath path = {
+			L"..\\Output\\cso\\PointLighting_vs.cso",
+			L"",
+			L"",
+			L"",
+			L"..\\Output\\cso\\PointLighting_ps.cso"
+		};
+
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\PointLighting_vs.cso", L"..\\Output\\cso\\PointLighting_ps.cso");
+		shader->LoadGraphicsShader(info, path);
 		Add<Shader>("PointLight", shader);
 	}
 
@@ -491,8 +547,16 @@ void Resources::CreateDefaultShader()
 			BLEND_TYPE::ONE_TO_ONE_BLEND
 		};
 
+		ShaderPath path = {
+			L"..\\Output\\cso\\SpotLighting_vs.cso",
+			L"",
+			L"",
+			L"",
+			L"..\\Output\\cso\\SpotLighting_ps.cso"
+		};
+
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\SpotLighting_vs.cso", L"..\\Output\\cso\\SpotLighting_ps.cso");
+		shader->LoadGraphicsShader(info, path);
 		Add<Shader>("SpotLight", shader);
 	}
 
@@ -507,8 +571,16 @@ void Resources::CreateDefaultShader()
 			D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_POINTLIST,
 		};
 
+		ShaderPath path = {
+			L"..\\Output\\cso\\Particle_vs.cso",
+			L"",
+			L"",
+			L"..\\Output\\cso\\Particle_gs.cso",
+			L"..\\Output\\cso\\Particle_ps.cso"
+		};
+
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Particle_vs.cso", L"..\\Output\\cso\\Particle_ps.cso", L"..\\Output\\cso\\Particle_gs.cso");
+		shader->LoadGraphicsShader(info, path);
 		Add<Shader>("Particle", shader);
 	}
 
@@ -528,9 +600,41 @@ void Resources::CreateDefaultShader()
 			DEPTH_STENCIL_TYPE::NO_DEPTH_TEST_NO_WRITE,
 		};
 
+		ShaderPath path = {
+			L"..\\Output\\cso\\Final_vs.cso",
+			L"",
+			L"",
+			L"",
+			L"..\\Output\\cso\\Final_ps.cso"
+		};
+
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->LoadGraphicsShader(info, L"..\\Output\\cso\\Final_vs.cso", L"..\\Output\\cso\\Final_ps.cso");
+		shader->LoadGraphicsShader(info, path);
 		Add<Shader>("Final", shader);
+	}
+
+	// Tessellation
+	{
+		ShaderInfo info =
+		{
+			SHADER_TYPE::FORWARD,
+			RASTERIZER_TYPE::WIREFRAME,
+			DEPTH_STENCIL_TYPE::LESS,
+			BLEND_TYPE::DEFAULT,
+			D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST
+		};
+
+		ShaderPath path = {
+			L"..\\Output\\cso\\Tessellation_vs.cso",
+			L"..\\Output\\cso\\Tessellation_hs.cso",
+			L"..\\Output\\cso\\Tessellation_ds.cso",
+			L"",
+			L"..\\Output\\cso\\Tessellation_ps.cso"
+		};
+
+		sptr<Shader> shader = make_shared<Shader>();
+		shader->LoadGraphicsShader(info, path);
+		Add<Shader>("Tessellation", shader);
 	}
 }
 
@@ -783,5 +887,13 @@ void Resources::CreateDefaultMaterial()
 		material->SetShader(shader);
 
 		Add<Material>("ComputeParticle", material);
+	}
+
+	{
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Tessellation");
+		shared_ptr<Material> tessellation = make_shared<Material>();
+		tessellation->SetMatCBIndex(19);
+		tessellation->SetShader(shader);
+		Add<Material>("Tessellation", tessellation);
 	}
 }

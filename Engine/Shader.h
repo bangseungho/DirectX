@@ -45,6 +45,15 @@ struct ShaderInfo
 	D3D_PRIMITIVE_TOPOLOGY			TopologyType = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 };
 
+struct ShaderPath
+{
+	const wstring VS = L"";
+	const wstring HS;
+	const wstring DS;
+	const wstring GS;
+	const wstring PS = L"";
+};
+
 class Shader : public Object
 {
 public:
@@ -52,7 +61,7 @@ public:
 	virtual ~Shader();
 
 public:
-	void LoadGraphicsShader(ShaderInfo info, const wstring& vs = L"", const wstring& ps = L"", const wstring& gs = L"");
+	void LoadGraphicsShader(ShaderInfo info, ShaderPath path = ShaderPath());
 	void CompileGraphicsShader(ShaderInfo info, const D3D_SHADER_MACRO* define = nullptr, const wstring& vs = L"", const wstring& ps = L"", const wstring& gs = L"");
 	void LoadComputeShader(const wstring& cs = L"");
 	void CompileComputeShader(const wstring& cs = L"");
@@ -74,6 +83,8 @@ private:
 	ComPtr<ID3DBlob>					mVsBlob;
 	ComPtr<ID3DBlob>					mPsBlob;
 	ComPtr<ID3DBlob>					mGsBlob;
+	ComPtr<ID3DBlob>					mHsBlob;
+	ComPtr<ID3DBlob>					mDsBlob;
 	ComPtr<ID3DBlob>					mErrBlob;
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC  mGraphicsPipelineDesc = {};
 
