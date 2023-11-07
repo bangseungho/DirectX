@@ -75,7 +75,19 @@ struct MaterialData
     uint                textureMapIndex;
     uint                normalMapIndex;
     uint                roughnessMapIndex;
+    uint                heightMapIndex;
     int                 lightIndex;
+    float3              Padding;
+};
+
+struct TerrainData
+{
+    uint	SizeX;
+	uint	SizeZ;
+	float	MaxTessellationLevel;
+	float	Padding;
+	float2	Resolution;
+	float2	sMinMaxDistance;
 };
 
 struct Particle
@@ -89,6 +101,7 @@ struct Particle
     float   Padding;
 };
 StructuredBuffer<Particle> gOutputParticle : register(t4, space2);
+StructuredBuffer<TerrainData> gTerrainData : register(t4, space3);
 
 ConstantBuffer<PassConstants> gPassConstants : register(b0);
 ConstantBuffer<ObjectData> gObjConstants : register(b1);

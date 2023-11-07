@@ -17,13 +17,15 @@ void Texture::Load(const wstring& path)
 	if (ext == L".dds" || ext == L".DDS")
 		ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(DEVICE.Get(), GRAPHICS_RES_CMD_LIST.Get(), path.c_str(), _resource, _uploadHeap));
 
+	_desc = _resource->GetDesc();
+
 	gEngine->GetGraphicsCmdQueue()->FlushResourceCommandQueue();
 }
 
 void Texture::Create(DXGI_FORMAT format, uint32 width, uint32 height, const D3D12_HEAP_PROPERTIES& property, D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType, D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor)
 {
-	D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Tex2D(format, width, height);
-	desc.Flags = resFlags;
+	_desc = CD3DX12_RESOURCE_DESC::Tex2D(format, width, height);
+	_desc.Flags = resFlags;
 
 	D3D12_CLEAR_VALUE optimizedClearValue = {};
 	D3D12_CLEAR_VALUE* pOptimizedClearValue = nullptr;
@@ -45,7 +47,7 @@ void Texture::Create(DXGI_FORMAT format, uint32 width, uint32 height, const D3D1
 	ThrowIfFailed(DEVICE->CreateCommittedResource(
 		&property,
 		heapFlags,
-		&desc,
+		&_desc,
 		resStates,
 		pOptimizedClearValue,
 		IID_PPV_ARGS(&_resource)
@@ -58,10 +60,10 @@ void Texture::CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_T
 {
 	_resource = resource;
 	
-	D3D12_RESOURCE_DESC desc = _resource->GetDesc();
+	_desc = _resource->GetDesc();
 
 	// DSV
-	if (desc.Flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL) {
+	if (_desc.Flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL) {
 		D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
 		heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 		heapDesc.NumDescriptors = 1;
@@ -74,7 +76,7 @@ void Texture::CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_T
 	}
 	else
 	{
-		if (desc.Flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET)
+		if (_desc.Flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET)
 		{
 			// RTV
 			D3D12_DESCRIPTOR_HEAP_DESC heapDesc = {};
@@ -89,7 +91,7 @@ void Texture::CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_T
 		}
 
 		// UAV
-		if (desc.Flags & D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS)
+		if (_desc.Flags & D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS)
 		{
 			CreateUAVFromDescHeap();
 		}

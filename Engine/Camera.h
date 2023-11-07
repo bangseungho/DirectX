@@ -44,7 +44,7 @@ private:
 
 	PROJECTION_TYPE		mProjectionType = PROJECTION_TYPE::PERSPECTIVE;
 	float				mNear = 1.f;
-	float				mFar = 2000.f;
+	float				mFar = 10000.f;
 	float				mFov = XM_PI / 4.f;
 	float				mScale = 1.0f;
 	Matrix				mMatView = {};

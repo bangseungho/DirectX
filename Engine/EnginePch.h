@@ -117,6 +117,11 @@ enum class TEXTURE2D_INDEX : uint8
 	B_LIGHT_PARTICLE,
 	B_FIRE_PARTICLE,
 
+	B_TERRAIN,
+	N_TERRAIN,
+	R_TERRAIN,
+	H_TERRAIN,
+
 	END,
 };
 
@@ -239,7 +244,19 @@ struct MaterialData
 	int32	TextureMapIndex = -1;
 	int32	NormalMapIndex = -1;
 	int32	RoughnessMapIndex = -1;
+	int32	HeigtMapIndex = -1;
 	int32	LightIndex = -1;
+	Vec3	Padding;
+};
+
+struct TerrainData
+{
+	int32	SizeX;
+	int32	SizeZ;
+	float	MaxTessellationLevel;
+	float	Padding;
+	Vec2	Resolution;
+	Vec2	MinMaxDistance;
 };
 
 struct ParticleSystemData
@@ -298,6 +315,7 @@ struct ParticleSharedData
 #define OBJECT_CB						gEngine->GetCurrFrameResource()->mObjectCB
 #define PASS_CB							gEngine->GetCurrFrameResource()->mPassCB
 #define MATERIAL_DATA					gEngine->GetCurrFrameResource()->mMatData
+#define TERRAIN_DATA					gEngine->GetCurrFrameResource()->mTerrainData
 #define PARTICLE_SYSTEM_DATA			gEngine->GetCurrComputeFrameResource()->mParticleSystemData
 
 extern unique_ptr<class Engine> gEngine;

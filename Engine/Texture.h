@@ -42,6 +42,9 @@ public:
 	uint32 GetTexHeapIndex() const { return _texHeapIndex; }
 	uint32 GetUavHeapIndex() const { return _uavHeapIndex; }
 
+	float GetWidth() { return static_cast<float>(_desc.Width); }
+	float GetHeight() { return static_cast<float>(_desc.Height); }
+
 private:
 	ComPtr<ID3D12Resource>			_resource;
 	ComPtr<ID3D12Resource>			_uploadHeap;
@@ -49,6 +52,7 @@ private:
 
 	uint32							_texHeapIndex = 0;
 	uint32							_uavHeapIndex = 0;
+	D3D12_RESOURCE_DESC				_desc;
 
 	ComPtr<ID3D12DescriptorHeap>	_srvHeap;
 	ComPtr<ID3D12DescriptorHeap>	_rtvHeap;

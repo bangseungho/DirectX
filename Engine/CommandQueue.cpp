@@ -84,6 +84,9 @@ void GraphicsCommandqueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_REC
 	auto matData = MATERIAL_DATA->Resource();
 	mCmdList->SetGraphicsRootShaderResourceView(2, matData->GetGPUVirtualAddress());
 
+	auto terrainData = TERRAIN_DATA->Resource();
+	mCmdList->SetGraphicsRootShaderResourceView(6, terrainData->GetGPUVirtualAddress());
+
 	CD3DX12_GPU_DESCRIPTOR_HANDLE skyTexDescriptor(DESCHEAP->GetSRV()->GetGPUDescriptorHandleForHeapStart());
 	skyTexDescriptor.Offset(DESCHEAP->GetSkyTexHeapIndex(), DESCHEAP->GetCbvSrvUavDescriptorSize());
 	mCmdList->SetGraphicsRootDescriptorTable(3, skyTexDescriptor);

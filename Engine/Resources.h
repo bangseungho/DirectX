@@ -32,8 +32,9 @@ public:
 	sptr<Mesh> LoadRectMesh();
 	sptr<Mesh> LoadCubeMesh();
 	sptr<Mesh> LoadSphereMesh();
-	sptr<Mesh> LoadGridMesh();
+	sptr<Mesh> LoadGridMesh(float width, float depth, uint32 m, uint32 n);
 	sptr<Mesh> LoadRectangleMesh();
+	sptr<Mesh> LoadTerrainMesh(int32 sizeX = 15, int32 sizeZ = 15);
 
 	sptr<Texture> CreateTexture(const string& name, DXGI_FORMAT format, uint32 Width, uint32 Height,
 		const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType,

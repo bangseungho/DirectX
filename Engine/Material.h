@@ -23,6 +23,7 @@ public:
 	void SetDiffuseSrvHeapIndex(uint8 index) { mMatData.TextureMapIndex = index; }
 	void SetNormalSrvHeapIndex(uint8 index) { mMatData.NormalMapIndex = static_cast<uint8>(index); }
 	void SetRoughnessSrvHeapIndex(uint8 index) { mMatData.RoughnessMapIndex = static_cast<uint8>(index); }
+	void SetHeightSrvHeapIndex(uint8 index) { mMatData.HeigtMapIndex = static_cast<uint8>(index); }
 
 	void Dispatch(uint32 x, uint32 y, uint32 z);
 

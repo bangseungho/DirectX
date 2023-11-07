@@ -279,24 +279,19 @@ shared_ptr<Mesh> Resources::LoadSphereMesh()
 	return mesh;
 }
 
-sptr<Mesh> Resources::LoadGridMesh()
+sptr<Mesh> Resources::LoadGridMesh(float width, float depth, uint32 m, uint32 n)
 {
 	sptr<Mesh> findMesh = Get<Mesh>("Gird");
 	if (findMesh)
 		return findMesh;
 
-	uint32 m = 200;
-	uint32 n = 200;
-	float Width = 10000.f;
-	float depth = 10000.f;
-
 	uint32 vertexCount = m * n;
 	uint32 faceCount = (m - 1) * (n - 1) * 2;
 
-	float halfWidth = 0.5f * Width;
+	float halfWidth = 0.5f * width;
 	float halfDepth = 0.5f * depth;
 
-	float dx = Width / (n - 1);
+	float dx = width / (n - 1);
 	float dz = depth / (m - 1);
 	
 	float du = 1.f / (n - 1);
@@ -304,7 +299,7 @@ sptr<Mesh> Resources::LoadGridMesh()
 
 	vector<Vertex> vec(vertexCount);
 	for (uint32 i = 0; i < m; ++i) {
-		float z = -halfDepth + i * dz;
+		float z = halfDepth - i * dz;
 		for (uint32 j = 0; j < n; ++j) {
 			float x = -halfWidth + j * dx;
 			
@@ -369,6 +364,46 @@ sptr<Mesh> Resources::LoadRectangleMesh()
 	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
 	Add<Mesh>("Rectangle", mesh);
 
+	return mesh;
+}
+
+sptr<Mesh> Resources::LoadTerrainMesh(int32 sizeX, int32 sizeZ)
+{
+	vector<Vertex> vec;
+	for (int32 z = 0; z < sizeZ + 1; ++z) {
+		for (int32 x = 0; x < sizeX + 1; ++x) {
+			Vertex vtx;
+			vtx.Pos = Vec3(static_cast<float>(x), 0, static_cast<float>(z));
+			vtx.Uv = Vec2(static_cast<float>(x), static_cast<float>(sizeZ - z));
+			vtx.Normal = Vec3(0.f, 1.f, 0.f);
+			vtx.Tangent = Vec3(1.f, 0.f, 0.f);
+
+			vec.push_back(vtx);
+		}
+	}
+
+	vector<uint32> idx;
+	for (int32 z = 0; z < sizeZ; ++z) {
+		for (int32 x = 0; x < sizeX; ++x) {
+			idx.push_back((sizeX + 1) * (z + 1) + (x));
+			idx.push_back((sizeX + 1) * (z) + (x + 1));
+			idx.push_back((sizeX + 1) * (z) + (x));
+
+			idx.push_back((sizeX + 1) * (z) + (x + 1));
+			idx.push_back((sizeX + 1) * (z + 1)+(x));
+			idx.push_back((sizeX + 1) * (z + 1)+(x + 1));
+		}
+	}
+
+	sptr<Mesh> findMesh = Get<Mesh>("Terrain");
+	if (findMesh) {
+		findMesh->Init(vec, idx);
+		return findMesh;
+	}
+
+	sptr<Mesh> mesh = make_shared<Mesh>();
+	mesh->Init(vec, idx);
+	Add("Terrain", mesh);
 	return mesh;
 }
 
@@ -636,6 +671,30 @@ void Resources::CreateDefaultShader()
 		shader->LoadGraphicsShader(info, path);
 		Add<Shader>("Tessellation", shader);
 	}
+
+	// Terrain
+	{
+		ShaderInfo info =
+		{
+			SHADER_TYPE::DEFERRED,
+			RASTERIZER_TYPE::CULL_BACK,
+			DEPTH_STENCIL_TYPE::LESS,
+			BLEND_TYPE::DEFAULT,
+			D3D_PRIMITIVE_TOPOLOGY_3_CONTROL_POINT_PATCHLIST
+		};
+
+		ShaderPath path = {
+			L"..\\Output\\cso\\Terrain_vs.cso",
+			L"..\\Output\\cso\\Terrain_hs.cso",
+			L"..\\Output\\cso\\Terrain_ds.cso",
+			L"",				 
+			L"..\\Output\\cso\\Terrain_ps.cso"
+		};
+
+		sptr<Shader> shader = make_shared<Shader>();
+		shader->LoadGraphicsShader(info, path);
+		Add<Shader>("Terrain", shader);
+	}
 }
 
 void Resources::CreateDefaultTexture()
@@ -656,6 +715,11 @@ void Resources::CreateDefaultTexture()
 		"lightParticle",
 		"fireParticle",
 
+		"Snow_Base",
+		"Snow_Normal",
+		"Snow_Roughness",
+		"Snow_Height",
+
 		"skybox",
 	};
 
@@ -675,7 +739,12 @@ void Resources::CreateDefaultTexture()
 		L"..\\Resources\\Texture\\lightParticle.dds",
 		L"..\\Resources\\Texture\\fireParticle.dds",
 
-		L"..\\Resources\\Texture\\Sky.dds",
+		L"..\\Resources\\Texture\\Snow_Base.dds",
+		L"..\\Resources\\Texture\\Snow_Normal.dds",
+		L"..\\Resources\\Texture\\Snow_Roughness.dds",
+		L"..\\Resources\\Texture\\height.dds",
+
+		L"..\\Resources\\Texture\\cubemap.dds",
 	};
 
 	for (int i = 0; i < TEXTUREFILE_COUNT; ++i) {
@@ -895,5 +964,17 @@ void Resources::CreateDefaultMaterial()
 		tessellation->SetMatCBIndex(19);
 		tessellation->SetShader(shader);
 		Add<Material>("Tessellation", tessellation);
+	}
+
+	{
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Terrain");
+		shared_ptr<Material> terrain = make_shared<Material>();
+		terrain->SetDiffuseSrvHeapIndex(Get<Texture>("Snow_Base")->GetTexHeapIndex());
+		terrain->SetNormalSrvHeapIndex(Get<Texture>("Snow_Normal")->GetTexHeapIndex());
+		terrain->SetRoughnessSrvHeapIndex(Get<Texture>("Snow_Roughness")->GetTexHeapIndex());
+		terrain->SetHeightSrvHeapIndex(Get<Texture>("Snow_Height")->GetTexHeapIndex());
+		terrain->SetMatCBIndex(20);
+		terrain->SetShader(shader);
+		Add<Material>("Terrain", terrain);
 	}
 }

@@ -10,6 +10,7 @@ class Light;
 class MonoBehaviour;
 class Collider;
 class ParticleSystem;
+class Terrain;
 class GameObject : public Object, public enable_shared_from_this<GameObject>
 {
 public:
@@ -35,6 +36,7 @@ public:
 	sptr<Light> GetLight();
 	sptr<Collider> GetCollider();
 	sptr<ParticleSystem> GetParticleSystem();
+	sptr<Terrain> GetTerrain();
 	
  	void AddComponent(sptr<Component> component);
 

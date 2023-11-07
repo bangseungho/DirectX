@@ -12,6 +12,7 @@
 #include "Rigidbody3D.h"
 #include "Collider.h"
 #include "ParticleSystem.h"
+#include "Terrain.h"
 
 #include "TestCameraScript.h"
 #include "TestRotationScript.h"
@@ -100,7 +101,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 		mainCamera->SetName(L"Main_Camera");
 		mainCamera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
 		mainCamera->AddComponent(make_shared<TestCameraScript>());
-		mainCamera->GetTransform()->SetLocalPosition(Vec3(0.f, 100.f, 0.f));
+		mainCamera->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
 		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
 		mainCamera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, true);
 		scene->SetMainCamera(mainCamera);
@@ -340,7 +341,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 		light->AddComponent(make_shared<Light>());
 		light->GetLight()->SetLightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
 		light->GetLight()->SetLightDirection(Vec3(1.f, -1.f, 1.f));
-		light->GetLight()->SetLightStrenth(Vec3(0.5f, 0.5f, 0.5f));
+		light->GetLight()->SetLightStrenth(Vec3(0.8f, 0.8f, 0.8f));
 		scene->AddGameObject(light);
 	}
 #pragma endregion
@@ -364,9 +365,10 @@ sptr<Scene> SceneManager::LoadTestScene()
 		light->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
 		light->GetLight()->SetLightType(LIGHT_TYPE::SPOT_LIGHT);
 		light->GetLight()->SetLightDirection(Vec3(1.f, 0.f, 0.f));
-		light->GetLight()->SetLightStrenth(Vec3(1.0f, 0.0f, 1.0f));
+		light->GetLight()->SetLightStrenth(Vec3(2.0f, 1.0f, 0.4f));
 		light->GetLight()->SetFallOff(1.f, 1000.f);
 		light->GetLight()->SetSpotPower(30.f);
+
 		auto flashLightScript = make_shared<FlashLightScript>();
 		flashLightScript->SetCameraObject(scene->GetMainCamera());
 		light->AddComponent(flashLightScript);
@@ -375,7 +377,6 @@ sptr<Scene> SceneManager::LoadTestScene()
 	}
 #pragma endregion
 //============================================================================== ParticleSystem
-
 #pragma region ParticleSystem
 	{
 		sptr<GameObject> particle = make_shared<GameObject>();
@@ -391,7 +392,6 @@ sptr<Scene> SceneManager::LoadTestScene()
 		scene->AddGameObject(particle);
 	}
 #pragma endregion
-
 #pragma region ParticleSystem
 	{
 		sptr<GameObject> particle = make_shared<GameObject>();
@@ -407,24 +407,29 @@ sptr<Scene> SceneManager::LoadTestScene()
 		scene->AddGameObject(particle);
 	}
 #pragma endregion
-
-#pragma region Tessellation
+//============================================================================== Terrain
+#pragma region Terrain
 	{
-		sptr<GameObject> gameObject = make_shared<GameObject>();
-		gameObject->AddComponent(make_shared<Transform>());
-		gameObject->GetTransform()->SetLocalPosition(Vec3(0, 0, 300.f));
-		gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-		gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, 0.f, 0.f));
+		shared_ptr<GameObject> obj = make_shared<GameObject>();
+		obj->AddComponent(make_shared<Transform>());
+		obj->AddComponent(make_shared<Terrain>());
+		obj->AddComponent(make_shared<MeshRenderer>());
 
 		sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 		{
-			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadTerrainMesh(64, 64);
 			meshRenderer->SetMesh(mesh);
-			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Tessellation");
+			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Terrain");
 			meshRenderer->SetMaterial(material);
 		}
-		gameObject->AddComponent(meshRenderer);
-		scene->AddGameObject(gameObject);
+		obj->AddComponent(meshRenderer);
+
+		obj->GetTransform()->SetLocalScale(Vec3(100.f, 400.f, 100.f));
+		obj->GetTransform()->SetLocalPosition(Vec3(-1000.f, -300.f, -1000.f));
+		obj->GetTerrain()->Init(64, 64);
+		obj->SetCheckFrustum(false);
+
+		scene->AddGameObject(obj);
 	}
 #pragma endregion
 	return scene;

@@ -18,8 +18,7 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     float4 diffuseLight = gTextureMaps[DIFFUSELIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.Uv);
     float4 specular = gTextureMaps[SPECULARLIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.Uv);
     
-    
-    pout = diffuseLight * diffuseAlbedo + specular;
+    pout = (diffuseLight + gPassConstants.ambientLight) * diffuseAlbedo + specular;
 
     return pout;
 }
