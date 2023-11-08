@@ -44,9 +44,6 @@ void SceneManager::Update()
 
 void SceneManager::Render()
 {
-	//shared_ptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Compute");
-	//material->Dispatch(1, 1024, 1);
-
 	if (mActiveScene)
 		mActiveScene->Render();
 }
@@ -133,7 +130,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 		{
 			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
 			meshRenderer->SetMesh(mesh);
-			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("skybox");
+			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"skybox");
 			meshRenderer->SetMaterial(material);
 		}
 		skybox->AddComponent(meshRenderer);
@@ -154,7 +151,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 		{
 			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
 			meshRenderer->SetMesh(mesh);
-			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("newjeans3");
+			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"newjeans3");
 			meshRenderer->SetMaterial(material);
 		}
 		gameObject->AddComponent(meshRenderer);
@@ -179,7 +176,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
 		meshRenderer->SetMesh(mesh);
-		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("wall");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"wall");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -202,7 +199,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
 		meshRenderer->SetMesh(mesh);
-		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("newjeans");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"newjeans");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -226,7 +223,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
 		meshRenderer->SetMesh(mesh);
-		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("leather");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"leather");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -250,7 +247,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("PositionTarget");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"PositionTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -269,7 +266,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("NormalTarget");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"NormalTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -288,7 +285,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("DiffuseTarget");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"DiffuseTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -307,7 +304,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("DiffuseLightTarget");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"DiffuseLightTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -326,7 +323,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("SpecularLightTarget");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"SpecularLightTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
@@ -383,8 +380,8 @@ sptr<Scene> SceneManager::LoadTestScene()
 		particle->AddComponent(make_shared<Transform>());
 
 		auto particleSystem = make_shared<ParticleSystem>();
-		particleSystem->SetMaterial(GET_SINGLE(Resources)->Get<Material>("SnowParticle"));
-		particleSystem->SetComputeMaterial(GET_SINGLE(Resources)->Get<Material>("Compute_Snow_Particle"));
+		particleSystem->SetMaterial(GET_SINGLE(Resources)->Get<Material>(L"SnowParticle"));
+		particleSystem->SetComputeMaterial(GET_SINGLE(Resources)->Get<Material>(L"Compute_Snow_Particle"));
 		particleSystem->SetParticleIndex(0);
 		auto& particleSystemData = particleSystem->GetParticleSystemData();
 		particleSystemData.MaxCount = 300;
@@ -411,7 +408,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 		particle->AddComponent(make_shared<Transform>());
 
 		auto particleSystem = make_shared<ParticleSystem>();
-		particleSystem->SetMaterial(GET_SINGLE(Resources)->Get<Material>("lightParticle"));
+		particleSystem->SetMaterial(GET_SINGLE(Resources)->Get<Material>(L"lightParticle"));
 		particleSystem->SetParticleIndex(1);
 		particle->AddComponent(particleSystem);
 
@@ -433,7 +430,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 		{
 			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadTerrainMesh(64, 64);
 			meshRenderer->SetMesh(mesh);
-			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>("Terrain");
+			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"Terrain");
 			meshRenderer->SetMaterial(material);
 		}
 		obj->AddComponent(meshRenderer);
@@ -446,6 +443,25 @@ sptr<Scene> SceneManager::LoadTestScene()
 		scene->AddGameObject(obj);
 	}
 #pragma endregion
+
+#pragma region FBX
+	{
+		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Dragon.fbx");
+
+		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+
+		for (auto& gameObject : gameObjects)
+		{
+			gameObject->SetName(L"Dragon");
+			gameObject->SetCheckFrustum(false);
+			gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 300.f));
+			gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+			scene->AddGameObject(gameObject);
+		}
+	}
+#pragma endregion
+
+
 	return scene;
 }
 

@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "MeshData.h"
 
 class Resources
 {
@@ -14,13 +15,13 @@ public:
 	void Init();
 
 	template<typename T>
-	sptr<T> Load(const string& key, const wstring& path);
+	sptr<T> Load(const wstring& key, const wstring& path);
 
 	template<typename T>
-	bool Add(const string& key, sptr<T> object);
+	bool Add(const wstring& key, sptr<T> object);
 
 	template<typename T>
-	sptr<T> Get(const string& Key);
+	sptr<T> Get(const wstring& Key);
 
 	template<typename T>
 	OBJECT_TYPE GetObjectType();
@@ -36,11 +37,13 @@ public:
 	sptr<Mesh> LoadRectangleMesh();
 	sptr<Mesh> LoadTerrainMesh(int32 sizeX = 15, int32 sizeZ = 15);
 
-	sptr<Texture> CreateTexture(const string& name, DXGI_FORMAT format, uint32 Width, uint32 Height,
+	sptr<Texture> CreateTexture(const wstring& name, DXGI_FORMAT format, uint32 Width, uint32 Height,
 		const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType,
 		D3D12_RESOURCE_FLAGS resFlags = D3D12_RESOURCE_FLAG_NONE, Vec4 clearColor = Vec4());
 
-	sptr<Texture> CreateTextureFromResource(const string& name, ComPtr<ID3D12Resource> tex2D, RENDER_GROUP_TYPE groupType);
+	sptr<Texture> CreateTextureFromResource(const wstring& name, ComPtr<ID3D12Resource> tex2D, RENDER_GROUP_TYPE groupType);
+
+	sptr<MeshData> LoadFBX(const wstring& path);
 
 private:
 	void CreateDefaultShader();
@@ -48,12 +51,12 @@ private:
 	void CreateDefaultMaterial();
 
 private:
-	using KeyObjMap = std::map<string, sptr<Object>>;
+	using KeyObjMap = std::map<wstring, sptr<Object>>;
 	array<KeyObjMap, OBJECT_TYPE_COUNT> mResources;
 };
 
 template<typename T>
-inline sptr<T> Resources::Load(const string& key, const wstring& path)
+inline sptr<T> Resources::Load(const wstring& key, const wstring& path)
 {
 	OBJECT_TYPE objectType = GetObjectType<T>();
 	KeyObjMap& keyObjMap = mResources[static_cast<uint8>(objectType)];
@@ -70,7 +73,7 @@ inline sptr<T> Resources::Load(const string& key, const wstring& path)
 }
 
 template<typename T>
-inline bool Resources::Add(const string& key, sptr<T> object)
+inline bool Resources::Add(const wstring& key, sptr<T> object)
 {
 	OBJECT_TYPE objectType = GetObjectType<T>();
 	KeyObjMap& keyObjMap = mResources[static_cast<uint8>(objectType)];
@@ -85,7 +88,7 @@ inline bool Resources::Add(const string& key, sptr<T> object)
 }
 
 template<typename T>
-inline sptr<T> Resources::Get(const string& key)
+inline sptr<T> Resources::Get(const wstring& key)
 {
 	OBJECT_TYPE objectType = GetObjectType<T>();
 	KeyObjMap& keyObjMap = mResources[static_cast<uint8>(objectType)];

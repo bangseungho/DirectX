@@ -15,19 +15,41 @@ MeshRenderer::~MeshRenderer()
 
 }
 
-BoundingOrientedBox& MeshRenderer::GetBoundingBox()
-{
-	return mMesh->GetBoundingBox();
-}
-
 void MeshRenderer::Render()
 {
-	GetTransform()->PushData();
-	mMaterial->Update();
-	mMesh->Render();
+	for (uint32 i = 0; i < mMaterials.size(); ++i) {
+		sptr<Material>& material = mMaterials[i];
+
+		if (material == nullptr || material->GetShader() == nullptr)
+			continue;
+
+		GetTransform()->PushData();
+		material->Update();
+		mMesh->Render(1, i);
+	}
 }
 
 void MeshRenderer::Start()
 {
-	GetGameObject()->SetMatIndex(mMaterial->GetMatCBIndex());
+	for (uint32 i = 0; i < mMaterials.size(); ++i) {
+		sptr<Material>& material = mMaterials[i];
+
+		if (material == nullptr || material->GetShader() == nullptr)
+			continue;
+
+		GetGameObject()->SetMatIndex(material->GetMatCBIndex());
+	}
+}
+
+void MeshRenderer::SetMaterial(sptr<Material> material, uint32 index)
+{
+	if (mMaterials.size() <= static_cast<size_t>(index))
+		mMaterials.resize(static_cast<size_t>(index + 1));
+
+	mMaterials[index] = material;
+}
+
+BoundingOrientedBox& MeshRenderer::GetBoundingBox()
+{
+	return mMesh->GetBoundingBox();
 }

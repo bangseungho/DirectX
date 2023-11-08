@@ -32,7 +32,7 @@ void Terrain::Start()
 
 void Terrain::FinalUpdate()
 {
-	_material = GET_SINGLE(Resources)->Get<Material>("Terrain");
+	_material = GET_SINGLE(Resources)->Get<Material>(L"Terrain");
 
 	TerrainData terrainData;
 	terrainData.SizeX = _sizeX;
@@ -41,7 +41,7 @@ void Terrain::FinalUpdate()
 	terrainData.Width = GetTransform()->GetLocalScale().x * _sizeX;
 	terrainData.Height = GetTransform()->GetLocalScale().z * _sizeZ;
 
-	sptr<Texture> heigtMap = GET_SINGLE(Resources)->Get<Texture>("Snow_Height");
+	sptr<Texture> heigtMap = GET_SINGLE(Resources)->Get<Texture>(L"Snow_Height");
 	terrainData.Resolution = Vec2(heigtMap->GetWidth(), heigtMap->GetHeight());
 	terrainData.MinMaxDistance = Vec2(2000.f, 5000.f);
 

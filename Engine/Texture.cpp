@@ -14,12 +14,54 @@ void Texture::Load(const wstring& path)
 {
 	wstring ext = fs::path(path).extension();
 
-	if (ext == L".dds" || ext == L".DDS")
+	if (ext == L".dds" || ext == L".DDS") {
 		ThrowIfFailed(DirectX::CreateDDSTextureFromFile12(DEVICE.Get(), GRAPHICS_RES_CMD_LIST.Get(), path.c_str(), _resource, _uploadHeap));
+	}
+	else {
+		Texture::LoadFromWICFile(path);
+	}
 
 	_desc = _resource->GetDesc();
 
 	gEngine->GetGraphicsCmdQueue()->FlushResourceCommandQueue();
+}
+
+void Texture::LoadFromWICFile(const wstring& path)
+{
+	::LoadFromWICFile(path.c_str(), WIC_FLAGS_NONE, nullptr, mImage);
+
+	HRESULT hr = ::CreateTexture(DEVICE.Get(), mImage.GetMetadata(), &_resource);
+
+	if (FAILED(hr))
+		assert(nullptr);
+
+	std::vector<D3D12_SUBRESOURCE_DATA> subResources;
+
+	ThrowIfFailed(PrepareUpload(DEVICE.Get(),
+		mImage.GetImages(),
+		mImage.GetImageCount(),
+		mImage.GetMetadata(),
+		subResources));
+
+	const UINT64 bufferSize = ::GetRequiredIntermediateSize(_resource.Get(), 0, static_cast<UINT32>(subResources.size()));
+
+	D3D12_HEAP_PROPERTIES heapProperty = CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_UPLOAD);
+	D3D12_RESOURCE_DESC desc = CD3DX12_RESOURCE_DESC::Buffer(bufferSize);
+
+	ThrowIfFailed(DEVICE->CreateCommittedResource(
+		&heapProperty,
+		D3D12_HEAP_FLAG_NONE,
+		&desc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&_uploadHeap)));
+
+	::UpdateSubresources(GRAPHICS_RES_CMD_LIST.Get(),
+		_resource.Get(),
+		_uploadHeap.Get(),
+		0, 0,
+		static_cast<unsigned int>(subResources.size()),
+		subResources.data());
 }
 
 void Texture::Create(DXGI_FORMAT format, uint32 width, uint32 height, const D3D12_HEAP_PROPERTIES& property, D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType, D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor)

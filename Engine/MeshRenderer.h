@@ -10,18 +10,21 @@ public:
 	MeshRenderer();
 	virtual ~MeshRenderer();
 
-	void SetMesh(sptr<Mesh> mesh) { mMesh = mesh; }
-	void SetMaterial(sptr<Material> material) { mMaterial = material; }
-	sptr<Material> GetMaterial() { return mMaterial; }
-	BoundingOrientedBox& GetBoundingBox();
-
-	void Render();
-
 public:
+	void Render();
 	virtual void Start() override;
 
+public:
+	void SetMesh(sptr<Mesh> mesh) { mMesh = mesh; }
+	void SetMaterial(sptr<Material> material, uint32 index = 0);
+
+	sptr<Material> GetMaterial(uint32 index = 0) { return mMaterials[index]; }
+
+	BoundingOrientedBox& GetBoundingBox();
+
+
 private:
-	sptr<Mesh>			mMesh;
-	sptr<Material>		mMaterial;
+	sptr<Mesh>					mMesh;
+	vector<sptr<Material>>		mMaterials;
 };
 

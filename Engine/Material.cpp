@@ -4,6 +4,9 @@
 
 Material::Material() : Object(OBJECT_TYPE::MATERIAL)
 {
+	static uint32 matIndexGenerator = 0;
+	mMatIndex = matIndexGenerator;
+	matIndexGenerator++;
 }
 
 Material::~Material()
@@ -19,8 +22,6 @@ void Material::Update()
 
 void Material::PushComputeData()
 {
-
-
 	mShader->Update();
 }
 
@@ -29,6 +30,4 @@ void Material::Dispatch(uint32 x, uint32 y, uint32 z)
 	PushComputeData();
 
 	COMPUTE_CMD_LIST->Dispatch(x, y, z);
-
-	//gEngine->GetComputeCmdQueue()->FlushComputeCommandQueue();
 }

@@ -42,7 +42,7 @@ void Resources::Init()
 
 sptr<Mesh> Resources::LoadPointMesh()
 {
-	shared_ptr<Mesh> findMesh = Get<Mesh>("Point");
+	shared_ptr<Mesh> findMesh = Get<Mesh>(L"Point");
 	if (findMesh)
 		return findMesh;
 
@@ -54,14 +54,14 @@ sptr<Mesh> Resources::LoadPointMesh()
 
 	shared_ptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
-	Add("Point", mesh);
+	Add(L"Point", mesh);
 
 	return mesh;
 }
 
 sptr<Mesh> Resources::LoadRectMesh()
 {
-	sptr<Mesh> findMesh = Get<Mesh>("Rectangle");
+	sptr<Mesh> findMesh = Get<Mesh>(L"Rectangle");
 	if (findMesh)
 		return findMesh;
 
@@ -81,14 +81,14 @@ sptr<Mesh> Resources::LoadRectMesh()
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
 	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
-	Add<Mesh>("Rectangle", mesh);
+	Add<Mesh>(L"Rectangle", mesh);
 
 	return mesh;
 }
 
 shared_ptr<Mesh> Resources::LoadCubeMesh()
 {
-	shared_ptr<Mesh> findMesh = Get<Mesh>("Cube");
+	shared_ptr<Mesh> findMesh = Get<Mesh>(L"Cube");
 	if (findMesh)
 		return findMesh;
 
@@ -155,14 +155,14 @@ shared_ptr<Mesh> Resources::LoadCubeMesh()
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
 	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
-	Add<Mesh>("Cube", mesh);
+	Add<Mesh>(L"Cube", mesh);
 
 	return mesh;
 }
 
 shared_ptr<Mesh> Resources::LoadSphereMesh()
 {
-	shared_ptr<Mesh> findMesh = Get<Mesh>("Sphere");
+	shared_ptr<Mesh> findMesh = Get<Mesh>(L"Sphere");
 	if (findMesh)
 		return findMesh;
 
@@ -274,14 +274,14 @@ shared_ptr<Mesh> Resources::LoadSphereMesh()
 	shared_ptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
 	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
-	Add("Sphere", mesh);
+	Add(L"Sphere", mesh);
 
 	return mesh;
 }
 
 sptr<Mesh> Resources::LoadGridMesh(float width, float depth, uint32 m, uint32 n)
 {
-	sptr<Mesh> findMesh = Get<Mesh>("Gird");
+	sptr<Mesh> findMesh = Get<Mesh>(L"Gird");
 	if (findMesh)
 		return findMesh;
 
@@ -331,14 +331,14 @@ sptr<Mesh> Resources::LoadGridMesh(float width, float depth, uint32 m, uint32 n)
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
 	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
-	Add<Mesh>("Grid", mesh);
+	Add<Mesh>(L"Grid", mesh);
 
 	return mesh;
 }
 
 sptr<Mesh> Resources::LoadRectangleMesh()
 {
-	shared_ptr<Mesh> findMesh = Get<Mesh>("Rectangle");
+	shared_ptr<Mesh> findMesh = Get<Mesh>(L"Rectangle");
 	if (findMesh)
 		return findMesh;
 
@@ -362,7 +362,7 @@ sptr<Mesh> Resources::LoadRectangleMesh()
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
 	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
-	Add<Mesh>("Rectangle", mesh);
+	Add<Mesh>(L"Rectangle", mesh);
 
 	return mesh;
 }
@@ -398,7 +398,7 @@ sptr<Mesh> Resources::LoadTerrainMesh(int32 sizeX, int32 sizeZ)
 		}
 	}
 
-	sptr<Mesh> findMesh = Get<Mesh>("Terrain");
+	sptr<Mesh> findMesh = Get<Mesh>(L"Terrain");
 	if (findMesh) {
 		findMesh->Init(vec, idx);
 		return findMesh;
@@ -406,11 +406,11 @@ sptr<Mesh> Resources::LoadTerrainMesh(int32 sizeX, int32 sizeZ)
 
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
-	Add("Terrain", mesh);
+	Add(L"Terrain", mesh);
 	return mesh;
 }
 
-sptr<Texture> Resources::CreateTexture(const string& name, DXGI_FORMAT format, uint32 Width, uint32 Height, const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType, D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor)
+sptr<Texture> Resources::CreateTexture(const wstring& name, DXGI_FORMAT format, uint32 Width, uint32 Height, const D3D12_HEAP_PROPERTIES& heapProperty, D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType, D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor)
 {
 	sptr<Texture> texture = make_shared<Texture>();
 	texture->Create(format, Width, Height, heapProperty, heapFlags, groupType, resFlags, clearColor);
@@ -419,13 +419,28 @@ sptr<Texture> Resources::CreateTexture(const string& name, DXGI_FORMAT format, u
 	return texture;
 }
 
-sptr<Texture> Resources::CreateTextureFromResource(const string& name, ComPtr<ID3D12Resource> tex2D, RENDER_GROUP_TYPE groupType)
+sptr<Texture> Resources::CreateTextureFromResource(const wstring& name, ComPtr<ID3D12Resource> tex2D, RENDER_GROUP_TYPE groupType)
 {
 	shared_ptr<Texture> texture = make_shared<Texture>();
 	texture->CreateFromResource(tex2D, groupType);
 	Add<Texture>(name, texture);
 
 	return texture;
+}
+
+sptr<MeshData> Resources::LoadFBX(const wstring& path)
+{
+	wstring key = path;
+
+	sptr<MeshData> meshData = Get<MeshData>(key);
+	if (meshData)
+		return meshData;
+
+	meshData = MeshData::LoadFromFBX(path);
+	meshData->SetName(key);
+	Add<MeshData>(key, meshData);
+
+	return meshData;
 }
 
 void Resources::CreateDefaultShader()
@@ -448,7 +463,7 @@ void Resources::CreateDefaultShader()
 
 		sptr<Shader> shader = make_shared<Shader>();
 		shader->LoadGraphicsShader(info, path);
-		Add<Shader>("SkyBox", shader);
+		Add<Shader>(L"SkyBox", shader);
 	}
 
 	// Tex
@@ -469,7 +484,7 @@ void Resources::CreateDefaultShader()
 
 		sptr<Shader> shader = make_shared<Shader>();
 		shader->LoadGraphicsShader(info, path);
-		Add<Shader>("Tex", shader);
+		Add<Shader>(L"Tex", shader);
 	}
 
 	// Forward
@@ -488,7 +503,7 @@ void Resources::CreateDefaultShader()
 
 		sptr<Shader> shader = make_shared<Shader>();
 		shader->LoadGraphicsShader(info, path);
-		Add<Shader>("Forward", shader);
+		Add<Shader>(L"Forward", shader);
 	}
 
 	// Grid
@@ -508,7 +523,7 @@ void Resources::CreateDefaultShader()
 
 		sptr<Shader> shader = make_shared<Shader>();
 		shader->LoadGraphicsShader(info, path);
-		Add<Shader>("Grid", shader);
+		Add<Shader>(L"Grid", shader);
 	}
 
 	// Deferred
@@ -527,7 +542,7 @@ void Resources::CreateDefaultShader()
 
 		sptr<Shader> shader = make_shared<Shader>();
 		shader->LoadGraphicsShader(info, path);
-		Add<Shader>("Deferred", shader);
+		Add<Shader>(L"Deferred", shader);
 	}
 
 	// DirLight
@@ -549,7 +564,7 @@ void Resources::CreateDefaultShader()
 
 		sptr<Shader> shader = make_shared<Shader>();
 		shader->LoadGraphicsShader(info, path);
-		Add<Shader>("DirLight", shader);
+		Add<Shader>(L"DirLight", shader);
 	}
 
 	// PointLight
@@ -572,7 +587,7 @@ void Resources::CreateDefaultShader()
 
 		shared_ptr<Shader> shader = make_shared<Shader>();
 		shader->LoadGraphicsShader(info, path);
-		Add<Shader>("PointLight", shader);
+		Add<Shader>(L"PointLight", shader);
 	}
 
 	// SpotLight
@@ -595,7 +610,7 @@ void Resources::CreateDefaultShader()
 
 		shared_ptr<Shader> shader = make_shared<Shader>();
 		shader->LoadGraphicsShader(info, path);
-		Add<Shader>("SpotLight", shader);
+		Add<Shader>(L"SpotLight", shader);
 	}
 
 	// Particle
@@ -619,21 +634,21 @@ void Resources::CreateDefaultShader()
 
 		shared_ptr<Shader> shader = make_shared<Shader>();
 		shader->LoadGraphicsShader(info, path);
-		Add<Shader>("Particle", shader);
+		Add<Shader>(L"Particle", shader);
 	}
 
 	// SpreadParticle
 	{
 		shared_ptr<Shader> shader = make_shared<Shader>();
 		shader->LoadComputeShader(L"..\\Output\\cso\\Spread_Particle_cs.cso");
-		Add<Shader>("Compute_Spread_Particle", shader);
+		Add<Shader>(L"Compute_Spread_Particle", shader);
 	}
 
 	// SnowParticle
 	{
 		shared_ptr<Shader> shader = make_shared<Shader>();
 		shader->LoadComputeShader(L"..\\Output\\cso\\Snow_Particle_cs.cso");
-		Add<Shader>("Compute_Snow_Particle", shader);
+		Add<Shader>(L"Compute_Snow_Particle", shader);
 	}
 
 	// Final
@@ -655,7 +670,7 @@ void Resources::CreateDefaultShader()
 
 		shared_ptr<Shader> shader = make_shared<Shader>();
 		shader->LoadGraphicsShader(info, path);
-		Add<Shader>("Final", shader);
+		Add<Shader>(L"Final", shader);
 	}
 
 	// Tessellation
@@ -679,7 +694,7 @@ void Resources::CreateDefaultShader()
 
 		sptr<Shader> shader = make_shared<Shader>();
 		shader->LoadGraphicsShader(info, path);
-		Add<Shader>("Tessellation", shader);
+		Add<Shader>(L"Tessellation", shader);
 	}
 
 	// Terrain
@@ -703,34 +718,39 @@ void Resources::CreateDefaultShader()
 
 		sptr<Shader> shader = make_shared<Shader>();
 		shader->LoadGraphicsShader(info, path);
-		Add<Shader>("Terrain", shader);
+		Add<Shader>(L"Terrain", shader);
 	}
 }
 
 void Resources::CreateDefaultTexture()
 {
-	vector<string> texNames = {
-		"newjeans",
-		"newjeans2",
-		"newjeans3",
+	vector<wstring> texNames = {
+		L"newjeans",
+		L"newjeans2",
+		L"newjeans3",
 
-		"leather",
-		"leather_normal",
-		"leather_roughness",
-
-		"wall",
-		"wall_normal",
-		"wall_roughness",
-
-		"lightParticle",
-		"SnowParticle",
-
-		"Snow_Base",
-		"Snow_Normal",
-		"Snow_Roughness",
-		"Snow_Height",
-
-		"skybox",
+		L"leather",
+		L"leather_normal",
+		L"leather_roughness",
+		
+		L"wall",
+		L"wall_normal",
+		L"wall_roughness",
+		
+		L"lightParticle",
+		L"SnowParticle",
+		
+		L"Snow_Base",
+		L"Snow_Normal",
+		L"Snow_Roughness",
+		L"Snow_Height",
+		
+		L"Dragon_Bump_Col2.jpg",
+		L"Dragon_ground_color.jpg",
+		L"Dragon_Nor.jpg",
+		L"Dragon_Nor_mirror2.jpg",
+		
+		L"skybox",
 	};
 
 	vector<wstring> texFileNames = {
@@ -754,6 +774,11 @@ void Resources::CreateDefaultTexture()
 		L"..\\Resources\\Texture\\Snow_Roughness.dds",
 		L"..\\Resources\\Texture\\height.dds",
 
+		L"..\\Resources\\FBX\\dragon.fbm\\Dragon_Bump_Col2.jpg",
+		L"..\\Resources\\FBX\\dragon.fbm\\Dragon_ground_color.jpg",
+		L"..\\Resources\\FBX\\dragon.fbm\\Dragon_Nor.jpg",
+		L"..\\Resources\\FBX\\dragon.fbm\\Dragon_Nor_mirror2.jpg",
+
 		L"..\\Resources\\Texture\\cubemap.dds",
 	};
 
@@ -766,7 +791,7 @@ void Resources::CreateDefaultTexture()
 			texMap->CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURE2D);
 	}
 
-	sptr<Texture> texture = GET_SINGLE(Resources)->CreateTexture("UAVTexture",
+	sptr<Texture> texture = GET_SINGLE(Resources)->CreateTexture(L"UAVTexture",
 		DXGI_FORMAT_R8G8B8A8_UNORM, 1024, 1024,
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::COMPUTE,
@@ -776,223 +801,202 @@ void Resources::CreateDefaultTexture()
 void Resources::CreateDefaultMaterial()
 {
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
 		auto Pos = make_shared<Material>();
-		Pos->SetMatCBIndex(0);
-		Pos->SetDiffuseSrvHeapIndex(Get<Texture>("PositionTarget")->GetTexHeapIndex());
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"PositionTarget")->GetTexHeapIndex());
 		Pos->SetShader(shader);
-		Add<Material>("PositionTarget", move(Pos));
+		Add<Material>(L"PositionTarget", move(Pos));
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
 		auto norm = make_shared<Material>();
-		norm->SetMatCBIndex(1);
-		norm->SetDiffuseSrvHeapIndex(Get<Texture>("NormalTarget")->GetTexHeapIndex());
+		norm->SetDiffuseSrvHeapIndex(Get<Texture>(L"NormalTarget")->GetTexHeapIndex());
 		norm->SetShader(shader);
-		Add<Material>("NormalTarget", move(norm));
+		Add<Material>(L"NormalTarget", move(norm));
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
 		auto diffuse = make_shared<Material>();
-		diffuse->SetMatCBIndex(2);
-		diffuse->SetDiffuseSrvHeapIndex(Get<Texture>("DiffuseTarget")->GetTexHeapIndex());
+		diffuse->SetDiffuseSrvHeapIndex(Get<Texture>(L"DiffuseTarget")->GetTexHeapIndex());
 		diffuse->SetShader(shader);
-		Add<Material>("DiffuseTarget", move(diffuse));
+		Add<Material>(L"DiffuseTarget", move(diffuse));
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
 		auto fresnel = make_shared<Material>();
-		fresnel->SetMatCBIndex(3);
-		fresnel->SetDiffuseSrvHeapIndex(Get<Texture>("FresnelTarget")->GetTexHeapIndex());
+		fresnel->SetDiffuseSrvHeapIndex(Get<Texture>(L"FresnelTarget")->GetTexHeapIndex());
 		fresnel->SetShader(shader);
-		Add<Material>("FresnelTarget", move(fresnel));
+		Add<Material>(L"FresnelTarget", move(fresnel));
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
 		auto shininess = make_shared<Material>();
-		shininess->SetMatCBIndex(4);
-		shininess->SetDiffuseSrvHeapIndex(Get<Texture>("ShininessTarget")->GetTexHeapIndex());
+		shininess->SetDiffuseSrvHeapIndex(Get<Texture>(L"ShininessTarget")->GetTexHeapIndex());
 		shininess->SetShader(shader);
-		Add<Material>("ShininessTarget", move(shininess));
+		Add<Material>(L"ShininessTarget", move(shininess));
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Deferred");
+		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
 		auto newjeans = make_shared<Material>();
-		newjeans->SetMatCBIndex(5);
-		newjeans->SetDiffuseSrvHeapIndex(Get<Texture>("newjeans")->GetTexHeapIndex());
+		newjeans->SetDiffuseSrvHeapIndex(Get<Texture>(L"newjeans")->GetTexHeapIndex());
 		newjeans->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
 		newjeans->SetRoughness(0.125f);
 		newjeans->SetShader(shader);
-		Add<Material>("newjeans", move(newjeans));
+		Add<Material>(L"newjeans", move(newjeans));
 
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Deferred");
+		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
 		auto newjeans2 = make_shared<Material>();
-		newjeans2->SetMatCBIndex(6);
-		newjeans2->SetDiffuseSrvHeapIndex(Get<Texture>("newjeans2")->GetTexHeapIndex());
+		newjeans2->SetDiffuseSrvHeapIndex(Get<Texture>(L"newjeans2")->GetTexHeapIndex());
 		newjeans2->SetFresnel(Vec3(0.1f, 0.1f, 0.1f));
 		newjeans2->SetRoughness(0.125f);
 		newjeans2->SetShader(shader);
-		Add<Material>("newjeans2", move(newjeans2));
+		Add<Material>(L"newjeans2", move(newjeans2));
 
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Deferred");
+		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
 		auto newjeans3 = make_shared<Material>();
-		newjeans3->SetMatCBIndex(7);
-		newjeans3->SetDiffuseSrvHeapIndex(Get<Texture>("newjeans3")->GetTexHeapIndex());
+		newjeans3->SetDiffuseSrvHeapIndex(Get<Texture>(L"newjeans3")->GetTexHeapIndex());
 		newjeans3->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
 		newjeans3->SetRoughness(0.125f);
 		newjeans3->SetShader(shader);
-		Add<Material>("newjeans3", move(newjeans3));
+		Add<Material>(L"newjeans3", move(newjeans3));
 
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Deferred");
+		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
 		auto leather = make_shared<Material>();
-		leather->SetMatCBIndex(8);
-		leather->SetDiffuseSrvHeapIndex(Get<Texture>("leather")->GetTexHeapIndex());
-		leather->SetNormalSrvHeapIndex(Get<Texture>("leather_normal")->GetTexHeapIndex());
-		leather->SetRoughnessSrvHeapIndex(Get<Texture>("leather_roughness")->GetTexHeapIndex());
+		leather->SetDiffuseSrvHeapIndex(Get<Texture>(L"leather")->GetTexHeapIndex());
+		leather->SetNormalSrvHeapIndex(Get<Texture>(L"leather_normal")->GetTexHeapIndex());
+		leather->SetRoughnessSrvHeapIndex(Get<Texture>(L"leather_roughness")->GetTexHeapIndex());
 		leather->SetFresnel(Vec3(0.1f, 0.1f, 0.1f));
 		leather->SetRoughness(0.125f);
 		leather->SetShader(shader);
-		Add<Material>("leather", move(leather));
+		Add<Material>(L"leather", move(leather));
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Deferred");
+		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
 		auto wall = make_shared<Material>();
-		wall->SetMatCBIndex(9);
-		wall->SetDiffuseSrvHeapIndex(Get<Texture>("wall")->GetTexHeapIndex());
-		wall->SetNormalSrvHeapIndex(Get<Texture>("wall_normal")->GetTexHeapIndex());
-		wall->SetRoughnessSrvHeapIndex(Get<Texture>("wall_roughness")->GetTexHeapIndex());
+		wall->SetDiffuseSrvHeapIndex(Get<Texture>(L"wall")->GetTexHeapIndex());
+		wall->SetNormalSrvHeapIndex(Get<Texture>(L"wall_normal")->GetTexHeapIndex());
+		wall->SetRoughnessSrvHeapIndex(Get<Texture>(L"wall_roughness")->GetTexHeapIndex());
 		wall->SetFresnel(Vec3(0.5f, 0.5f, 0.5f));
 		wall->SetRoughness(0.5f);
 		wall->SetShader(shader);
-		Add<Material>("wall", move(wall));
+		Add<Material>(L"wall", move(wall));
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("SkyBox");
+		shared_ptr<Shader> shader = Get<Shader>(L"SkyBox");
 		auto skybox = make_shared<Material>();
-		skybox->SetMatCBIndex(10);
-		skybox->SetDiffuseSrvHeapIndex(Get<Texture>("skybox")->GetTexHeapIndex());
+		skybox->SetDiffuseSrvHeapIndex(Get<Texture>(L"skybox")->GetTexHeapIndex());
 		skybox->SetShader(shader);
-		Add<Material>("skybox", move(skybox));
+		Add<Material>(L"skybox", move(skybox));
 
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("DirLight");
+		shared_ptr<Shader> shader = Get<Shader>(L"DirLight");
 		auto dirLight = make_shared<Material>();
-		dirLight->SetMatCBIndex(11);
 		dirLight->SetShader(shader);
-		Add<Material>("DirLight", move(dirLight));
+		Add<Material>(L"DirLight", move(dirLight));
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("PointLight");
+		shared_ptr<Shader> shader = Get<Shader>(L"PointLight");
 		auto pointLight = make_shared<Material>();
-		pointLight->SetMatCBIndex(12);
 		pointLight->SetShader(shader);
-		Add<Material>("PointLight", pointLight);
+		Add<Material>(L"PointLight", pointLight);
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("SpotLight");
+		shared_ptr<Shader> shader = Get<Shader>(L"SpotLight");
 		auto spotLight = make_shared<Material>();
-		spotLight->SetMatCBIndex(13);
 		spotLight->SetShader(shader);
-		Add<Material>("SpotLight", spotLight);
+		Add<Material>(L"SpotLight", spotLight);
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
 		auto diffuseLight = make_shared<Material>();
-		diffuseLight->SetMatCBIndex(14);
-		diffuseLight->SetDiffuseSrvHeapIndex(Get<Texture>("DiffuseLightTarget")->GetTexHeapIndex());
+		diffuseLight->SetDiffuseSrvHeapIndex(Get<Texture>(L"DiffuseLightTarget")->GetTexHeapIndex());
 		diffuseLight->SetShader(shader);
-		Add<Material>("DiffuseLightTarget", move(diffuseLight));
+		Add<Material>(L"DiffuseLightTarget", move(diffuseLight));
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Tex");
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
 		auto specLight = make_shared<Material>();
-		specLight->SetMatCBIndex(15);
-		specLight->SetDiffuseSrvHeapIndex(Get<Texture>("SpecularLightTarget")->GetTexHeapIndex());
+		specLight->SetDiffuseSrvHeapIndex(Get<Texture>(L"SpecularLightTarget")->GetTexHeapIndex());
 		specLight->SetShader(shader);
-		Add<Material>("SpecularLightTarget", move(specLight));
+		Add<Material>(L"SpecularLightTarget", move(specLight));
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Final");
+		shared_ptr<Shader> shader = Get<Shader>(L"Final");
 		auto finalMaterial = make_shared<Material>();
-		finalMaterial->SetMatCBIndex(16);
 		finalMaterial->SetShader(shader);
-		Add<Material>("Final", move(finalMaterial));
+		Add<Material>(L"Final", move(finalMaterial));
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Particle");
+		shared_ptr<Shader> shader = Get<Shader>(L"Particle");
 		auto particle = make_shared<Material>();
-		particle->SetMatCBIndex(17);
-		particle->SetDiffuseSrvHeapIndex(Get<Texture>("lightParticle")->GetTexHeapIndex());
+		particle->SetDiffuseSrvHeapIndex(Get<Texture>(L"lightParticle")->GetTexHeapIndex());
 		particle->SetShader(shader);
-		Add<Material>("lightParticle", move(particle));
+		Add<Material>(L"lightParticle", move(particle));
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>("Particle");
+		shared_ptr<Shader> shader = Get<Shader>(L"Particle");
 		auto particle = make_shared<Material>();
-		particle->SetMatCBIndex(18);
-		particle->SetDiffuseSrvHeapIndex(Get<Texture>("SnowParticle")->GetTexHeapIndex());
+		particle->SetDiffuseSrvHeapIndex(Get<Texture>(L"SnowParticle")->GetTexHeapIndex());
 		particle->SetShader(shader);
-		Add<Material>("SnowParticle", move(particle));
+		Add<Material>(L"SnowParticle", move(particle));
 	}
 
 	{
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Compute_Spread_Particle");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Compute_Spread_Particle");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(shader);
 
-		Add<Material>("Compute_Spread_Particle", material);
+		Add<Material>(L"Compute_Spread_Particle", material);
 	}
 
 	{
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Compute_Snow_Particle");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Compute_Snow_Particle");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(shader);
 
-		Add<Material>("Compute_Snow_Particle", material);
+		Add<Material>(L"Compute_Snow_Particle", material);
 	}
 
 	{
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Tessellation");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Tessellation");
 		shared_ptr<Material> tessellation = make_shared<Material>();
-		tessellation->SetMatCBIndex(19);
 		tessellation->SetShader(shader);
-		Add<Material>("Tessellation", tessellation);
+		Add<Material>(L"Tessellation", tessellation);
 	}
 
 	{
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Terrain");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Terrain");
 		shared_ptr<Material> terrain = make_shared<Material>();
-		terrain->SetDiffuseSrvHeapIndex(Get<Texture>("Snow_Base")->GetTexHeapIndex());
-		terrain->SetNormalSrvHeapIndex(Get<Texture>("Snow_Normal")->GetTexHeapIndex());
-		terrain->SetRoughnessSrvHeapIndex(Get<Texture>("Snow_Roughness")->GetTexHeapIndex());
-		terrain->SetHeightSrvHeapIndex(Get<Texture>("Snow_Height")->GetTexHeapIndex());
-		terrain->SetMatCBIndex(20);
+		terrain->SetDiffuseSrvHeapIndex(Get<Texture>(L"Snow_Base")->GetTexHeapIndex());
+		terrain->SetNormalSrvHeapIndex(Get<Texture>(L"Snow_Normal")->GetTexHeapIndex());
+		terrain->SetRoughnessSrvHeapIndex(Get<Texture>(L"Snow_Roughness")->GetTexHeapIndex());
+		terrain->SetHeightSrvHeapIndex(Get<Texture>(L"Snow_Height")->GetTexHeapIndex());
 		terrain->SetShader(shader);
-		Add<Material>("Terrain", terrain);
+		Add<Material>(L"Terrain", terrain);
 	}
 }

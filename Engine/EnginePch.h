@@ -122,6 +122,11 @@ enum class TEXTURE2D_INDEX : uint8
 	R_TERRAIN,
 	H_TERRAIN,
 
+	BUMP_DRAGON,
+	GROUND_DRAGON,
+	N_DRAGON,
+	N_DRAGON_MIRROR,
+
 	END,
 };
 
@@ -174,6 +179,8 @@ struct Vertex
 	Vec2 Uv;
 	Vec3 Normal;
 	Vec3 Tangent;
+	Vec3 Weights;
+	Vec3 Indices;
 };
 
 struct MinMaxVert

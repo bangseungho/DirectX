@@ -7,6 +7,7 @@ enum class OBJECT_TYPE : uint8
 	COMPONENT,
 	MATERIAL,
 	MESH,
+	MESH_DATA,
 	SHADER,
 	TEXTURE,
 
@@ -37,4 +38,7 @@ protected:
 protected:
 	OBJECT_TYPE mObjectType = OBJECT_TYPE::NONE;
 	wstring mName;
+
+protected:
+	uint32 _id = 0;
 };

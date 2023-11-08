@@ -49,8 +49,8 @@ void Scene::RenderFinal()
 	int8 backIndex = gEngine->GetSwapChain()->GetBackBufferIndex();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->OMSetRenderTargets(1, backIndex);
 
-	GET_SINGLE(Resources)->Get<Material>("Final")->Update();
-	GET_SINGLE(Resources)->Get<Mesh>("Rectangle")->Render();
+	GET_SINGLE(Resources)->Get<Material>(L"Final")->Update();
+	GET_SINGLE(Resources)->Get<Mesh>(L"Rectangle")->Render();
 }
 
 void Scene::RenderLights()

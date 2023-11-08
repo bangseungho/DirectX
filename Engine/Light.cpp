@@ -42,16 +42,16 @@ void Light::SetLightType(LIGHT_TYPE type)
 	switch (type)
 	{
 	case LIGHT_TYPE::DIRECTIONAL_LIGHT:
-		mVolumeMesh = GET_SINGLE(Resources)->Get<Mesh>("Rectangle");
-		mLightMaterial = GET_SINGLE(Resources)->Get<Material>("DirLight");
+		mVolumeMesh = GET_SINGLE(Resources)->Get<Mesh>(L"Rectangle");
+		mLightMaterial = GET_SINGLE(Resources)->Get<Material>(L"DirLight");
 		break;
 	case LIGHT_TYPE::POINT_LIGHT:
-		mVolumeMesh = GET_SINGLE(Resources)->Get<Mesh>("Sphere");
-		mLightMaterial = GET_SINGLE(Resources)->Get<Material>("PointLight");
+		mVolumeMesh = GET_SINGLE(Resources)->Get<Mesh>(L"Sphere");
+		mLightMaterial = GET_SINGLE(Resources)->Get<Material>(L"PointLight");
 		break;
 	case LIGHT_TYPE::SPOT_LIGHT:
-		mVolumeMesh = GET_SINGLE(Resources)->Get<Mesh>("Sphere");
-		mLightMaterial = GET_SINGLE(Resources)->Get<Material>("SpotLight");
+		mVolumeMesh = GET_SINGLE(Resources)->Get<Mesh>(L"Sphere");
+		mLightMaterial = GET_SINGLE(Resources)->Get<Material>(L"SpotLight");
 		break;
 	}
 

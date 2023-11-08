@@ -36,6 +36,7 @@ namespace fs = std::filesystem;
 #include <DirectXTex/DirectXTex.inl>
 #include "SimpleMath.h"
 #include "MathHelper.h"
+#include "FBX/fbxsdk.h"
 using namespace DirectX;
 using namespace DirectX::PackedVector;
 using namespace Microsoft::WRL;
@@ -53,6 +54,22 @@ using namespace Microsoft::WRL;
 #pragma comment(linker, "/entry:WinMainCRTStartup /subsystem:console")   
 #endif                                                                                                   
 #endif        
+
+#ifdef _DEBUG
+#pragma comment(lib, "DirectXTex\\DirectXTex_debug.lib")
+#else
+#pragma comment(lib, "DirectXTex\\DirectXTex.lib")
+#endif
+
+#ifdef _DEBUG
+#pragma comment(lib, "FBX\\debug\\libfbxsdk-md.lib")
+#pragma comment(lib, "FBX\\debug\\libxml2-md.lib")
+#pragma comment(lib, "FBX\\debug\\zlib-md.lib")
+#else
+#pragma comment(lib, "FBX\\release\\libfbxsdk-md.lib")
+#pragma comment(lib, "FBX\\release\\libxml2-md.lib")
+#pragma comment(lib, "FBX\\release\\zlib-md.lib")
+#endif                                                   
 
 inline void d3dSetDebugName(IDXGIObject* obj, const char* name)
 {
@@ -239,3 +256,6 @@ private:											\
 #define GET_SINGLE(type)			type::GetInstance()
 #define DESTROY_SINGLE(type)		type::Destroy()
 #define DECLARE_SINGLE(type)		type* type::instance = nullptr;
+
+wstring StringToWstring(const string& s);
+string WstringToString(const wstring& ws);

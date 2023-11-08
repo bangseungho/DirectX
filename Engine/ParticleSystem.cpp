@@ -10,8 +10,8 @@ ParticleSystem::ParticleSystem() : Component(COMPONENT_TYPE::PARTICLE_SYSTEM)
 {
 	mMesh = GET_SINGLE(Resources)->LoadPointMesh();
 
-	mMaterial = GET_SINGLE(Resources)->Get<Material>("lightParticle");
-	mComputeMaterial = GET_SINGLE(Resources)->Get<Material>("Compute_Spread_Particle");
+	mMaterial = GET_SINGLE(Resources)->Get<Material>(L"lightParticle");
+	mComputeMaterial = GET_SINGLE(Resources)->Get<Material>(L"Compute_Spread_Particle");
 
 	mSharedDataBuffer = std::make_shared<UploadBuffer<ParticleSharedData>>(DEVICE, 1, false);
 

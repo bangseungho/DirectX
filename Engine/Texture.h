@@ -24,6 +24,8 @@ public:
 
 public:
 	virtual void Load(const wstring& path);
+	void LoadFromWICFile(const wstring& path);
+
 	void Create(DXGI_FORMAT format, uint32 width, uint32 height, const D3D12_HEAP_PROPERTIES& property,
 		D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType, D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor = Vec4());
 	void CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_TYPE groupType);
@@ -53,6 +55,8 @@ private:
 	uint32							_texHeapIndex = 0;
 	uint32							_uavHeapIndex = 0;
 	D3D12_RESOURCE_DESC				_desc;
+
+	ScratchImage			mImage;
 
 	ComPtr<ID3D12DescriptorHeap>	_srvHeap;
 	ComPtr<ID3D12DescriptorHeap>	_rtvHeap;

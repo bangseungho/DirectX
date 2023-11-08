@@ -105,7 +105,7 @@ void Engine::ResizeWindow(int32 Width, int32 Height)
 void Engine::CreateMultipleRenderTarget()
 {
 	// DepthStencil
-	sptr<Texture> dsTexture = GET_SINGLE(Resources)->CreateTexture("DepthStencil",
+	sptr<Texture> dsTexture = GET_SINGLE(Resources)->CreateTexture(L"DepthStencil",
 		DXGI_FORMAT_D32_FLOAT, mWindow.Width, mWindow.Height,
 		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 		D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::DEPTH_STENCIL,
@@ -117,7 +117,7 @@ void Engine::CreateMultipleRenderTarget()
 
 		for (uint32 i = 0; i < SWAP_CHAIN_BUFFER_COUNT; ++i)
 		{
-			string name = "SwapChainTarget_" + std::to_string(i);
+			wstring name = L"SwapChainTarget_" + std::to_wstring(i);
 
 			ComPtr<ID3D12Resource> resource;
 			mSwapChain->GetSwapChain()->GetBuffer(i, IID_PPV_ARGS(&resource));
@@ -132,31 +132,31 @@ void Engine::CreateMultipleRenderTarget()
 	{
 		vector<RenderTarget> rtVec(RENDER_TARGET_G_BUFFER_GROUP_COUNT);
 
-		rtVec[0].target = GET_SINGLE(Resources)->CreateTexture("PositionTarget",
+		rtVec[0].target = GET_SINGLE(Resources)->CreateTexture(L"PositionTarget",
 			DXGI_FORMAT_R32G32B32A32_FLOAT, mWindow.Width, mWindow.Height, 
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::G_BUFFER,
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
-		rtVec[1].target = GET_SINGLE(Resources)->CreateTexture("NormalTarget",
+		rtVec[1].target = GET_SINGLE(Resources)->CreateTexture(L"NormalTarget",
 			DXGI_FORMAT_R32G32B32A32_FLOAT, mWindow.Width, mWindow.Height,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::G_BUFFER,
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
-		rtVec[2].target = GET_SINGLE(Resources)->CreateTexture("DiffuseTarget",
+		rtVec[2].target = GET_SINGLE(Resources)->CreateTexture(L"DiffuseTarget",
 			DXGI_FORMAT_R8G8B8A8_UNORM, mWindow.Width, mWindow.Height,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::G_BUFFER, 
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
-		rtVec[3].target = GET_SINGLE(Resources)->CreateTexture("FresnelTarget",
+		rtVec[3].target = GET_SINGLE(Resources)->CreateTexture(L"FresnelTarget",
 			DXGI_FORMAT_R8G8B8A8_UNORM, mWindow.Width, mWindow.Height,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::G_BUFFER, 
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
-		rtVec[4].target = GET_SINGLE(Resources)->CreateTexture("ShininessTarget",
+		rtVec[4].target = GET_SINGLE(Resources)->CreateTexture(L"ShininessTarget",
 			DXGI_FORMAT_R8_UNORM, mWindow.Width, mWindow.Height,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::G_BUFFER, 
@@ -170,13 +170,13 @@ void Engine::CreateMultipleRenderTarget()
 	{
 		vector<RenderTarget> rtVec(RENDER_TARGET_LIGHTING_COUNT);
 
-		rtVec[0].target = GET_SINGLE(Resources)->CreateTexture("DiffuseLightTarget",
+		rtVec[0].target = GET_SINGLE(Resources)->CreateTexture(L"DiffuseLightTarget",
 			DXGI_FORMAT_R8G8B8A8_UNORM, mWindow.Width, mWindow.Height,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::LIGHTING,
 			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
 
-		rtVec[1].target = GET_SINGLE(Resources)->CreateTexture("SpecularLightTarget",
+		rtVec[1].target = GET_SINGLE(Resources)->CreateTexture(L"SpecularLightTarget",
 			DXGI_FORMAT_R8G8B8A8_UNORM, mWindow.Width, mWindow.Height,
 			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
 			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::LIGHTING,
