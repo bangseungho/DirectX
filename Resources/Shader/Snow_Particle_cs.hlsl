@@ -1,5 +1,5 @@
-#ifndef _PARTICLE_CS_HLSL_
-#define _PARTICLE_CS_HLSL_
+#ifndef _SNOW_PARTICLE_CS_HLSL_
+#define _SNOW_PARTICLE_CS_HLSL_
 
 #include "Params.hlsl"
 #include "Utils.hlsl"
@@ -84,7 +84,7 @@ void CS_Main(int3 threadIndex : SV_DispatchThreadID)
             
             float3 dir = (noise - 0.5f) * 2.f;
             
-            gInputParticle[threadIndex.x].WorldDir = normalize(dir);
+            gInputParticle[threadIndex.x].WorldDir = float3(0.f, -1.f, 0.f);
             gInputParticle[threadIndex.x].WorldPos = (noise.xyz - 0.5f) * 25;
             gInputParticle[threadIndex.x].LifeTime = ((particleSystem.MaxLifeTime - particleSystem.MinLifeTime) * noise.x) + particleSystem.MinLifeTime;
             gInputParticle[threadIndex.x].CurTime = 0.f;

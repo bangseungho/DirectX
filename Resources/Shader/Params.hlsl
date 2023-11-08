@@ -41,20 +41,31 @@ struct PassConstants
     row_major matrix    View;
     row_major matrix    Proj;
     row_major matrix    ViewProj;
+    
     float4              eyePosW;
+    
 	float               nearZ;
 	float               farZ;
     float               Width;
     float               Height;
+    
 	float               totalTime;
 	float               deltaTime;
-	float2              padding2;
+    
+    float               FogStart;
+	float               FogRange;
+    float4              FogColor;
+    
 	float4              ambientLight;
+    
     int		            lightCount;
 	float3	            padding3;
+    
 	LightInfo	        lights[MAX_LIGHTS];
+    
     float3              CameraRight;
     float               padding4;
+    
 };
 
 struct ObjectData
@@ -84,10 +95,13 @@ struct TerrainData
 {
     uint	SizeX;
 	uint	SizeZ;
+    float   Width;
+    float   Height;
 	float	MaxTessellationLevel;
-	float	Padding;
+	float	Padding1;
 	float2	Resolution;
-	float2	sMinMaxDistance;
+	float2	MinMaxDistance;
+	float2	Padding2;
 };
 
 struct Particle

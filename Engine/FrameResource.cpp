@@ -10,7 +10,7 @@ FrameResource::FrameResource(ComPtr<ID3D12Device> device, uint32 objectCount, ui
     mPassCB = std::make_shared<UploadBuffer<PassConstants>>(device, 1, true);
     mObjectCB = std::make_shared<UploadBuffer<ObjectData>>(device, objectCount, true);
     mMatData = std::make_shared<UploadBuffer<MaterialData>>(device, materialCount, false);
-    mTerrainData = std::make_shared<UploadBuffer<TerrainData>>(device, 1, false);
+    mTerrainData = std::make_shared<UploadBuffer<TerrainData>>(device, 2, false);
 }
 
 FrameResource::~FrameResource()

@@ -17,6 +17,8 @@ private:
 	int32 _sizeX = 15;
 	int32 _sizeZ = 15;
 	float _maxTesselation = 4.f;
+	int32 _width = 0;
+	int32 _height = 0;
 
 	shared_ptr<class Material> _material;
 };

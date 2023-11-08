@@ -369,11 +369,14 @@ sptr<Mesh> Resources::LoadRectangleMesh()
 
 sptr<Mesh> Resources::LoadTerrainMesh(int32 sizeX, int32 sizeZ)
 {
+	int32 halfX = sizeX / 2;
+	int32 halfZ = sizeZ / 2;
+
 	vector<Vertex> vec;
 	for (int32 z = 0; z < sizeZ + 1; ++z) {
 		for (int32 x = 0; x < sizeX + 1; ++x) {
 			Vertex vtx;
-			vtx.Pos = Vec3(static_cast<float>(x), 0, static_cast<float>(z));
+			vtx.Pos = Vec3(static_cast<float>(-halfX + x), 0, static_cast<float>(-halfZ + z));
 			vtx.Uv = Vec2(static_cast<float>(x), static_cast<float>(sizeZ - z));
 			vtx.Normal = Vec3(0.f, 1.f, 0.f);
 			vtx.Tangent = Vec3(1.f, 0.f, 0.f);
@@ -619,11 +622,18 @@ void Resources::CreateDefaultShader()
 		Add<Shader>("Particle", shader);
 	}
 
-	// ComputeParticle
+	// SpreadParticle
 	{
 		shared_ptr<Shader> shader = make_shared<Shader>();
-		shader->LoadComputeShader(L"..\\Output\\cso\\Particle_cs.cso");
-		Add<Shader>("ComputeParticle", shader);
+		shader->LoadComputeShader(L"..\\Output\\cso\\Spread_Particle_cs.cso");
+		Add<Shader>("Compute_Spread_Particle", shader);
+	}
+
+	// SnowParticle
+	{
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->LoadComputeShader(L"..\\Output\\cso\\Snow_Particle_cs.cso");
+		Add<Shader>("Compute_Snow_Particle", shader);
 	}
 
 	// Final
@@ -713,7 +723,7 @@ void Resources::CreateDefaultTexture()
 		"wall_roughness",
 
 		"lightParticle",
-		"fireParticle",
+		"SnowParticle",
 
 		"Snow_Base",
 		"Snow_Normal",
@@ -737,7 +747,7 @@ void Resources::CreateDefaultTexture()
 		L"..\\Resources\\Texture\\Sci-Fi_Wall_014_roughness.dds",
 
 		L"..\\Resources\\Texture\\lightParticle.dds",
-		L"..\\Resources\\Texture\\fireParticle.dds",
+		L"..\\Resources\\Texture\\Snow_Particle.dds",
 
 		L"..\\Resources\\Texture\\Snow_Base.dds",
 		L"..\\Resources\\Texture\\Snow_Normal.dds",
@@ -945,17 +955,25 @@ void Resources::CreateDefaultMaterial()
 		shared_ptr<Shader> shader = Get<Shader>("Particle");
 		auto particle = make_shared<Material>();
 		particle->SetMatCBIndex(18);
-		particle->SetDiffuseSrvHeapIndex(Get<Texture>("fireParticle")->GetTexHeapIndex());
+		particle->SetDiffuseSrvHeapIndex(Get<Texture>("SnowParticle")->GetTexHeapIndex());
 		particle->SetShader(shader);
-		Add<Material>("fireParticle", move(particle));
+		Add<Material>("SnowParticle", move(particle));
 	}
 
 	{
-		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("ComputeParticle");
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Compute_Spread_Particle");
 		shared_ptr<Material> material = make_shared<Material>();
 		material->SetShader(shader);
 
-		Add<Material>("ComputeParticle", material);
+		Add<Material>("Compute_Spread_Particle", material);
+	}
+
+	{
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>("Compute_Snow_Particle");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(shader);
+
+		Add<Material>("Compute_Snow_Particle", material);
 	}
 
 	{

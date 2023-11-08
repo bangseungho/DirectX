@@ -26,8 +26,8 @@ PatchTess ConstantHS(InputPatch<VS_OUT, 3> input, int patchID : SV_PrimitiveID)
 {
     PatchTess output = (PatchTess)0.f;
 
-    float minDistance = gTerrainData[0].sMinMaxDistance.x;
-    float maxDistance = gTerrainData[0].sMinMaxDistance.y;
+    float minDistance = gTerrainData[0].MinMaxDistance.x;
+    float maxDistance = gTerrainData[0].MinMaxDistance.y;
     
     float3 edge0 = (input[1].pos + input[2].pos) / 2.f;
     float3 edge1 = (input[2].pos + input[0].pos) / 2.f;

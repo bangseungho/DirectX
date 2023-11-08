@@ -32,7 +32,10 @@ PS_OUT PS_Main(VS_OUT pin)
     float3 fresnelR0 = gTextureMaps[FRESNELMAP_INDEX].Sample(gsamAnisotropicWrap, pin.Uv).xyz;
     float shininess = gTextureMaps[SHININESSMAP_INDEX].Sample(gsamAnisotropicWrap, pin.Uv).x;
     
-    float3 toEyeW = normalize(gPassConstants.eyePosW.xyz - posW);
+    float3 toEyeW = gPassConstants.eyePosW.xyz - posW;
+    float distToEye = length(toEyeW);
+    toEyeW /= distToEye;
+    
     
     float4 ambient = gPassConstants.ambientLight * diffuseAlbedo;
  
@@ -41,7 +44,7 @@ PS_OUT PS_Main(VS_OUT pin)
     
     pout.diffuse = float4(directLight.diffuse, 0.f);
     pout.specular = float4(directLight.specular, 0.f);
-
+    
     return pout;
 }
 

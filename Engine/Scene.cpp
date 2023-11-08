@@ -152,6 +152,7 @@ void Scene::PushPassData()
 	passConstants.TotalTime = TOTAL_TIME;
 	passConstants.DeltaTime = DELTA_TIME;
 	passConstants.AmbientLight = mAmbientLight;
+	
 
 	for (auto& light : mLightObjects) {
 		const LightInfo& lightInfo = light->GetLightInfo();

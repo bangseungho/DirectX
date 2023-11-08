@@ -214,14 +214,13 @@ struct PassConstants
 	float		Height = 0.f;
 	float		TotalTime = 0.f;
 	float		DeltaTime = 0.f;
-	Vec2		Padding;
-
+	float       FogStart = 500.f;
+	float       FogRange = 1000.f;
+	Vec4	 	FogColor = { 0.7f, 0.7f, 0.7f, 1.f };
 	Vec4		AmbientLight = { 0.f, 0.f, 0.f, 1.f };
-
 	uint32		LightCount;
 	Vec3		Padding2;
 	LightInfo	Lights[MAX_LIGHTS];
-
 	Vec3		CameraRight = { 0.f, 0.f, 0.f };
 	float		Padding3;
 };
@@ -253,10 +252,13 @@ struct TerrainData
 {
 	int32	SizeX;
 	int32	SizeZ;
+	float   Width;
+	float   Height;
 	float	MaxTessellationLevel;
-	float	Padding;
+	float	Padding1;
 	Vec2	Resolution;
 	Vec2	MinMaxDistance;
+	Vec2	Padding2;
 };
 
 struct ParticleSystemData

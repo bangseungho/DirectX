@@ -70,6 +70,7 @@ PS_OUT PS_Main(VS_OUT pin)
     else
         shininess *= normalMap.a;
 
+    
     PS_OUT pout = (PS_OUT)0;
     pout.Position = float4(pin.posW, 0.f);
     pout.Normal = float4(bumpedNormalW, 0.f);

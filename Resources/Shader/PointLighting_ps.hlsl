@@ -29,7 +29,10 @@ PS_OUT PS_Main(VS_OUT pin)
     if(posV.z <= 0.f)
         clip(-1);
     
-    float3 toEyeW = normalize(gPassConstants.eyePosW.xyz - posW);
+    float3 toEyeW = gPassConstants.eyePosW.xyz - posW;
+    float distToEye = length(toEyeW);
+    toEyeW /= distToEye;
+    
     float distance = length(light.Position - posW);
     if (distance > light.FallOffEnd)
         clip(-1);

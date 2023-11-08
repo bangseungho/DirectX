@@ -38,10 +38,12 @@ void Terrain::FinalUpdate()
 	terrainData.SizeX = _sizeX;
 	terrainData.SizeZ = _sizeZ;
 	terrainData.MaxTessellationLevel = _maxTesselation;
+	terrainData.Width = GetTransform()->GetLocalScale().x * _sizeX;
+	terrainData.Height = GetTransform()->GetLocalScale().z * _sizeZ;
 
 	sptr<Texture> heigtMap = GET_SINGLE(Resources)->Get<Texture>("Snow_Height");
 	terrainData.Resolution = Vec2(heigtMap->GetWidth(), heigtMap->GetHeight());
-	terrainData.MinMaxDistance = Vec2(1000.f, 5000.f);
+	terrainData.MinMaxDistance = Vec2(2000.f, 5000.f);
 
 	TERRAIN_DATA->CopyData(0, terrainData);
 

@@ -383,12 +383,25 @@ sptr<Scene> SceneManager::LoadTestScene()
 		particle->AddComponent(make_shared<Transform>());
 
 		auto particleSystem = make_shared<ParticleSystem>();
-		particleSystem->SetMaterial(GET_SINGLE(Resources)->Get<Material>("fireParticle"));
+		particleSystem->SetMaterial(GET_SINGLE(Resources)->Get<Material>("SnowParticle"));
+		particleSystem->SetComputeMaterial(GET_SINGLE(Resources)->Get<Material>("Compute_Snow_Particle"));
+		particleSystem->SetParticleIndex(0);
+		auto& particleSystemData = particleSystem->GetParticleSystemData();
+		particleSystemData.MaxCount = 300;
+		particleSystemData.MinSpeed = 10;
+		particleSystemData.MaxSpeed = 1;
+		particleSystemData.StartScale = 1.f;
+		particleSystemData.EndScale = 0.5f;
 		particle->AddComponent(particleSystem);
 
 		particle->SetCheckFrustum(false);
 		particle->GetTransform()->SetLocalPosition(Vec3(50.f, 100.f, 100.f));
 		particle->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+
+		auto moveToCamera = make_shared<TestLightMoveToCamera>();
+		moveToCamera->SetGameObject(scene->GetMainCamera());
+		particle->AddComponent(moveToCamera);
+
 		scene->AddGameObject(particle);
 	}
 #pragma endregion
@@ -399,6 +412,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 
 		auto particleSystem = make_shared<ParticleSystem>();
 		particleSystem->SetMaterial(GET_SINGLE(Resources)->Get<Material>("lightParticle"));
+		particleSystem->SetParticleIndex(1);
 		particle->AddComponent(particleSystem);
 
 		particle->SetCheckFrustum(false);

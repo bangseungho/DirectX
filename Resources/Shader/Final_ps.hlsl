@@ -18,8 +18,18 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     float4 diffuseLight = gTextureMaps[DIFFUSELIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.Uv);
     float4 specular = gTextureMaps[SPECULARLIGHT_INDEX].Sample(gsamAnisotropicWrap, pin.Uv);
     
+    float3 posW = gTextureMaps[POSITIONMAP_INDEX].Sample(gsamAnisotropicWrap, pin.Uv).xyz;
+    float3 toEyeW = gPassConstants.eyePosW.xyz - posW;
+    float distToEye = length(toEyeW);
+    toEyeW /= distToEye;
+    
     pout = (diffuseLight + gPassConstants.ambientLight) * diffuseAlbedo + specular;
 
+    
+    // Fog
+    float fogAmount = clamp(((distToEye - gPassConstants.FogStart) / gPassConstants.FogRange), 0.f, 0.9f);
+    pout = lerp(pout, gPassConstants.FogColor, fogAmount); 
+    
     return pout;
 }
 

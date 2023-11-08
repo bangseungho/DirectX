@@ -9,14 +9,14 @@
 ParticleSystem::ParticleSystem() : Component(COMPONENT_TYPE::PARTICLE_SYSTEM)
 {
 	mMesh = GET_SINGLE(Resources)->LoadPointMesh();
-	mMaterial = GET_SINGLE(Resources)->Get<Material>("lightParticle");
 
-	mComputeMaterial = GET_SINGLE(Resources)->Get<Material>("ComputeParticle");
+	mMaterial = GET_SINGLE(Resources)->Get<Material>("lightParticle");
+	mComputeMaterial = GET_SINGLE(Resources)->Get<Material>("Compute_Spread_Particle");
 
 	mSharedDataBuffer = std::make_shared<UploadBuffer<ParticleSharedData>>(DEVICE, 1, false);
 
 	mParticleData = std::make_shared<StructuredBuffer>();
-	mParticleData->Init(sizeof(ParticleData), mMaxParticle);
+	mParticleData->Init(sizeof(ParticleData), mParticleSystemData.MaxCount);
 
 	mParticleSharedData = std::make_shared<StructuredBuffer>();
 	mParticleSharedData->Init(sizeof(ParticleSharedData), 1);
@@ -33,26 +33,17 @@ void ParticleSystem::Start()
 
 void ParticleSystem::FinalUpdate()
 {
-	mAccTime += DELTA_TIME;
+	mParticleSystemData.AccTime += DELTA_TIME;
 
 	int32 addCount = 0;
-	if (mCreateInterval < mAccTime) {
-		mAccTime = mAccTime - mCreateInterval;
+	if (mCreateInterval < mParticleSystemData.AccTime) {
+		mParticleSystemData.AccTime = mParticleSystemData.AccTime - mCreateInterval;
 		addCount = 1;
 	}
 
-	ParticleSystemData particleSystemData;
-	particleSystemData.MaxCount = mMaxParticle;
-	particleSystemData.AddCount = addCount;
-	particleSystemData.AccTime = mAccTime;
-	particleSystemData.DeltaTime = DELTA_TIME;
-	particleSystemData.MinLifeTime = mMinLifeTime;
-	particleSystemData.MaxLifeTime = mMaxLifeTime;
-	particleSystemData.MinSpeed = mMinSpeed;
-	particleSystemData.MaxSpeed = mMaxSpeed;
-	particleSystemData.StartScale = mStartScale;
-	particleSystemData.EndScale = mEndScale;
-	PARTICLE_SYSTEM_DATA->CopyData(0, particleSystemData);
+	mParticleSystemData.AddCount = addCount;
+	mParticleSystemData.DeltaTime = DELTA_TIME;
+	PARTICLE_SYSTEM_DATA->CopyData(mParticleIndex, mParticleSystemData);
 
 	mParticleData->PushComputeData(UAV_REGISTER::u1);
 	mParticleSharedData->PushComputeData(UAV_REGISTER::u2);
@@ -66,5 +57,5 @@ void ParticleSystem::Render()
 
 	mMaterial->Update();
 	mParticleData->PushGraphicsData(5);
-	mMesh->Render(mMaxParticle);
+	mMesh->Render(mParticleSystemData.MaxCount);
 }

@@ -372,9 +372,6 @@
     <FxCompile Include="..\Resources\Shader\Particle_ps.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
-    <FxCompile Include="..\Resources\Shader\Particle_cs.hlsl">
-      <Filter>Shader\HLSL</Filter>
-    </FxCompile>
     <FxCompile Include="..\Resources\Shader\Particle_gs.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
@@ -400,6 +397,12 @@
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
     <FxCompile Include="..\Resources\Shader\Terrain_ds.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Snow_Particle_cs.hlsl">
+      <Filter>Shader\HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Resources\Shader\Spread_Particle_cs.hlsl">
       <Filter>Shader\HLSL</Filter>
     </FxCompile>
   </ItemGroup>
