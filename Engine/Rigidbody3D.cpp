@@ -9,7 +9,7 @@ Rigidbody3D::Rigidbody3D() : Component(COMPONENT_TYPE::RIGIDBODY3D)
 	mAccellaration = mGravity;
 	mVelocity = Vec3(0.f, 0.f, 0.f);
 
-	mUseGravity = false;
+	mUseGravity = true;
 }
 
 Rigidbody3D::~Rigidbody3D()

@@ -34,6 +34,7 @@ namespace fs = std::filesystem;
 #include "DDSTextureLoader.h"
 #include <DirectXTex/DirectXTex.h>
 #include <DirectXTex/DirectXTex.inl>
+#include <random>
 #include "SimpleMath.h"
 #include "MathHelper.h"
 #include "FBX/fbxsdk.h"

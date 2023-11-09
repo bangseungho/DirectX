@@ -40,7 +40,7 @@ PS_OUT PS_Main(VS_OUT pin)
     float4 ambient = gPassConstants.ambientLight * diffuseAlbedo;
  
     Material mat = { diffuseAlbedo, fresnelR0, shininess };
-    LightColor directLight = ComputeDirectionalLight(gPassConstants.lights[matData.lightIndex], mat, normalW, toEyeW);
+    LightColor directLight = ComputeDirectionalLight(gPassConstants.lights[gObjConstants.lightIndex], mat, normalW, toEyeW);
     
     pout.diffuse = float4(directLight.diffuse, 0.f);
     pout.specular = float4(directLight.specular, 0.f);

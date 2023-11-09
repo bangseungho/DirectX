@@ -29,7 +29,7 @@ public:
 	void Create(DXGI_FORMAT format, uint32 width, uint32 height, const D3D12_HEAP_PROPERTIES& property,
 		D3D12_HEAP_FLAGS heapFlags, RENDER_GROUP_TYPE groupType, D3D12_RESOURCE_FLAGS resFlags, Vec4 clearColor = Vec4());
 	void CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_TYPE groupType);
-	void CreateSRVFromDescHeap(TEXTURE_TYPE type = TEXTURE_TYPE::TEXTURE2D);
+	virtual void CreateSRVFromDescHeap();
 	void CreateUAVFromDescHeap();
 
 public:
@@ -47,7 +47,7 @@ public:
 	float GetWidth() { return static_cast<float>(_desc.Width); }
 	float GetHeight() { return static_cast<float>(_desc.Height); }
 
-private:
+protected:
 	ComPtr<ID3D12Resource>			_resource;
 	ComPtr<ID3D12Resource>			_uploadHeap;
 	TEXTURE_TYPE					_type; 
@@ -62,4 +62,15 @@ private:
 	ComPtr<ID3D12DescriptorHeap>	_rtvHeap;
 	ComPtr<ID3D12DescriptorHeap>	_dsvHeap;
 	CD3DX12_CPU_DESCRIPTOR_HANDLE	_srvHeapBegin = {};
+};
+
+class TextureCube : public Texture
+{
+public:
+	TextureCube();
+	virtual ~TextureCube();
+
+public:
+	virtual void CreateSRVFromDescHeap() override;
+
 };

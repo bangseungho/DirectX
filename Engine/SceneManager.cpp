@@ -17,12 +17,15 @@
 #include "TestCameraScript.h"
 #include "TestRotationScript.h"
 #include "TestAutoMoveScript.h"
-#include "TestLightMoveToCamera.h"
-#include "TestBillBoard.h"
 #include "TestScript.h"
 #include "FlashLightScript.h"
+#include "GunPlayerScript.h"
+#include "BulletScript.h"
+#include "ScoreScript.h"
 
 #include "Resources.h"
+
+default_random_engine dre;
 
 DECLARE_SINGLE(SceneManager)
 
@@ -87,9 +90,9 @@ sptr<Scene> SceneManager::LoadTestScene()
 	SetLayerName(0, L"Default");
 	SetLayerName(1, L"UI");
 #pragma endregion
-
 //============================================================================== Scene
 	sptr<Scene> scene = make_shared<Scene>();
+	sptr<GameObject> sceneMainCamera;
 //============================================================================== Camera
 #pragma region MainCamera
 	{
@@ -103,6 +106,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 		mainCamera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, true);
 		scene->SetMainCamera(mainCamera);
 		scene->AddGameObject(mainCamera);
+		sceneMainCamera = mainCamera;
 	}
 #pragma endregion
 #pragma region UICamera
@@ -154,11 +158,9 @@ sptr<Scene> SceneManager::LoadTestScene()
 			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"newjeans3");
 			meshRenderer->SetMaterial(material);
 		}
+		gameObject->AddComponent(make_shared<Collider>());
 		gameObject->AddComponent(meshRenderer);
 		gameObject->AddComponent(make_shared<TestAutoMoveScript>(transform->GetLocalPosition().x));
-		sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
-		rigid->SetMass(200.f);
-		gameObject->AddComponent(rigid);
 		gameObject->AddComponent(make_shared<Collider>());
 		scene->AddGameObject(gameObject);
 	}
@@ -179,35 +181,44 @@ sptr<Scene> SceneManager::LoadTestScene()
 		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"wall");
 		meshRenderer->SetMaterial(material);
 	}
+	gameObject->AddComponent(make_shared<Collider>());
 	gameObject->AddComponent(meshRenderer);
-	sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
-	rigid->SetMass(500.f);
-	gameObject->AddComponent(rigid);
 	scene->AddGameObject(gameObject);
 }
 #pragma endregion
 #pragma region NewjeansSphere
-{
-	sptr<GameObject> gameObject = make_shared<GameObject>();
-	gameObject->Init();
+uniform_int_distribution uid{ -3000, 3000 };
+uniform_int_distribution uidMass{ 1, 300 };
+uniform_int_distribution uidMat{ 0, 2 };
 
-	sptr<Transform> transform = gameObject->GetTransform();
-	transform->SetLocalPosition(Vec3(0.f, 0.f, 200.f));
-	transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+vector<wstring> mats = {
+		L"newjeans",
+		L"newjeans2",
+		L"newjeans3"
+};
 
-	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-	{
-		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
-		meshRenderer->SetMesh(mesh);
-		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"newjeans");
-		meshRenderer->SetMaterial(material);
-	}
-	gameObject->AddComponent(meshRenderer);
-	sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
-	rigid->SetMass(100.f);
-	gameObject->AddComponent(rigid);
-	gameObject->AddComponent(make_shared<TestRotationScript>());
-	scene->AddGameObject(gameObject);
+for (int i = 0; i < 100; ++i) {
+		sptr<GameObject> gameObject = make_shared<GameObject>();
+		gameObject->Init();
+
+		sptr<Transform> transform = gameObject->GetTransform();
+		transform->SetLocalPosition(Vec3(uid(dre), 100.f, uid(dre)));
+		transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+
+		sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		{
+			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
+			meshRenderer->SetMesh(mesh);
+			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(mats[uidMat(dre)]);
+			meshRenderer->SetMaterial(material);
+		}
+		gameObject->AddComponent(make_shared<Collider>());
+		gameObject->AddComponent(meshRenderer);
+		sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
+		rigid->SetMass(uidMass(dre));
+		gameObject->AddComponent(rigid);
+		gameObject->AddComponent(make_shared<TestRotationScript>());
+		scene->AddGameObject(gameObject);
 	}
 #pragma endregion
 #pragma region LeatherCube
@@ -227,9 +238,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
-	sptr<Rigidbody3D> rigid = make_shared<Rigidbody3D>();
-	rigid->SetMass(500.f);
-	gameObject->AddComponent(rigid);
+	gameObject->AddComponent(make_shared<Collider>());
 	scene->AddGameObject(gameObject);
 }
 #pragma endregion
@@ -330,6 +339,39 @@ sptr<Scene> SceneManager::LoadTestScene()
 	scene->AddGameObject(gameObject);
 }
 #pragma endregion
+#pragma region UIScore
+{
+	sptr<GameObject> gameObject = make_shared<GameObject>();
+	gameObject->Init();
+	gameObject->SetCheckFrustum(false);
+
+	array<sptr<GameObject>, 3> scores;
+	for (int i = 0; i < 3; ++i) {
+		scores[i] = make_shared<GameObject>();
+		scores[i]->Init();
+		scores[i]->SetCheckFrustum(false);
+		scores[i]->SetLayerIndex(GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI"));
+		scores[i]->GetTransform()->SetLocalScale(Vec3(70.f, 70.f, 70.f));
+		scores[i]->GetTransform()->SetLocalPosition(Vec3(320 - i * 70, 250.f, 500.f));
+
+		sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		{
+			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
+			meshRenderer->SetMesh(mesh);
+			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"Number0");
+			meshRenderer->SetMaterial(material);
+		}
+		scores[i]->AddComponent(meshRenderer);
+		scene->AddGameObject(scores[i]);
+	}
+	auto scoreScript = make_shared<ScoreScript>();
+	scoreScript->SetScores(scores);
+	GET_SINGLE(Resources)->Add<Component>(L"ScoreScript", scoreScript);
+	gameObject->AddComponent(scoreScript);
+
+	scene->AddGameObject(gameObject);
+}
+#pragma endregion
 //============================================================================== Light
 #pragma region Directional Light
 	{
@@ -337,7 +379,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 		light->AddComponent(make_shared<Transform>());
 		light->AddComponent(make_shared<Light>());
 		light->GetLight()->SetLightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
-		light->GetLight()->SetLightDirection(Vec3(1.f, -1.f, 1.f));
+		light->GetLight()->SetLightDirection(Vec3(-1.f, -1.f, -1.f));
 		light->GetLight()->SetLightStrenth(Vec3(0.8f, 0.8f, 0.8f));
 		scene->AddGameObject(light);
 	}
@@ -359,6 +401,35 @@ sptr<Scene> SceneManager::LoadTestScene()
 		sptr<GameObject> light = make_shared<GameObject>();
 		light->AddComponent(make_shared<Transform>());
 		light->AddComponent(make_shared<Light>());
+		light->GetTransform()->SetLocalPosition(Vec3(328.f, 345.f, 389.f));
+		light->GetLight()->SetLightType(LIGHT_TYPE::SPOT_LIGHT);
+		light->GetLight()->SetLightDirection(Vec3(0.f, -1.f, 0.f));
+		light->GetLight()->SetLightStrenth(Vec3(0.f, 100.f, 100.f));
+		light->GetLight()->SetFallOff(1.f, 1000.f);
+		light->GetLight()->SetSpotPower(100.f);
+		scene->AddGameObject(light);
+	}
+#pragma endregion
+
+#pragma region SpotLight
+	{
+		sptr<GameObject> light = make_shared<GameObject>();
+		light->AddComponent(make_shared<Transform>());
+		light->AddComponent(make_shared<Light>());
+		light->GetTransform()->SetLocalPosition(Vec3(379.f, 345.f, 327.f));
+		light->GetLight()->SetLightType(LIGHT_TYPE::SPOT_LIGHT);
+		light->GetLight()->SetLightDirection(Vec3(0.f, -1.f, 0.f));
+		light->GetLight()->SetLightStrenth(Vec3(20.f, 50.f, 100.f));
+		light->GetLight()->SetFallOff(1.f, 1000.f);
+		light->GetLight()->SetSpotPower(100.f);
+		scene->AddGameObject(light);
+	}
+#pragma endregion
+#pragma region SpotLight
+	{
+		sptr<GameObject> light = make_shared<GameObject>();
+		light->AddComponent(make_shared<Transform>());
+		light->AddComponent(make_shared<Light>());
 		light->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
 		light->GetLight()->SetLightType(LIGHT_TYPE::SPOT_LIGHT);
 		light->GetLight()->SetLightDirection(Vec3(1.f, 0.f, 0.f));
@@ -367,7 +438,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 		light->GetLight()->SetSpotPower(30.f);
 
 		auto flashLightScript = make_shared<FlashLightScript>();
-		flashLightScript->SetCameraObject(scene->GetMainCamera());
+		flashLightScript->SetCameraObject(sceneMainCamera);
 		light->AddComponent(flashLightScript);
 		
 		scene->AddGameObject(light);
@@ -378,44 +449,42 @@ sptr<Scene> SceneManager::LoadTestScene()
 	{
 		sptr<GameObject> particle = make_shared<GameObject>();
 		particle->AddComponent(make_shared<Transform>());
+		particle->SetCheckFrustum(false);
+		particle->GetTransform()->SetParent(sceneMainCamera->GetTransform());
 
 		auto particleSystem = make_shared<ParticleSystem>();
 		particleSystem->SetMaterial(GET_SINGLE(Resources)->Get<Material>(L"SnowParticle"));
 		particleSystem->SetComputeMaterial(GET_SINGLE(Resources)->Get<Material>(L"Compute_Snow_Particle"));
 		particleSystem->SetParticleIndex(0);
+
 		auto& particleSystemData = particleSystem->GetParticleSystemData();
 		particleSystemData.MaxCount = 300;
 		particleSystemData.MinSpeed = 10;
 		particleSystemData.MaxSpeed = 1;
 		particleSystemData.StartScale = 1.f;
 		particleSystemData.EndScale = 0.5f;
+
 		particle->AddComponent(particleSystem);
-
-		particle->SetCheckFrustum(false);
-		particle->GetTransform()->SetLocalPosition(Vec3(50.f, 100.f, 100.f));
-		particle->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-
-		auto moveToCamera = make_shared<TestLightMoveToCamera>();
-		moveToCamera->SetGameObject(scene->GetMainCamera());
-		particle->AddComponent(moveToCamera);
-
 		scene->AddGameObject(particle);
 	}
 #pragma endregion
 #pragma region ParticleSystem
 	{
-		sptr<GameObject> particle = make_shared<GameObject>();
-		particle->AddComponent(make_shared<Transform>());
+		for (int i = 0; i < 50; ++i) {
+			sptr<GameObject> particle = make_shared<GameObject>();
+			particle->AddComponent(make_shared<Transform>());
 
-		auto particleSystem = make_shared<ParticleSystem>();
-		particleSystem->SetMaterial(GET_SINGLE(Resources)->Get<Material>(L"lightParticle"));
-		particleSystem->SetParticleIndex(1);
-		particle->AddComponent(particleSystem);
+			sptr<ParticleSystem> particleSystem = make_shared<HitParticleSystem>();
+			particleSystem->SetMaterial(GET_SINGLE(Resources)->Get<Material>(L"lightParticle"));
+			particleSystem->SetParticleIndex(1);
+			particle->AddComponent(particleSystem);
+			particle->SetActive(false);
 
-		particle->SetCheckFrustum(false);
-		particle->GetTransform()->SetLocalPosition(Vec3(-50.f, 100.f, 100.f));
-		particle->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-		scene->AddGameObject(particle);
+			particle->SetCheckFrustum(false);
+			particle->GetTransform()->SetLocalPosition(Vec3(-50.f, 100.f, 100.f));
+			particle->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+			scene->AddGameObject(particle);
+		}
 	}
 #pragma endregion
 //============================================================================== Terrain
@@ -446,6 +515,23 @@ sptr<Scene> SceneManager::LoadTestScene()
 
 #pragma region FBX
 	{
+		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Building.fbx");
+
+		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+
+		for (auto& gameObject : gameObjects)
+		{
+			gameObject->SetName(L"Building");
+			gameObject->SetCheckFrustum(false);
+			gameObject->GetTransform()->SetLocalPosition(Vec3(500.f, -100.f, 500.f));
+			gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+			scene->AddGameObject(gameObject);
+		}
+	}
+#pragma endregion
+
+#pragma region FBX
+	{
 		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Dragon.fbx");
 
 		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
@@ -454,14 +540,58 @@ sptr<Scene> SceneManager::LoadTestScene()
 		{
 			gameObject->SetName(L"Dragon");
 			gameObject->SetCheckFrustum(false);
-			gameObject->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 300.f));
-			gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+			gameObject->GetTransform()->SetLocalPosition(Vec3(1000.f, -100.f, 500.f));
+			gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, 90.f, 0.f));
+			gameObject->GetTransform()->SetLocalScale(Vec3(50.f, 50.f, 50.f));
 			scene->AddGameObject(gameObject);
 		}
 	}
 #pragma endregion
 
+#pragma region GunPlayer
+	{
+		shared_ptr<GameObject> gunObject = make_shared<GameObject>();
+		gunObject->Init();
 
+		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Sniper.fbx");
+		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+
+		auto gunPlayerScript = make_shared<GunPlayerScript>();
+		gunPlayerScript->SetCameraObject(sceneMainCamera);
+
+		scene->AddGameObject(gunObject);
+		for (auto& gameObject : gameObjects)
+		{
+			gameObject->SetName(L"Sniper");
+			gameObject->SetCheckFrustum(false);
+			gunPlayerScript->GetGunParts().push_back(gameObject);
+			scene->AddGameObject(gameObject);
+		}
+		
+		for (int i = 0; i < 50; ++i) {
+			shared_ptr<GameObject> bullet = make_shared<GameObject>();
+			bullet->Init();
+			bullet->SetActive(false);
+			sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+			{
+				sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadSphereMesh();
+				meshRenderer->SetMesh(mesh);
+				sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"newjeans");
+				meshRenderer->SetMaterial(material);
+			}
+			bullet->GetTransform()->SetLocalScale(Vec3(5.f));
+			bullet->GetTransform()->SetLocalPosition(Vec3(8.f, 0.7f, 0.f));
+			auto bulletScript = make_shared<BulletScript>();
+			bullet->AddComponent(bulletScript);
+			bullet->AddComponent(meshRenderer);
+			scene->AddGameObject(bullet);
+
+			gunPlayerScript->GetBullets().push_back(bullet);
+		}
+		
+		gunObject->AddComponent(gunPlayerScript);
+	}
+#pragma endregion
 	return scene;
 }
 

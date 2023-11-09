@@ -59,12 +59,18 @@ void GameObject::FixedUpdate()
 {
 	for (shared_ptr<Component>& component : mComponents)
 	{
+		if (false == mActiveSelf)
+			continue;
+
 		if (component)
 			component->FixedUpdate();
 	}
 
 	for (shared_ptr<MonoBehaviour>& script : mScripts)
 	{
+		if (false == mActiveSelf)
+			continue;
+
 		script->FixedUpdate();
 	}
 }
@@ -73,12 +79,18 @@ void GameObject::Update()
 {
 	for (shared_ptr<Component>& component : mComponents)
 	{
+		if (false == mActiveSelf)
+			continue;
+
 		if (component)
 			component->Update();
 	}
 
 	for (shared_ptr<MonoBehaviour>& script : mScripts)
 	{
+		if (false == mActiveSelf)
+			continue;
+
 		script->Update();
 	}
 }
@@ -87,12 +99,18 @@ void GameObject::LateUpdate()
 {
 	for (shared_ptr<Component>& component : mComponents)
 	{
+		if (false == mActiveSelf)
+			continue;
+
 		if (component)
 			component->LateUpdate();
 	}
 
 	for (shared_ptr<MonoBehaviour>& script : mScripts)
 	{
+		if (false == mActiveSelf)
+			continue;
+
 		script->LateUpdate();
 	}
 }
@@ -101,12 +119,18 @@ void GameObject::FinalUpdate()
 {
 	for (shared_ptr<Component>& component : mComponents)
 	{
+		if (false == mActiveSelf)
+			continue;
+
 		if (component)
 			component->FinalUpdate();
 	}
 
 	for (shared_ptr<MonoBehaviour>& script : mScripts)
 	{
+		if (false == mActiveSelf)
+			continue;
+
 		script->FinalUpdate();
 	}
 }

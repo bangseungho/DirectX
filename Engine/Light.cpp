@@ -20,7 +20,6 @@ void Light::Render()
 {
 	GetTransform()->PushData();
 
-	mLightMaterial->SetLightIndex(mLightIndex);
 	mLightMaterial->Update();
 
 	switch (static_cast<LIGHT_TYPE>(mLightInfo.LightType))

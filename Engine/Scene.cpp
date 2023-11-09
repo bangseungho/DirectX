@@ -111,6 +111,12 @@ void Scene::AddGameObject(sptr<GameObject> gameObject)
 	else if (gameObject->GetLight() != nullptr)
 		mLightObjects.push_back(gameObject->GetLight());
 
+	else if (gameObject->GetParticleSystem() != nullptr)
+		mParticleObjects.push_back(gameObject);
+
+	else if (gameObject->GetParticleSystem() != nullptr)
+		mParticleObjects.push_back(gameObject);
+
 	mGameObjects.push_back(gameObject);
 }
 

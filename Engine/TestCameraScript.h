@@ -11,6 +11,6 @@ public:
 
 private:
 	float mTranslationSpeed = 200.f;
-	float mRotationSpeed = 2.f;
+	float mRotationSpeed = 200.f;
 };
 

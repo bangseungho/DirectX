@@ -3,6 +3,8 @@
 #include "Material.h"
 #include "Camera.h"
 #include "GameObject.h"
+#include "ParticleSystem.h"
+#include "ScoreScript.h"
 
 class Scene
 {
@@ -26,7 +28,9 @@ public:
 
 	const vector<sptr<GameObject>>& GetGameObjects() { return mGameObjects; }
 	const vector<sptr<Camera>>& GetCameraObjects() { return mCameraObjects; }
+	vector<sptr<GameObject>>& GetParticleObjects() { return mParticleObjects; }
 	sptr<Camera>& GetMainCamera() { return mMainCamera; }
+	sptr<ScoreScript>& GetScoreObject() { return mScoreObject; }
 
 	void SetMainCamera(sptr<GameObject> camera) { mMainCamera = camera->GetCamera(); }
 
@@ -37,6 +41,9 @@ private:
 	vector<sptr<Camera>>				mCameraObjects;
 	sptr<Camera>						mMainCamera;
 
-	vector<shared_ptr<class Light>>		mLightObjects;
+	vector<sptr<class Light>>		mLightObjects;
+	vector<sptr<GameObject>>		mParticleObjects;
+
+	sptr<ScoreScript>				mScoreObject;
 };
 

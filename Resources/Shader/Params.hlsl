@@ -1,6 +1,6 @@
 #ifndef _PARAMS_HLSL_
 #define _PARAMS_HLSL_
-#define MAX_LIGHTS 200
+#define MAX_LIGHTS 50
 #define TEXTURE2D_COUNT 11
 
 #define POSITIONMAP_INDEX 0
@@ -74,7 +74,8 @@ struct ObjectData
     row_major matrix    ViewProj;
     row_major matrix    texTransform;
     uint                materialIndex;
-    float3              Padding;
+    int                 lightIndex;
+    float2              Padding;
 };
 
 struct MaterialData
@@ -87,8 +88,8 @@ struct MaterialData
     uint                normalMapIndex;
     uint                roughnessMapIndex;
     uint                heightMapIndex;
-    int                 lightIndex;
-    float3              Padding;
+    float2	            ScoreIndex;
+	float2	            Padding;
 };
 
 struct TerrainData
@@ -114,15 +115,40 @@ struct Particle
     float2  StartEndScale;
     float   Padding;
 };
-StructuredBuffer<Particle> gOutputParticle : register(t4, space2);
-StructuredBuffer<TerrainData> gTerrainData : register(t4, space3);
+
+struct ParticleSystemData
+{
+    float   DeltaTime;
+    uint    AddCount;
+	float   AccTime;
+	uint    MaxCount;
+	float   MinLifeTime;
+	float   MaxLifeTime;
+	float   MinSpeed;
+	float   MaxSpeed;
+    float   StartScale;
+    float   EndScale;
+    float2  Padding;
+};
+
+struct ComputeShared
+{
+    int     AddCount;
+    float3  Padding;
+};
+
+Texture2D gTextureMaps[TEXTURE2D_COUNT] : register(t0, space0);
+TextureCube gCubeMap : register(t0, space1);
+StructuredBuffer<MaterialData> gMaterialData : register(t1, space1);
+StructuredBuffer<Particle> gOutputParticle : register(t2, space1);
+StructuredBuffer<TerrainData> gTerrainData : register(t3, space1);
+StructuredBuffer<ParticleSystemData> gParticleSystemData : register(t4, space1);
 
 ConstantBuffer<PassConstants> gPassConstants : register(b0);
 ConstantBuffer<ObjectData> gObjConstants : register(b1);
-StructuredBuffer<MaterialData> gMaterialData : register(t0, space1);
 
-TextureCube gCubeMap : register(t0);
-Texture2D gTextureMaps[TEXTURE2D_COUNT] : register(t1);
+RWStructuredBuffer<ComputeShared> gSharedData : register(u0, space0);
+RWStructuredBuffer<Particle> gInputParticle : register(u1, space0);
 
 SamplerState gsamPointWrap        : register(s0);
 SamplerState gsamPointClamp       : register(s1);

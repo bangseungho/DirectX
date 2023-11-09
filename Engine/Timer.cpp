@@ -1,5 +1,8 @@
 #include "pch.h"
 #include "Timer.h"
+#include "SceneManager.h"
+#include "Scene.h"
+#include "Transform.h"
 
 DECLARE_SINGLE(Timer)
 
@@ -101,10 +104,22 @@ void Timer::CalculateFrameStats()
 		mFps = (float)frameCnt;
 		mSpf = 1000.0f / mFps;
 
+		Vec3 cameraPosition = GET_SINGLE(SceneManager)->GetActiveScene()->GetMainCamera()->GetTransform()->GetLocalPosition();
+
+		wstring camPosX = to_wstring(cameraPosition.x);
+		wstring camPosY = to_wstring(cameraPosition.y);
+		wstring camPosZ = to_wstring(cameraPosition.z);
+
 		wstring fpsStr = to_wstring(mFps);
 		wstring mspfStr = to_wstring(mSpf);
 		wstring wndCaption = L"DirectX Game";
-		wstring windowText = wndCaption + L"    fps: " + fpsStr + L"   mspf: " + mspfStr;
+		wstring windowText = wndCaption
+			+ L"    fps: " + fpsStr
+			+ L"   mspf: " + mspfStr
+			+ L"   PosX: " + camPosX
+			+ L"   PosY: " + camPosY
+			+ L"   PosZ: " + camPosZ;
+
 
 		SetWindowText(mInfo.Hwnd, windowText.c_str());
 

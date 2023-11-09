@@ -7,11 +7,12 @@ public:
 	FlashLightScript() {};
 	virtual ~FlashLightScript() {};
 
-	void SetCameraObject(sptr<class Camera> target) { mTarget = target; }
+	void SetCameraObject(sptr<class GameObject> target) { mTarget = target; }
 
+	virtual void Start() override;
 	virtual void LateUpdate() override;
 
 private:
-	sptr<class Camera> mTarget;
+	sptr<GameObject> mTarget;
 };
 

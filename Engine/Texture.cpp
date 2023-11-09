@@ -24,6 +24,8 @@ void Texture::Load(const wstring& path)
 	_desc = _resource->GetDesc();
 
 	gEngine->GetGraphicsCmdQueue()->FlushResourceCommandQueue();
+
+	CreateSRVFromDescHeap();
 }
 
 void Texture::LoadFromWICFile(const wstring& path)
@@ -162,7 +164,7 @@ void Texture::CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_T
 		case RENDER_GROUP_TYPE::G_BUFFER:
 		case RENDER_GROUP_TYPE::LIGHTING:
 		case RENDER_GROUP_TYPE::COMPUTE:
-			CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURE2D);
+			CreateSRVFromDescHeap();
 			break;
 		default:
 			break;
@@ -170,9 +172,8 @@ void Texture::CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_T
 	}
 }
 
-void Texture::CreateSRVFromDescHeap(TEXTURE_TYPE type)
+void Texture::CreateSRVFromDescHeap()
 {
-	_type = type;
 	_texHeapIndex = DESCHEAP->AddSrvCount();
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
@@ -180,19 +181,7 @@ void Texture::CreateSRVFromDescHeap(TEXTURE_TYPE type)
 	srvDesc.Format = _resource->GetDesc().Format;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = 1;
-
-	switch (type)
-	{
-	case TEXTURE_TYPE::TEXTURE2D:
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		break;
-	case TEXTURE_TYPE::TEXTURECUBE:
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
-		srvDesc.TextureCube.MipLevels = _resource->GetDesc().MipLevels;
-		srvDesc.TextureCube.ResourceMinLODClamp = 0.f;
-		DESCHEAP->SetSkyTexHeapIndex(_texHeapIndex);
-		break;
-	}
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 
 	CD3DX12_CPU_DESCRIPTOR_HANDLE srvHeapBegin = CD3DX12_CPU_DESCRIPTOR_HANDLE(DESCHEAP->GetSRVHandle());
 	srvHeapBegin.Offset(_texHeapIndex, DESCHEAP->GetCbvSrvUavDescriptorSize());
@@ -212,4 +201,33 @@ void Texture::CreateUAVFromDescHeap()
 	uavHeapBegin.Offset(_uavHeapIndex, DESCHEAP->GetCbvSrvUavDescriptorSize());
 
 	DEVICE->CreateUnorderedAccessView(_resource.Get(), nullptr, &uavDesc, uavHeapBegin);
+}
+
+TextureCube::TextureCube()
+{
+}
+
+TextureCube::~TextureCube()
+{
+}
+
+void TextureCube::CreateSRVFromDescHeap()
+{
+	_texHeapIndex = DESCHEAP->AddSrvCount();
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = _resource->GetDesc().Format;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = 1;
+
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+	srvDesc.TextureCube.MipLevels = _resource->GetDesc().MipLevels;
+	srvDesc.TextureCube.ResourceMinLODClamp = 0.f;
+	DESCHEAP->SetSkyTexHeapIndex(_texHeapIndex);
+
+	CD3DX12_CPU_DESCRIPTOR_HANDLE srvHeapBegin = CD3DX12_CPU_DESCRIPTOR_HANDLE(DESCHEAP->GetSRVHandle());
+	srvHeapBegin.Offset(_texHeapIndex, DESCHEAP->GetCbvSrvUavDescriptorSize());
+
+	DEVICE->CreateShaderResourceView(_resource.Get(), &srvDesc, srvHeapBegin);
 }

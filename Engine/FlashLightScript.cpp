@@ -5,11 +5,13 @@
 #include "Transform.h"
 #include "Camera.h"
 
+void FlashLightScript::Start()
+{
+	GetTransform()->SetParent(mTarget->GetTransform());
+}
+
 void FlashLightScript::LateUpdate()
 {
-	Vec3 targetPos = mTarget->GetTransform()->GetLocalPosition();
-	GetTransform()->SetLocalPosition(targetPos);
-
 	Vec3 targetDir = mTarget->GetTransform()->GetLook();
 	GetGameObject()->GetLight()->SetLightDirection(targetDir);
 }

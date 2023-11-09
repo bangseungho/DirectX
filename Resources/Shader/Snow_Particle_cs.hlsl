@@ -4,36 +4,6 @@
 #include "Params.hlsl"
 #include "Utils.hlsl"
 
-struct ParticleSystemData
-{
-    float   DeltaTime;
-    uint    AddCount;
-	float   AccTime;
-	uint    MaxCount;
-	float   MinLifeTime;
-	float   MaxLifeTime;
-	float   MinSpeed;
-	float   MaxSpeed;
-    float   StartScale;
-    float   EndScale;
-    float2  Padding;
-};
-
-struct ComputeShared
-{
-    int     AddCount;
-    float3  Padding;
-};
-
-RWStructuredBuffer<ComputeShared> gSharedData : register(u1);
-RWStructuredBuffer<Particle> gInputParticle : register(u2);
-StructuredBuffer<ParticleSystemData> gParticleSystemData : register(t0);
-
-// Require
-// DeltaTime / AccTime
-// Particle Max Count
-// AddCount
-// MinLifeTime / MaxLifeTime / MinSpeed / MaxSpeed
 [numthreads(512, 1, 1)]
 void CS_Main(int3 threadIndex : SV_DispatchThreadID)
 {

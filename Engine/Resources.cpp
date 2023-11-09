@@ -506,6 +506,25 @@ void Resources::CreateDefaultShader()
 		Add<Shader>(L"Forward", shader);
 	}
 
+	// Score
+	{
+		ShaderInfo info = {
+			SHADER_TYPE::FORWARD,
+		};
+
+		ShaderPath path = {
+			 L"..\\Output\\cso\\Score_vs.cso",
+			 L"",
+			 L"",
+			 L"",
+			 L"..\\Output\\cso\\Score_ps.cso"
+		};
+
+		sptr<Shader> shader = make_shared<Shader>();
+		shader->LoadGraphicsShader(info, path);
+		Add<Shader>(L"Score", shader);
+	}
+
 	// Grid
 	{
 		ShaderInfo info = {
@@ -750,7 +769,15 @@ void Resources::CreateDefaultTexture()
 		L"Dragon_Nor.jpg",
 		L"Dragon_Nor_mirror2.jpg",
 		
-		L"skybox",
+		L"Col Klein Haus_C.jpg",
+		L"Col Klein Haus_N.jpg",
+		L"Col Klein Haus_S.jpg",
+
+		L"KSR29sniperrifle_Base_Color.jpg",
+		L"KSR29sniperrifle_Normal_OpenGL.jpg",
+		L"KSR29sniperrifle_Roughness.jpg",
+
+		L"Number",
 	};
 
 	vector<wstring> texFileNames = {
@@ -779,23 +806,23 @@ void Resources::CreateDefaultTexture()
 		L"..\\Resources\\FBX\\dragon.fbm\\Dragon_Nor.jpg",
 		L"..\\Resources\\FBX\\dragon.fbm\\Dragon_Nor_mirror2.jpg",
 
-		L"..\\Resources\\Texture\\cubemap.dds",
+		L"..\\Resources\\FBX\\building.fbm\\Col Klein Haus_C.jpg",
+		L"..\\Resources\\FBX\\building.fbm\\Col Klein Haus_N.jpg",
+		L"..\\Resources\\FBX\\building.fbm\\Col Klein Haus_S.jpg",
+
+		L"..\\Resources\\FBX\\sniper.fbm\\KSR29sniperrifle_Base_Color.jpg",
+		L"..\\Resources\\FBX\\sniper.fbm\\KSR29sniperrifle_Normal_OpenGL.jpg",
+		L"..\\Resources\\FBX\\sniper.fbm\\KSR29sniperrifle_Roughness.jpg",
+
+		L"..\\Resources\\Texture\\Number.dds",
 	};
 
-	for (int i = 0; i < TEXTUREFILE_COUNT; ++i) {
-		auto texMap = GET_SINGLE(Resources)->Load<Texture>(texNames[i], texFileNames[i]);
+	for (int i = 0; i < texNames.size(); ++i)
+		GET_SINGLE(Resources)->Load<Texture>(texNames[i], texFileNames[i]);
 
-		if (i == (TEXTUREFILE_COUNT - 1))
-			texMap->CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURECUBE);
-		else
-			texMap->CreateSRVFromDescHeap(TEXTURE_TYPE::TEXTURE2D);
-	}
-
-	sptr<Texture> texture = GET_SINGLE(Resources)->CreateTexture(L"UAVTexture",
-		DXGI_FORMAT_R8G8B8A8_UNORM, 1024, 1024,
-		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
-		D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::COMPUTE,
-		D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
+	wstring cubeMapName = L"skybox";
+	wstring cubeMapFileName = L"..\\Resources\\Texture\\cubemap.dds";
+	GET_SINGLE(Resources)->Load<TextureCube>(cubeMapName, cubeMapFileName);
 }
 
 void Resources::CreateDefaultMaterial()
@@ -900,7 +927,7 @@ void Resources::CreateDefaultMaterial()
 	{
 		shared_ptr<Shader> shader = Get<Shader>(L"SkyBox");
 		auto skybox = make_shared<Material>();
-		skybox->SetDiffuseSrvHeapIndex(Get<Texture>(L"skybox")->GetTexHeapIndex());
+		skybox->SetDiffuseSrvHeapIndex(Get<TextureCube>(L"skybox")->GetTexHeapIndex());
 		skybox->SetShader(shader);
 		Add<Material>(L"skybox", move(skybox));
 
@@ -999,4 +1026,29 @@ void Resources::CreateDefaultMaterial()
 		terrain->SetShader(shader);
 		Add<Material>(L"Terrain", terrain);
 	}
+
+	{
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Score");
+		float dU = 1.f / 5.f;
+		float dV = 1.f / 2.f;
+		for (int i = 0; i < 10; ++i)
+		{
+			shared_ptr<Material> number = make_shared<Material>();
+			number->SetDiffuseSrvHeapIndex(Get<Texture>(L"Number")->GetTexHeapIndex());
+			number->SetShader(shader);
+			number->SetScoreIndex(Vec2(i % 5, i / 5));
+
+			Matrix matTrans = Matrix::CreateScale(0.2f, 0.5f, 1.f);
+
+			number->SetMatTransform(matTrans);
+			
+			wstring num = to_wstring(i);
+			Add<Material>(L"Number" + num, number);
+		}
+	}
+
+	//float numberW = GET_SINGLE(Resources)->Get<Texture>(L"Number")->GetWidth();
+	//float numberH = GET_SINGLE(Resources)->Get<Texture>(L"Number")->GetHeight();
+	//float dW = numberW / 5.f;
+	//float dH = numberH / 2.f;
 }

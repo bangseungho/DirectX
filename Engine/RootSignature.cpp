@@ -10,20 +10,20 @@ void RootSignature::Init()
 
 void RootSignature::CreateGraphicsRootSignature()
 {
-	CD3DX12_DESCRIPTOR_RANGE texCubeTable;
-	texCubeTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURECUBE_COUNT, 0);
-
 	CD3DX12_DESCRIPTOR_RANGE tex2DTable;
-	tex2DTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURE2D_COUNT + COMPUTE_TEXTURE_COUNT, 1);
+	tex2DTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURE2D_COUNT + COMPUTE_TEXTURE_COUNT, 0, 0);
+
+	CD3DX12_DESCRIPTOR_RANGE texCubeTable;
+	texCubeTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURECUBE_COUNT, 0, 1);
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[7];
-	slotRootParameter[0].InitAsConstantBufferView(0);
-	slotRootParameter[1].InitAsConstantBufferView(1);
-	slotRootParameter[2].InitAsShaderResourceView(0, 1);
-	slotRootParameter[3].InitAsDescriptorTable(1, &texCubeTable);
-	slotRootParameter[4].InitAsDescriptorTable(1, &tex2DTable);
-	slotRootParameter[5].InitAsShaderResourceView(4, 2);
-	slotRootParameter[6].InitAsShaderResourceView(4, 3);
+	slotRootParameter[0].InitAsConstantBufferView(0);				// pass constants
+	slotRootParameter[1].InitAsConstantBufferView(1);				// object constants
+	slotRootParameter[2].InitAsShaderResourceView(1, 1);			// material data
+	slotRootParameter[3].InitAsShaderResourceView(2, 1);			// output particle data
+	slotRootParameter[4].InitAsShaderResourceView(3, 1);			// terrain data
+	slotRootParameter[5].InitAsDescriptorTable(1, &tex2DTable);		// textures
+	slotRootParameter[6].InitAsDescriptorTable(1, &texCubeTable);	// cubemap
 
 	auto staticSamplers = GetStaticSamplers();
 	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(7, slotRootParameter,
@@ -44,16 +44,16 @@ void RootSignature::CreateGraphicsRootSignature()
 
 void RootSignature::CreateComputeRootSignature()
 {
-	CD3DX12_DESCRIPTOR_RANGE uavTable1;
-	uavTable1.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1);
+	CD3DX12_DESCRIPTOR_RANGE sharedDataTable;
+	sharedDataTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 0);
 
-	CD3DX12_DESCRIPTOR_RANGE uavTable2;
-	uavTable2.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 2);
+	CD3DX12_DESCRIPTOR_RANGE inputParticleDataTable;
+	inputParticleDataTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_UAV, 1, 1);
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[3];
-	slotRootParameter[0].InitAsShaderResourceView(0);
-	slotRootParameter[1].InitAsDescriptorTable(1, &uavTable2); // inputparticle 
-	slotRootParameter[2].InitAsDescriptorTable(1, &uavTable1); // shared
+	slotRootParameter[0].InitAsShaderResourceView(4, 1);						// particle system data
+	slotRootParameter[1].InitAsDescriptorTable(1, &inputParticleDataTable);		// input particle data 
+	slotRootParameter[2].InitAsDescriptorTable(1, &sharedDataTable);			// compute shared data
 
 	CD3DX12_ROOT_SIGNATURE_DESC rootSigDesc(3, slotRootParameter,
 		0, nullptr,

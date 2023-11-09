@@ -10,6 +10,6 @@ public:
 	virtual void LateUpdate() override;
 
 private:
-	float mRotationSpeed = 2.f;
+	float mRotationSpeed = 200.f;
 };
 

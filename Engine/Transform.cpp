@@ -4,6 +4,7 @@
 #include "Camera.h"
 #include "GameObject.h"
 #include "Collider.h"
+#include "Light.h"
 
 Transform::Transform() : Component(COMPONENT_TYPE::TRANSFORM)
 {
@@ -18,9 +19,9 @@ Transform::~Transform()
 void Transform::FinalUpdate()
 {
 	Matrix matScale = Matrix::CreateScale(mLocalScale);
-	Matrix matRotation = Matrix::CreateRotationX(mLocalRotation.x);
-	matRotation *= Matrix::CreateRotationY(mLocalRotation.y);
-	matRotation *= Matrix::CreateRotationZ(mLocalRotation.z);
+	Matrix matRotation = Matrix::CreateRotationX(XMConvertToRadians(mLocalRotation.x));
+	matRotation *= Matrix::CreateRotationY(XMConvertToRadians(mLocalRotation.y));
+	matRotation *= Matrix::CreateRotationZ(XMConvertToRadians(mLocalRotation.z));
 	Matrix matTranslation = Matrix::CreateTranslation(mLocalPosition);
 
 	mMatLocal = matScale * matRotation * matTranslation;
@@ -38,6 +39,8 @@ void Transform::PushData()
 	ObjectData objectData = {};
 	objectData.MatWorld = mMatWorld;
 	objectData.TexTransform = mTexTransform;
+	if (GetGameObject()->GetLight() != nullptr)
+		objectData.LightIndex = GetGameObject()->GetLight()->GetLightIndex();
 	objectData.MaterialIndex = GetGameObject()->GetMatIndex();
 	objectData.MatViewProj = Camera::sMatView * Camera::sMatProjection;
 

@@ -23,6 +23,9 @@ void MeshRenderer::Render()
 		if (material == nullptr || material->GetShader() == nullptr)
 			continue;
 
+		if (!GetGameObject()->GetActive())
+			continue;
+
 		GetTransform()->PushData();
 		material->Update();
 		mMesh->Render(1, i);

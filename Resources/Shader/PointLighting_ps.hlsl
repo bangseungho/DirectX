@@ -21,7 +21,7 @@ PS_OUT PS_Main(VS_OUT pin)
     PS_OUT pout = (PS_OUT)0;
     
     MaterialData matData = gMaterialData[gObjConstants.materialIndex];
-    LightInfo light = gPassConstants.lights[matData.lightIndex];
+    LightInfo light = gPassConstants.lights[gObjConstants.lightIndex];
     
     float2 Uv = float2(pin.posH.x / gPassConstants.Width, pin.posH.y / gPassConstants.Height);
     float3 posW = gTextureMaps[POSITIONMAP_INDEX].Sample(gsamAnisotropicWrap, Uv).xyz;

@@ -37,6 +37,8 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     // 베이스 컬러
     diffuseAlbedo = gTextureMaps[diffuseMapIndex].Sample(gsamAnisotropicWrap, pin.Uv) * diffuseAlbedo;
     
+    clip(diffuseAlbedo.a - 0.1);
+    
     // 노멀 맵
     float4 normalMap = gTextureMaps[normalMapIndex].Sample(gsamAnisotropicWrap, pin.Uv);
     float3 bumpedNormalW = NormalToWorldSpace(normalMap.rgb, pin.normalW, pin.tangentW);

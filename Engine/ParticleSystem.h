@@ -19,7 +19,7 @@ public:
 	virtual void FinalUpdate();
 	void Render();
 	
-private:
+protected:
 	sptr<class Material>	mMaterial;
 	sptr<class Material>	mComputeMaterial;
 	sptr<class Mesh>		mMesh;
@@ -35,4 +35,16 @@ private:
 	int32 mParticleIndex = -1;
 
 	sptr<UploadBuffer<ParticleSharedData>> mSharedDataBuffer;
+};
+
+class HitParticleSystem : public ParticleSystem
+{
+public:
+	HitParticleSystem();
+	virtual ~HitParticleSystem();
+
+	virtual void FinalUpdate();
+
+private:
+	float mLifeTime = 0.f;
 };

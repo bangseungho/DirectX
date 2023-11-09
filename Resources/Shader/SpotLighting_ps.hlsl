@@ -21,7 +21,7 @@ PS_OUT PS_Main(VS_OUT pin)
     PS_OUT pout = (PS_OUT)0;
     
     MaterialData matData = gMaterialData[gObjConstants.materialIndex];
-    LightInfo light = gPassConstants.lights[matData.lightIndex];
+    LightInfo light = gPassConstants.lights[gObjConstants.lightIndex];
     
     float2 Uv = float2(pin.posH.x / gPassConstants.Width, pin.posH.y / gPassConstants.Height);
     float3 posW = gTextureMaps[POSITIONMAP_INDEX].Sample(gsamAnisotropicWrap, Uv).xyz;
@@ -45,9 +45,9 @@ PS_OUT PS_Main(VS_OUT pin)
     float4 ambient = gPassConstants.ambientLight * diffuseAlbedo;
     
     Material mat = { diffuseAlbedo, fresnelR0, shininess };
-    LightColor directLight = ComputeSpotLight(gPassConstants.lights[matData.lightIndex], mat, posW, normalW, toEyeW);
+    LightColor directLight = ComputeSpotLight(light, mat, posW, normalW, toEyeW);
     
-    pout.diffuse = float4(directLight.diffuse, 0.f) ;
+    pout.diffuse = float4(directLight.diffuse, 0.f);
     pout.specular = float4(directLight.specular, 0.f);
     
     return pout;

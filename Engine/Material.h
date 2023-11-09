@@ -15,7 +15,7 @@ public:
 	void SetFresnel(Vec3 fresnel) { mMatData.FresnelR0 = fresnel; }
 	void SetRoughness(float roughness) { mMatData.Roughness = roughness; }
 	void SetMatTransform(Matrix matTransform) { mMatData.MatTransform = matTransform; }
-	void SetLightIndex(uint8 index) { mMatData.LightIndex = index; }
+	void SetScoreIndex(Vec2 index) { mMatData.ScoreIndex = index; }
 
 	void SetMatCBIndex(uint32 index) { mMatIndex = index; }
 	uint32 GetMatCBIndex() const { return mMatIndex; }

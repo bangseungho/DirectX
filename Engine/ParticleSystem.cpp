@@ -53,9 +53,32 @@ void ParticleSystem::FinalUpdate()
 
 void ParticleSystem::Render()
 {
+	if (false == GetGameObject()->GetActive())
+		return;
+
 	GetTransform()->PushData();
 
 	mMaterial->Update();
-	mParticleData->PushGraphicsData(5);
+	mParticleData->PushGraphicsData(3);
 	mMesh->Render(mParticleSystemData.MaxCount);
+}
+
+HitParticleSystem::HitParticleSystem()
+{
+}
+
+HitParticleSystem::~HitParticleSystem()
+{
+}
+
+void HitParticleSystem::FinalUpdate()
+{
+	ParticleSystem::FinalUpdate();
+
+	mLifeTime += DELTA_TIME;
+	
+	if (mLifeTime >= 5.f) {
+		mLifeTime = 0.f;
+		GetGameObject()->SetActive(false);
+	}
 }

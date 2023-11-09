@@ -127,6 +127,16 @@ enum class TEXTURE2D_INDEX : uint8
 	N_DRAGON,
 	N_DRAGON_MIRROR,
 
+	B_WOLF_EYE_1,
+	B_WOLF_EYE_2,
+	B_WOLF_FUR,
+
+	C_SNIPER,
+	N_SNIPER,
+	S_SNIPER,
+
+	B_NUMBER,
+
 	END,
 };
 
@@ -208,7 +218,7 @@ struct LightInfo
 	Vec3 Padding;
 };
 
-#define MAX_LIGHTS	200
+#define MAX_LIGHTS	50
 struct PassConstants
 {
 	Matrix		View = Matrix::Identity;
@@ -238,7 +248,8 @@ struct ObjectData
 	Matrix  MatViewProj = Matrix::Identity;
 	Matrix  TexTransform = Matrix::Identity;
 	uint32	MaterialIndex = 0;
-	Vec3	Padding;
+	int32	LightIndex = -1;
+	Vec2	Padding;
 };
 
 struct MaterialData
@@ -251,8 +262,8 @@ struct MaterialData
 	int32	NormalMapIndex = -1;
 	int32	RoughnessMapIndex = -1;
 	int32	HeigtMapIndex = -1;
-	int32	LightIndex = -1;
-	Vec3	Padding;
+	Vec2	ScoreIndex;
+	Vec2	Padding;
 };
 
 struct TerrainData

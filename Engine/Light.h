@@ -21,6 +21,7 @@ public:
 	void SetSpotPower(float SpotPower) { mLightInfo.SpotPower = SpotPower; }
 
 	void SetLightIndex(int8 index) { mLightIndex = index; }
+	const int8 GetLightIndex() { return mLightIndex; }
 
 private:
 	LightInfo					mLightInfo = {};

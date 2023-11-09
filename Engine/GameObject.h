@@ -52,6 +52,9 @@ public:
 	void SetLayerIndex(uint8 layer) { mLayerIndex = layer; }
 	uint8 GetLayerIndex() { return mLayerIndex; }
 
+	void SetActive(bool active) { mActiveSelf = active; }
+	bool GetActive() const { return mActiveSelf; }
+
 	static uint32 ObjCBIndex;
 
 private:
@@ -63,5 +66,7 @@ private:
 	uint32		mMatIndex = -1;
 
 	uint8		mLayerIndex = 0;
+
+	bool		mActiveSelf = true;
 };
 
