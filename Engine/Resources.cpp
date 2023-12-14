@@ -914,6 +914,16 @@ void Resources::CreateDefaultMaterial()
 
 	{
 		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
+		auto leather = make_shared<Material>();
+		leather->SetFresnel(Vec3(0.98f, 0.97f, 0.95f));
+		leather->SetDiffuse(Vec4(0.f, 0.f, 0.1f, 1.f));
+		leather->SetRoughness(0.1f);
+		leather->SetShader(shader);
+		Add<Material>(L"mirror", move(leather));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
 		auto wall = make_shared<Material>();
 		wall->SetDiffuseSrvHeapIndex(Get<Texture>(L"wall")->GetTexHeapIndex());
 		wall->SetNormalSrvHeapIndex(Get<Texture>(L"wall_normal")->GetTexHeapIndex());
@@ -1046,9 +1056,4 @@ void Resources::CreateDefaultMaterial()
 			Add<Material>(L"Number" + num, number);
 		}
 	}
-
-	//float numberW = GET_SINGLE(Resources)->Get<Texture>(L"Number")->GetWidth();
-	//float numberH = GET_SINGLE(Resources)->Get<Texture>(L"Number")->GetHeight();
-	//float dW = numberW / 5.f;
-	//float dH = numberH / 2.f;
 }

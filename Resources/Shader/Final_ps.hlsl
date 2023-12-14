@@ -24,11 +24,17 @@ float4 PS_Main(VS_OUT pin) : SV_Target
     toEyeW /= distToEye;
     
     pout = (diffuseLight + gPassConstants.ambientLight) * diffuseAlbedo + specular;
-
+    
+    float3 normal = gTextureMaps[NORMALMAP_INDEX].Sample(gsamAnisotropicWrap, pin.Uv).xyz;
+    float3 fresnelR0 = gTextureMaps[FRESNELMAP_INDEX].Sample(gsamAnisotropicWrap, pin.Uv);
+    float3 r = reflect(-toEyeW, normal);
+    float4 reflectionColor = gCubeMap.Sample(gsamLinearWrap, r);
+    float3 fresnelFactor = SchlickFresnel(fresnelR0, normal, r);
+    pout.rgb += fresnelFactor * reflectionColor.rgb;
     
     // Fog
-    float fogAmount = clamp(((distToEye - gPassConstants.FogStart) / gPassConstants.FogRange), 0.f, 0.9f);
-    pout = lerp(pout, gPassConstants.FogColor, fogAmount); 
+    //float fogAmount = clamp(((distToEye - gPassConstants.FogStart) / gPassConstants.FogRange), 0.f, 0.9f);
+    //pout = lerp(pout, gPassConstants.FogColor, fogAmount); 
     
     return pout;
 }
