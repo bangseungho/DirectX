@@ -89,7 +89,8 @@ struct MaterialData
     uint                roughnessMapIndex;
     uint                heightMapIndex;
     float2	            ScoreIndex;
-	float2	            Padding;
+    int                 IsCubeMapping;
+	float	            Padding;
 };
 
 struct TerrainData

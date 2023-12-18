@@ -77,6 +77,7 @@ enum class RENDER_TARGET_GROUP_TYPE : uint8
 	SWAP_CHAIN, // BACK_BUFFER, FRONT_BUFFER
 	G_BUFFER, // Position, Normal, DIFFUSEALBEDO, SHINESS, FRESNELR0
 	LIGHTING, // DIFFUSE, SPECULAR
+	CUBEMAP,
 
 	END,
 };
@@ -162,8 +163,10 @@ enum
 
 	COMPUTE_TEXTURE_COUNT = static_cast<uint8>(COMPUTE_TEXTURE2D_INDEX::END),
 
-	TEXTURE_COUNT = static_cast<uint8>(TEXTURECUBE_INDEX::END),
-	TEXTURE2D_COUNT = static_cast<uint8>(TEXTURE2D_INDEX::END),
+	RENDER_TARGET_CUBEMAP_COUNT = 6,
+
+	TEXTURE_COUNT = static_cast<uint8>(TEXTURECUBE_INDEX::END) + RENDER_TARGET_CUBEMAP_COUNT,
+	TEXTURE2D_COUNT = static_cast<uint8>(TEXTURE2D_INDEX::END) + RENDER_TARGET_CUBEMAP_COUNT,
 	TEXTURECUBE_COUNT = TEXTURE_COUNT - TEXTURE2D_COUNT,
 	TEXTUREFILE_COUNT = TEXTURE_COUNT - static_cast<uint8>(LIGHTING_INDEX::END),
 };
@@ -263,7 +266,8 @@ struct MaterialData
 	int32	RoughnessMapIndex = -1;
 	int32	HeigtMapIndex = -1;
 	Vec2	ScoreIndex;
-	Vec2	Padding;
+	int32   IsCubeMapping;
+	int32	Padding = 0;
 };
 
 struct TerrainData

@@ -185,4 +185,22 @@ void Engine::CreateMultipleRenderTarget()
 		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)] = make_shared<MultipleRenderTarget>();
 		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)]->Create(RENDER_TARGET_GROUP_TYPE::LIGHTING, rtVec, dsTexture);
 	}
+
+	// CubeMap Group
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_CUBEMAP_COUNT);
+
+		for (int32 i = 0; i < RENDER_TARGET_CUBEMAP_COUNT; ++i) {
+			wstring name = L"CubeMapTarget_" + std::to_wstring(i);
+
+			rtVec[i].target = GET_SINGLE(Resources)->CreateTexture(name,
+				DXGI_FORMAT_R8G8B8A8_UNORM, mWindow.Width, mWindow.Height,
+				CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+				D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::CUBEMAP,
+				D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET);
+		}
+
+		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::CUBEMAP)] = make_shared<MultipleRenderTarget>();
+		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::CUBEMAP)]->Create(RENDER_TARGET_GROUP_TYPE::CUBEMAP, rtVec, dsTexture);
+	}
 }

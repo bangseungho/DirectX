@@ -830,7 +830,7 @@ void Resources::CreateDefaultMaterial()
 	{
 		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
 		auto Pos = make_shared<Material>();
-		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"PositionTarget")->GetTexHeapIndex());
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_0")->GetTexHeapIndex());
 		Pos->SetShader(shader);
 		Add<Material>(L"PositionTarget", move(Pos));
 	}
@@ -838,7 +838,7 @@ void Resources::CreateDefaultMaterial()
 	{
 		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
 		auto norm = make_shared<Material>();
-		norm->SetDiffuseSrvHeapIndex(Get<Texture>(L"NormalTarget")->GetTexHeapIndex());
+		norm->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_0")->GetTexHeapIndex());
 		norm->SetShader(shader);
 		Add<Material>(L"NormalTarget", move(norm));
 	}
@@ -846,7 +846,7 @@ void Resources::CreateDefaultMaterial()
 	{
 		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
 		auto diffuse = make_shared<Material>();
-		diffuse->SetDiffuseSrvHeapIndex(Get<Texture>(L"DiffuseTarget")->GetTexHeapIndex());
+		diffuse->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_0")->GetTexHeapIndex());
 		diffuse->SetShader(shader);
 		Add<Material>(L"DiffuseTarget", move(diffuse));
 	}
@@ -919,6 +919,7 @@ void Resources::CreateDefaultMaterial()
 		leather->SetDiffuse(Vec4(0.f, 0.f, 0.1f, 1.f));
 		leather->SetRoughness(0.1f);
 		leather->SetShader(shader);
+		leather->SetIsCubeMapping(1);
 		Add<Material>(L"mirror", move(leather));
 	}
 

@@ -250,8 +250,8 @@ sptr<Scene> SceneManager::LoadTestScene()
 	gameObject->Init();
 
 	sptr<Transform> transform = gameObject->GetTransform();
-	transform->SetLocalPosition(Vec3(0.f, 100.f, 0.f));
-	transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
+	transform->SetLocalPosition(Vec3(800.f, 600.f, 800.f));
+	transform->SetLocalScale(Vec3(1000.f, 1000.f, 1000.f));
 
 	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 	{
@@ -260,6 +260,7 @@ sptr<Scene> SceneManager::LoadTestScene()
 		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"mirror");
 		meshRenderer->SetMaterial(material);
 	}
+	gameObject->AddComponent(make_shared<TestAutoMoveScript>(transform->GetLocalPosition().y));
 	gameObject->AddComponent(meshRenderer);
 	scene->AddGameObject(gameObject);
 }
@@ -447,24 +448,24 @@ sptr<Scene> SceneManager::LoadTestScene()
 //		scene->AddGameObject(light);
 //	}
 //#pragma endregion
-//#pragma region SpotLight
-//	{
-//		sptr<GameObject> light = make_shared<GameObject>();
-//		light->AddComponent(make_shared<Transform>());
-//		light->AddComponent(make_shared<Light>());
-//		light->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
-//		light->GetLight()->SetLightType(LIGHT_TYPE::SPOT_LIGHT);
-//		light->GetLight()->SetLightDirection(Vec3(1.f, 0.f, 0.f));
-//		light->GetLight()->SetLightStrenth(Vec3(2.0f, 1.0f, 0.4f));
-//		light->GetLight()->SetFallOff(1.f, 1000.f);
-//		light->GetLight()->SetSpotPower(30.f);
-//
-//		auto flashLightScript = make_shared<FlashLightScript>();
-//		flashLightScript->SetCameraObject(sceneMainCamera);
-//		light->AddComponent(flashLightScript);
-//		
-//		scene->AddGameObject(light);
-//	}
+#pragma region SpotLight
+	{
+		sptr<GameObject> light = make_shared<GameObject>();
+		light->AddComponent(make_shared<Transform>());
+		light->AddComponent(make_shared<Light>());
+		light->GetTransform()->SetLocalPosition(Vec3(0.f, 0.f, 0.f));
+		light->GetLight()->SetLightType(LIGHT_TYPE::SPOT_LIGHT);
+		light->GetLight()->SetLightDirection(Vec3(1.f, 0.f, 0.f));
+		light->GetLight()->SetLightStrenth(Vec3(2.0f, 1.0f, 0.4f));
+		light->GetLight()->SetFallOff(1.f, 1000.f);
+		light->GetLight()->SetSpotPower(30.f);
+
+		auto flashLightScript = make_shared<FlashLightScript>();
+		flashLightScript->SetCameraObject(sceneMainCamera);
+		light->AddComponent(flashLightScript);
+		
+		scene->AddGameObject(light);
+	}
 //#pragma endregion
 //============================================================================== ParticleSystem
 //#pragma region ParticleSystem

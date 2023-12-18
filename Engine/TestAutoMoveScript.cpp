@@ -17,7 +17,7 @@ void TestAutoMoveScript::LateUpdate()
 	Vec3 Pos = GetTransform()->GetLocalPosition();
 	
 
-	Pos.x = mPivot + sinf(TOTAL_TIME * mMoveSpeed) * mDistance;
+	Pos.y = mPivot + sinf(TOTAL_TIME * mMoveSpeed) * mDistance;
 
 
 	GetTransform()->SetLocalPosition(Pos);

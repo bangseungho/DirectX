@@ -14,6 +14,7 @@ enum class RENDER_GROUP_TYPE
 	G_BUFFER,
 	LIGHTING,
 	COMPUTE,
+	CUBEMAP,
 };
 
 class Texture : public Object

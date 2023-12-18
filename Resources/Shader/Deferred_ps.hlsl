@@ -40,6 +40,7 @@ PS_OUT PS_Main(VS_OUT pin)
     uint diffuseMapIndex = matData.textureMapIndex;
     uint normalMapIndex = matData.normalMapIndex;
     uint roughnessMapIndex = matData.roughnessMapIndex;
+    uint isCubeMapping = matData.IsCubeMapping;
     
     // 보간 과정에서 단위 벡터가 안될 수 있으므로 노말라이즈를 한다.
     pin.normalW = normalize(pin.normalW);
@@ -70,6 +71,18 @@ PS_OUT PS_Main(VS_OUT pin)
     else
         shininess *= normalMap.a;
 
+    // CubeMapping
+    if(isCubeMapping == 1)
+    {
+        float3 toEyeW = gPassConstants.eyePosW.xyz - pin.posW;
+        float distToEye = length(toEyeW);
+        toEyeW /= distToEye;
+        
+        float3 r = reflect(-toEyeW, bumpedNormalW);
+        float4 reflectionColor = gCubeMap.Sample(gsamLinearWrap, r);
+        float3 fresnelFactor = SchlickFresnel(fresnelR0, bumpedNormalW, r);
+        diffuseAlbedo.rgb += fresnelFactor * reflectionColor.rgb;
+    }
     
     PS_OUT pout = (PS_OUT)0;
     pout.Position = float4(pin.posW, 0.f);

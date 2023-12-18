@@ -16,6 +16,7 @@ public:
 	void SetRoughness(float roughness) { mMatData.Roughness = roughness; }
 	void SetMatTransform(Matrix matTransform) { mMatData.MatTransform = matTransform; }
 	void SetScoreIndex(Vec2 index) { mMatData.ScoreIndex = index; }
+	void SetIsCubeMapping(int32 isCubeMapping) { mMatData.IsCubeMapping = isCubeMapping; }
 
 	void SetMatCBIndex(uint32 index) { mMatIndex = index; }
 	uint32 GetMatCBIndex() const { return mMatIndex; }

@@ -19,10 +19,12 @@ void Scene::Render()
 {
 	PushPassData();
 
+	// Deferred
 	int8 backIndex = gEngine->GetSwapChain()->GetBackBufferIndex();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->ClearRenderTargetView(backIndex);
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->ClearRenderTargetView();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->ClearRenderTargetView();
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::CUBEMAP)->ClearRenderTargetView();
 
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->OMSetRenderTargets();
 	mMainCamera->SortGameObject();
@@ -31,16 +33,32 @@ void Scene::Render()
 
 	RenderLights();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->WaitTargetToResource();
+	RenderCubeMap();
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::CUBEMAP)->WaitTargetToResource();
+
+	// Final
 	RenderFinal();
 
+	// Forward
 	mMainCamera->Render_Forward();
 
+	// UI
 	for (auto& camera : mCameraObjects) {
 		if (camera == mMainCamera)
 			continue;
 
 		camera->SortGameObject();
 		camera->Render_Forward();
+	}
+}
+
+void Scene::RenderCubeMap()
+{
+	for (int32 i = 0; i < RENDER_TARGET_CUBEMAP_COUNT; ++i) {
+		gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::CUBEMAP)->OMSetRenderTargets(1, i);
+		
+		GET_SINGLE(Resources)->Get<Material>(L"Final")->Update();
+		GET_SINGLE(Resources)->Get<Mesh>(L"Rectangle")->Render();
 	}
 }
 

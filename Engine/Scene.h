@@ -18,6 +18,7 @@ public:
 
 public:
 	void Render();
+	void RenderCubeMap();
 	void RenderFinal();
 	void RenderLights();
 	void PushPassData();
@@ -36,7 +37,7 @@ public:
 
 private:
 	vector<sptr<GameObject>>			mGameObjects;
-	Vec4								mAmbientLight = { 0.1f, 0.1f, 0.1f, 1.f };
+	Vec4								mAmbientLight = { 0.3f, 0.3f, 0.3f, 1.f };
 
 	vector<sptr<Camera>>				mCameraObjects;
 	sptr<Camera>						mMainCamera;
