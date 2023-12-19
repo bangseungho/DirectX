@@ -37,7 +37,7 @@ VS_OUT VS_Main(VS_IN vin)
     vout.tangentW = mul(vin.tangentU, (float3x3)gObjConstants.world);
 
     // 동차 절단 공간으로 변환
-    vout.posH = mul(posW, gObjConstants.ViewProj);
+    vout.posH = mul(posW, gPassConstants.ViewProj);
 
     float4 Uv = mul(float4(vin.Uv, 0.f, 1.f), gObjConstants.texTransform);
     vout.Uv = mul(Uv, matData.matTransform).xy;

@@ -139,7 +139,7 @@ struct ComputeShared
 };
 
 Texture2D gTextureMaps[TEXTURE2D_COUNT] : register(t0, space0);
-TextureCube gCubeMap : register(t0, space1);
+TextureCube gCubeMap : register(t0, space2);
 StructuredBuffer<MaterialData> gMaterialData : register(t1, space1);
 StructuredBuffer<Particle> gOutputParticle : register(t2, space1);
 StructuredBuffer<TerrainData> gTerrainData : register(t3, space1);

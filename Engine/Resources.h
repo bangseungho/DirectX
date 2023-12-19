@@ -48,6 +48,7 @@ public:
 private:
 	void CreateDefaultShader();
 	void CreateDefaultTexture();
+	void CreateCubeMapTexture();
 	void CreateDefaultMaterial();
 
 private:

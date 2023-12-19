@@ -186,6 +186,13 @@ void Engine::CreateMultipleRenderTarget()
 		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::LIGHTING)]->Create(RENDER_TARGET_GROUP_TYPE::LIGHTING, rtVec, dsTexture);
 	}
 
+	// DepthStencil
+	sptr<Texture> cubeDsTexture = GET_SINGLE(Resources)->CreateTexture(L"CubeDepthStencil",
+		DXGI_FORMAT_D32_FLOAT, mWindow.Width, mWindow.Height,
+		CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::DEPTH_STENCIL,
+		D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
+
 	// CubeMap Group
 	{
 		vector<RenderTarget> rtVec(RENDER_TARGET_CUBEMAP_COUNT);
@@ -201,6 +208,6 @@ void Engine::CreateMultipleRenderTarget()
 		}
 
 		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::CUBEMAP)] = make_shared<MultipleRenderTarget>();
-		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::CUBEMAP)]->Create(RENDER_TARGET_GROUP_TYPE::CUBEMAP, rtVec, dsTexture);
+		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::CUBEMAP)]->Create(RENDER_TARGET_GROUP_TYPE::CUBEMAP, rtVec, cubeDsTexture);
 	}
 }

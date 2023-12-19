@@ -7,7 +7,7 @@ FrameResource::FrameResource(ComPtr<ID3D12Device> device, uint32 objectCount, ui
         D3D12_COMMAND_LIST_TYPE_DIRECT,
         IID_PPV_ARGS(mGraphicsCmdAlloc.GetAddressOf())));
 
-    mPassCB = std::make_shared<UploadBuffer<PassConstants>>(device, 1, true);
+    mPassCB = std::make_shared<UploadBuffer<PassConstants>>(device, 1 + 6, true);
     mObjectCB = std::make_shared<UploadBuffer<ObjectData>>(device, objectCount, true);
     mMatData = std::make_shared<UploadBuffer<MaterialData>>(device, materialCount, false);
     mTerrainData = std::make_shared<UploadBuffer<TerrainData>>(device, 2, false);

@@ -232,3 +232,71 @@ void TextureCube::CreateSRVFromDescHeap()
 
 	DEVICE->CreateShaderResourceView(_resource.Get(), &srvDesc, srvHeapBegin);
 }
+
+TextureCubeMap::TextureCubeMap()
+{
+}
+
+TextureCubeMap::~TextureCubeMap()
+{
+}
+
+void TextureCubeMap::BuildResource()
+{
+	D3D12_RESOURCE_DESC texDesc;
+	ZeroMemory(&texDesc, sizeof(D3D12_RESOURCE_DESC));
+	texDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+	texDesc.Alignment = 0;
+	texDesc.Width = gEngine->GetWindow().Width;
+	texDesc.Height = gEngine->GetWindow().Height;
+	texDesc.DepthOrArraySize = 6;
+	texDesc.MipLevels = 1;
+	texDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+	texDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+
+	ThrowIfFailed(DEVICE->CreateCommittedResource(
+		&CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+		D3D12_HEAP_FLAG_NONE,
+		&texDesc,
+		D3D12_RESOURCE_STATE_GENERIC_READ,
+		nullptr,
+		IID_PPV_ARGS(&_resource)));
+
+	BuildDescriptors();
+}
+
+void TextureCubeMap::BuildDescriptors()
+{
+	_texHeapIndex = DESCHEAP->AddSrvCount();
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+	srvDesc.TextureCube.MostDetailedMip = 0;
+	srvDesc.TextureCube.MipLevels = 1;
+	srvDesc.TextureCube.ResourceMinLODClamp = 0.f;
+
+	DESCHEAP->SetCubeMapTexHeapIndex(_texHeapIndex);
+	CD3DX12_CPU_DESCRIPTOR_HANDLE srvHeapBegin = CD3DX12_CPU_DESCRIPTOR_HANDLE(DESCHEAP->GetSRVHandle());
+	srvHeapBegin.Offset(_texHeapIndex, DESCHEAP->GetCbvSrvUavDescriptorSize());
+	DEVICE->CreateShaderResourceView(_resource.Get(), &srvDesc, srvHeapBegin);
+
+	for (int i = 0; i < 6; ++i)
+	{
+		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc;
+		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
+		rtvDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+		rtvDesc.Texture2DArray.MipSlice = 0;
+		rtvDesc.Texture2DArray.PlaneSlice = 0;
+
+		rtvDesc.Texture2DArray.FirstArraySlice = i;
+
+		rtvDesc.Texture2DArray.ArraySize = 1;
+
+		DEVICE->CreateRenderTargetView(_resource.Get(), &rtvDesc, mRTV[i]);
+	}
+}

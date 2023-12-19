@@ -63,7 +63,7 @@ DS_OUT DS_Main(const OutputPatch<HS_OUT, 3> input, float3 location : SV_DomainLo
     float3 localBinormal = float3(localPos.x, upHeight, localPos.z + deltaPos.y) - float3(localPos.x, downHeight, localPos.z - deltaPos.y);
 
     output.posW = mul(float4(localPos, 1.f), gObjConstants.world).xyz;
-    output.posH = mul(float4(output.posW, 1.f), gObjConstants.ViewProj);
+    output.posH = mul(float4(output.posW, 1.f), gPassConstants.ViewProj);
     
     output.tangentW = normalize(mul(float4(localTangent, 0.f), gObjConstants.world)).xyz;
     float3 binormalW = normalize(mul(float4(localBinormal, 0.f), gObjConstants.world)).xyz;

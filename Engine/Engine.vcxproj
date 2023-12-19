@@ -209,6 +209,7 @@
     <ClInclude Include="MeshData.h" />
     <ClInclude Include="MeshRenderer.h" />
     <ClInclude Include="MonoBehaviour.h" />
+    <ClInclude Include="MoveToTargetScript.h" />
     <ClInclude Include="MultipleRenderTarget.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="ParticleSystem.h" />
@@ -267,6 +268,7 @@
     <ClCompile Include="MeshData.cpp" />
     <ClCompile Include="MeshRenderer.cpp" />
     <ClCompile Include="MonoBehaviour.cpp" />
+    <ClCompile Include="MoveToTargetScript.cpp" />
     <ClCompile Include="MultipleRenderTarget.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="ParticleSystem.cpp" />

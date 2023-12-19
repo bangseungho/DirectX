@@ -17,9 +17,12 @@ public:
 
 	void ClearRenderTargetView(uint32 index);
 	void ClearRenderTargetView();
+	void ClearDepthStencilView();
 
 	sptr<Texture> GetRTTexture(uint32 index) { return mRtVec[index].target; }
 	sptr<Texture> GetDSTexture() { return mDsTexture; }
+
+	const CD3DX12_CPU_DESCRIPTOR_HANDLE& GetRTVHandle() { return _rtvHeapBegin; }
 
 	void WaitTargetToResource();
 	void WaitResourceToTarget();
@@ -32,8 +35,8 @@ private:
 	ComPtr<ID3D12DescriptorHeap> mRtvHeap;
 
 	uint32 _rtvHeapSize;
-	D3D12_CPU_DESCRIPTOR_HANDLE _rtvHeapBegin;
-	D3D12_CPU_DESCRIPTOR_HANDLE _dsvHeapBegin;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE _rtvHeapBegin;
+	CD3DX12_CPU_DESCRIPTOR_HANDLE _dsvHeapBegin;
 
 	D3D12_RESOURCE_BARRIER _targetToResource[8];
 	D3D12_RESOURCE_BARRIER _resourceToTarget[8];

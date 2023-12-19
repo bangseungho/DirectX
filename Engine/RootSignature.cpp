@@ -14,7 +14,7 @@ void RootSignature::CreateGraphicsRootSignature()
 	tex2DTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURE2D_COUNT + COMPUTE_TEXTURE_COUNT, 0, 0);
 
 	CD3DX12_DESCRIPTOR_RANGE texCubeTable;
-	texCubeTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURECUBE_COUNT, 0, 1);
+	texCubeTable.Init(D3D12_DESCRIPTOR_RANGE_TYPE_SRV, TEXTURECUBE_COUNT, 0, 2);
 
 	CD3DX12_ROOT_PARAMETER slotRootParameter[7];
 	slotRootParameter[0].InitAsConstantBufferView(0);				// pass constants

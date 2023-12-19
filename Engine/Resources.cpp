@@ -2,6 +2,7 @@
 #include "Resources.h"
 #include "Transform.h"
 #include "ParticleSystem.h"
+#include "Engine.h"
 
 DECLARE_SINGLE(Resources)
 
@@ -61,18 +62,18 @@ sptr<Mesh> Resources::LoadPointMesh()
 
 sptr<Mesh> Resources::LoadRectMesh()
 {
-	sptr<Mesh> findMesh = Get<Mesh>(L"Rectangle");
+	sptr<Mesh> findMesh = Get<Mesh>(L"Rec");
 	if (findMesh)
 		return findMesh;
 
-	float w2 = 20.0f;
-	float h2 = 20.0f;
+	float w2 = 0.5f;
+	float h2 = 0.5f;
 	
 	vector<Vertex> vec(4);
-	vec[0] = Vertex(Vec3(-w2, -h2, 0.f), Vec2(0.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
-	vec[1] = Vertex(Vec3(-w2, +h2, 0.f), Vec2(0.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
-	vec[2] = Vertex(Vec3(+w2, +h2, 0.f), Vec2(1.0f, 0.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
-	vec[3] = Vertex(Vec3(+w2, -h2, 0.f), Vec2(1.0f, 1.0f), Vec3(0.0f, 0.0f, -1.0f), Vec3(1.0f, 0.0f, 0.0f));
+	vec[0] = Vertex(Vec3(-w2, -h2, 0.f), Vec2(0.0f, 1.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(1.0f, 0.0f, 0.0f));
+	vec[1] = Vertex(Vec3(-w2, +h2, 0.f), Vec2(0.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(1.0f, 0.0f, 0.0f));
+	vec[2] = Vertex(Vec3(+w2, +h2, 0.f), Vec2(1.0f, 0.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(1.0f, 0.0f, 0.0f));
+	vec[3] = Vertex(Vec3(+w2, -h2, 0.f), Vec2(1.0f, 1.0f), Vec3(0.0f, 0.0f, 1.0f), Vec3(1.0f, 0.0f, 0.0f));
 
 	vector<uint32> idx(6);
 	idx[0] = 0; idx[1] = 1; idx[2] = 2;
@@ -81,7 +82,7 @@ sptr<Mesh> Resources::LoadRectMesh()
 	sptr<Mesh> mesh = make_shared<Mesh>();
 	mesh->Init(vec, idx);
 	CreateBoundingBox(CalcMinMaxVertices(vec), mesh);
-	Add<Mesh>(L"Rectangle", mesh);
+	Add<Mesh>(L"Rec", mesh);
 
 	return mesh;
 }
@@ -491,6 +492,7 @@ void Resources::CreateDefaultShader()
 	{
 		ShaderInfo info = {
 			SHADER_TYPE::FORWARD,
+			RASTERIZER_TYPE::CULL_NONE,
 		};
 
 		ShaderPath path = {
@@ -549,6 +551,7 @@ void Resources::CreateDefaultShader()
 	{
 		ShaderInfo info = {
 			SHADER_TYPE::DEFERRED,
+			RASTERIZER_TYPE::CULL_NONE,
 		};
 
 		ShaderPath path = {
@@ -720,7 +723,7 @@ void Resources::CreateDefaultShader()
 	{
 		ShaderInfo info =
 		{
-			SHADER_TYPE::DEFERRED,
+			SHADER_TYPE::FORWARD,
 			RASTERIZER_TYPE::CULL_BACK,
 			DEPTH_STENCIL_TYPE::LESS,
 			BLEND_TYPE::DEFAULT,
@@ -732,7 +735,7 @@ void Resources::CreateDefaultShader()
 			L"..\\Output\\cso\\Terrain_hs.cso",
 			L"..\\Output\\cso\\Terrain_ds.cso",
 			L"",				 
-			L"..\\Output\\cso\\Terrain_ps.cso"
+			L"..\\Output\\cso\\Forward_ps.cso"
 		};
 
 		sptr<Shader> shader = make_shared<Shader>();
@@ -823,6 +826,15 @@ void Resources::CreateDefaultTexture()
 	wstring cubeMapName = L"skybox";
 	wstring cubeMapFileName = L"..\\Resources\\Texture\\cubemap.dds";
 	GET_SINGLE(Resources)->Load<TextureCube>(cubeMapName, cubeMapFileName);
+
+	CreateCubeMapTexture();
+}
+
+void Resources::CreateCubeMapTexture()
+{
+	//sptr<TextureCubeMap> cubeMap = make_shared<TextureCubeMap>();
+	//cubeMap->BuildResource();
+
 }
 
 void Resources::CreateDefaultMaterial()
@@ -832,13 +844,111 @@ void Resources::CreateDefaultMaterial()
 		auto Pos = make_shared<Material>();
 		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_0")->GetTexHeapIndex());
 		Pos->SetShader(shader);
+		Add<Material>(L"uposX", move(Pos));
+	}
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
+		auto Pos = make_shared<Material>();
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_1")->GetTexHeapIndex());
+		Pos->SetShader(shader);
+		Add<Material>(L"unegX", move(Pos));
+	}
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
+		auto Pos = make_shared<Material>();
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_2")->GetTexHeapIndex());
+		Pos->SetShader(shader);
+		Add<Material>(L"uposY", move(Pos));
+	}
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
+		auto Pos = make_shared<Material>();
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_3")->GetTexHeapIndex());
+		Pos->SetShader(shader);
+		Add<Material>(L"unegY", move(Pos));
+	}
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
+		auto Pos = make_shared<Material>();
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_4")->GetTexHeapIndex());
+		Pos->SetShader(shader);
+		Add<Material>(L"uposZ", move(Pos));
+	}
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
+		auto Pos = make_shared<Material>();
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_5")->GetTexHeapIndex());
+		Pos->SetShader(shader);
+		Add<Material>(L"unegZ", move(Pos));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
+		auto Pos = make_shared<Material>();
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_0")->GetTexHeapIndex());
+		Pos->SetShader(shader);
+		Pos->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
+		Pos->SetDiffuse(Vec4(1.f, 1.f, 1.f, 1.f));
+		Add<Material>(L"posX", move(Pos));
+	}
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
+		auto Pos = make_shared<Material>();
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_1")->GetTexHeapIndex());
+		Pos->SetShader(shader);
+		Pos->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
+		Pos->SetDiffuse(Vec4(1.f, 1.f, 1.f, 1.f));
+		Add<Material>(L"negX", move(Pos));
+	}
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
+		auto Pos = make_shared<Material>();
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_2")->GetTexHeapIndex());
+		Pos->SetShader(shader);
+		Pos->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
+		Pos->SetDiffuse(Vec4(1.f, 1.f, 1.f, 1.f));
+		Add<Material>(L"posY", move(Pos));
+	}
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
+		auto Pos = make_shared<Material>();
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_3")->GetTexHeapIndex());
+		Pos->SetShader(shader);
+		Pos->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
+		Pos->SetDiffuse(Vec4(1.f, 1.f, 1.f, 1.f));
+		Add<Material>(L"negY", move(Pos));
+	}
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
+		auto Pos = make_shared<Material>();
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_4")->GetTexHeapIndex());
+		Pos->SetShader(shader);
+		Pos->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
+		Pos->SetDiffuse(Vec4(1.f, 1.f, 1.f, 1.f));
+		Add<Material>(L"posZ", move(Pos));
+	}
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
+		auto Pos = make_shared<Material>();
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_5")->GetTexHeapIndex());
+		Pos->SetShader(shader);
+		Pos->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
+		Pos->SetDiffuse(Vec4(1.f, 1.f, 1.f, 1.f));
+		Add<Material>(L"negZ", move(Pos));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
+		auto Pos = make_shared<Material>();
+		Pos->SetDiffuseSrvHeapIndex(Get<Texture>(L"PositionTarget")->GetTexHeapIndex());
+		Pos->SetShader(shader);
 		Add<Material>(L"PositionTarget", move(Pos));
 	}
 
 	{
 		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
 		auto norm = make_shared<Material>();
-		norm->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_0")->GetTexHeapIndex());
+		norm->SetDiffuseSrvHeapIndex(Get<Texture>(L"NormalTarget")->GetTexHeapIndex());
 		norm->SetShader(shader);
 		Add<Material>(L"NormalTarget", move(norm));
 	}
@@ -846,7 +956,7 @@ void Resources::CreateDefaultMaterial()
 	{
 		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
 		auto diffuse = make_shared<Material>();
-		diffuse->SetDiffuseSrvHeapIndex(Get<Texture>(L"CubeMapTarget_0")->GetTexHeapIndex());
+		diffuse->SetDiffuseSrvHeapIndex(Get<Texture>(L"DiffuseTarget")->GetTexHeapIndex());
 		diffuse->SetShader(shader);
 		Add<Material>(L"DiffuseTarget", move(diffuse));
 	}
@@ -868,7 +978,7 @@ void Resources::CreateDefaultMaterial()
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
+		shared_ptr<Shader> shader = Get<Shader>(L"Forward");
 		auto newjeans = make_shared<Material>();
 		newjeans->SetDiffuseSrvHeapIndex(Get<Texture>(L"newjeans")->GetTexHeapIndex());
 		newjeans->SetFresnel(Vec3(0.9f, 0.9f, 0.9f));
@@ -886,7 +996,6 @@ void Resources::CreateDefaultMaterial()
 		newjeans2->SetRoughness(0.125f);
 		newjeans2->SetShader(shader);
 		Add<Material>(L"newjeans2", move(newjeans2));
-
 	}
 
 	{
@@ -901,7 +1010,7 @@ void Resources::CreateDefaultMaterial()
 	}
 
 	{
-		shared_ptr<Shader> shader = Get<Shader>(L"Deferred");
+		shared_ptr<Shader> shader = Get<Shader>(L"Forward");
 		auto leather = make_shared<Material>();
 		leather->SetDiffuseSrvHeapIndex(Get<Texture>(L"leather")->GetTexHeapIndex());
 		leather->SetNormalSrvHeapIndex(Get<Texture>(L"leather_normal")->GetTexHeapIndex());

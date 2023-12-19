@@ -22,6 +22,8 @@ public:
 	void RenderFinal();
 	void RenderLights();
 	void PushPassData();
+	void PushCubeMapPassData();
+	void CreateCubeMapTexture();
 
 public:
 	void AddGameObject(sptr<GameObject> gameObject);
@@ -34,13 +36,15 @@ public:
 	sptr<ScoreScript>& GetScoreObject() { return mScoreObject; }
 
 	void SetMainCamera(sptr<GameObject> camera) { mMainCamera = camera->GetCamera(); }
+	void SetCubeCamera(sptr<GameObject> camera) { mCubeCamera = camera->GetCamera(); }
 
 private:
 	vector<sptr<GameObject>>			mGameObjects;
-	Vec4								mAmbientLight = { 0.3f, 0.3f, 0.3f, 1.f };
+	Vec4								mAmbientLight = { 0.8f, 0.8f, 0.8f, 1.f };
 
 	vector<sptr<Camera>>				mCameraObjects;
 	sptr<Camera>						mMainCamera;
+	sptr<Camera>						mCubeCamera;
 
 	vector<sptr<class Light>>		mLightObjects;
 	vector<sptr<GameObject>>		mParticleObjects;

@@ -10,7 +10,7 @@ public:
 	virtual void LateUpdate() override;
 
 private:
-	float mDistance = 10.f;
+	float mDistance = 20.f;
 	float mPivot = 0.f;
-	float mMoveSpeed = 1.f;
+	float mMoveSpeed = 10.f;
 };

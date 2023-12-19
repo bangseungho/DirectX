@@ -144,6 +144,7 @@ enum class TEXTURE2D_INDEX : uint8
 enum class TEXTURECUBE_INDEX : uint8
 {
 	SKYBOX = static_cast<uint8>(TEXTURE2D_INDEX::END),
+	CUBEMAP,
 
 	END,
 };

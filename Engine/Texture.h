@@ -75,3 +75,20 @@ public:
 	virtual void CreateSRVFromDescHeap() override;
 
 };
+
+class TextureCubeMap : public Texture
+{
+public:
+	TextureCubeMap();
+	virtual ~TextureCubeMap();
+
+public:
+	void BuildResource();
+	void BuildDescriptors();
+
+public:
+	void GetRTV(uint32 index) { mRTV[index]; }
+
+private:
+	CD3DX12_CPU_DESCRIPTOR_HANDLE mRTV[6];
+};

@@ -27,7 +27,7 @@ float4 PS_Main(VS_OUT pin) : SV_Target
 
     // Fog
     float fogAmount = clamp(((distToEye - gPassConstants.FogStart) / gPassConstants.FogRange), 0.f, 0.9f);
-    pout = lerp(pout, gPassConstants.FogColor, fogAmount);
+    //pout = lerp(pout, gPassConstants.FogColor, fogAmount);
     
     return pout;
 }

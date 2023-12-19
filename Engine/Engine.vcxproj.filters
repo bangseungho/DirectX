@@ -171,6 +171,7 @@
     <ClCompile Include="ScoreScript.cpp">
       <Filter>Object\Script</Filter>
     </ClCompile>
+    <ClCompile Include="MoveToTargetScript.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -317,6 +318,7 @@
     <ClInclude Include="ScoreScript.h">
       <Filter>Object\Script</Filter>
     </ClInclude>
+    <ClInclude Include="MoveToTargetScript.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="SimpleMath.inl">

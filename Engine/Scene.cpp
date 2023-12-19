@@ -17,14 +17,14 @@ void Scene::Awake()
 
 void Scene::Render()
 {
-	PushPassData();
-
 	// Deferred
 	int8 backIndex = gEngine->GetSwapChain()->GetBackBufferIndex();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->ClearRenderTargetView(backIndex);
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->ClearRenderTargetView();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->ClearRenderTargetView();
-	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::CUBEMAP)->ClearRenderTargetView();
+
+	PushCubeMapPassData();
+	RenderCubeMap();
 
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->OMSetRenderTargets();
 	mMainCamera->SortGameObject();
@@ -33,8 +33,6 @@ void Scene::Render()
 
 	RenderLights();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->WaitTargetToResource();
-	RenderCubeMap();
-	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::CUBEMAP)->WaitTargetToResource();
 
 	// Final
 	RenderFinal();
@@ -47,6 +45,9 @@ void Scene::Render()
 		if (camera == mMainCamera)
 			continue;
 
+		if (camera == mCubeCamera)
+			continue;
+
 		camera->SortGameObject();
 		camera->Render_Forward();
 	}
@@ -54,12 +55,27 @@ void Scene::Render()
 
 void Scene::RenderCubeMap()
 {
+	UINT passCBByteSize = d3dUtil::CalcConstantBufferByteSize(sizeof(PassConstants));
+	auto passCB = CURR_FRAMERESOURCE->mPassCB->Resource();
+
+	mCubeCamera->SortGameObject();
+
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::CUBEMAP)->ClearRenderTargetView();
 	for (int32 i = 0; i < RENDER_TARGET_CUBEMAP_COUNT; ++i) {
+		gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::CUBEMAP)->ClearDepthStencilView();
+
+		D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = passCB->GetGPUVirtualAddress() + (i + 1) * passCBByteSize;
+		GRAPHICS_CMD_LIST->SetGraphicsRootConstantBufferView(0, passCBAddress);
+
 		gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::CUBEMAP)->OMSetRenderTargets(1, i);
-		
-		GET_SINGLE(Resources)->Get<Material>(L"Final")->Update();
-		GET_SINGLE(Resources)->Get<Mesh>(L"Rectangle")->Render();
+		mCubeCamera->Render_Forward();
 	}
+
+	PushPassData();
+	D3D12_GPU_VIRTUAL_ADDRESS passCBAddress = passCB->GetGPUVirtualAddress();
+	GRAPHICS_CMD_LIST->SetGraphicsRootConstantBufferView(0, passCBAddress);
+
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::CUBEMAP)->WaitTargetToResource();
 }
 
 void Scene::RenderFinal()
@@ -188,4 +204,88 @@ void Scene::PushPassData()
 	}
 
 	PASS_CB->CopyData(0, passConstants);
+}
+
+void Scene::PushCubeMapPassData()
+{
+	PassConstants passConstants = {};
+
+	for (auto& light : mLightObjects) {
+		const LightInfo& lightInfo = light->GetLightInfo();
+
+		light->SetLightIndex(passConstants.LightCount);
+
+		passConstants.Lights[passConstants.LightCount] = lightInfo;
+		passConstants.LightCount++;
+	}
+
+	// +X -X
+	for (int32 i = 0; i < 2; ++i) {
+		mCubeCamera->GetTransform()->SetLocalRotation(Vec3(0.f, 90.f + i * 180.f, 0.f));
+		mCubeCamera->GetTransform()->FinalUpdate();
+		auto t = mCubeCamera->GetTransform()->GetLocalToWorldMatrix();
+
+		passConstants.View = t.Invert();
+		passConstants.Proj = mCubeCamera->mMatProjection;
+		passConstants.ViewProj = passConstants.View * passConstants.Proj;
+		passConstants.EyePosW = mCubeCamera->GetTransform()->GetLocalPosition();
+		passConstants.CameraRight = mCubeCamera->GetTransform()->GetRight();
+		passConstants.NearZ = mCubeCamera->mNear;
+		passConstants.FarZ = mCubeCamera->mFar;
+		passConstants.Width = static_cast<float>(gEngine->GetWindow().Width);
+		passConstants.Height = static_cast<float>(gEngine->GetWindow().Height);
+		passConstants.TotalTime = TOTAL_TIME;
+		passConstants.DeltaTime = DELTA_TIME;
+		passConstants.AmbientLight = mAmbientLight;
+
+		PASS_CB->CopyData(i + 1, passConstants);
+	}
+
+	for (int32 i = 2; i < 4; ++i) {
+		mCubeCamera->GetTransform()->SetLocalRotation(Vec3(-90.f + i * 180.f, 0.f, 0.f));
+		mCubeCamera->GetTransform()->FinalUpdate();
+		auto t = mCubeCamera->GetTransform()->GetLocalToWorldMatrix();
+
+		passConstants.View = t.Invert();
+		passConstants.Proj = mCubeCamera->mMatProjection;
+		passConstants.ViewProj = passConstants.View * passConstants.Proj;
+		passConstants.EyePosW = mCubeCamera->GetTransform()->GetLocalPosition();
+		passConstants.CameraRight = mCubeCamera->GetTransform()->GetRight();
+		passConstants.NearZ = mCubeCamera->mNear;
+		passConstants.FarZ = mCubeCamera->mFar;
+		passConstants.Width = static_cast<float>(gEngine->GetWindow().Width);
+		passConstants.Height = static_cast<float>(gEngine->GetWindow().Height);
+		passConstants.TotalTime = TOTAL_TIME;
+		passConstants.DeltaTime = DELTA_TIME;
+		passConstants.AmbientLight = mAmbientLight;
+
+		PASS_CB->CopyData(i + 1, passConstants);
+	}
+
+	// +Z -Z
+	for (int32 i = 4; i < 6; ++i) {
+		mCubeCamera->GetTransform()->SetLocalRotation(Vec3(0.f, i * 180.f, 0.f));
+		mCubeCamera->GetTransform()->FinalUpdate();
+		auto t = mCubeCamera->GetTransform()->GetLocalToWorldMatrix();
+
+		passConstants.View = t.Invert();
+		passConstants.Proj = mCubeCamera->mMatProjection;
+		passConstants.ViewProj = passConstants.View * passConstants.Proj;
+		passConstants.EyePosW = mCubeCamera->GetTransform()->GetLocalPosition();
+		passConstants.CameraRight = mCubeCamera->GetTransform()->GetRight();
+		passConstants.NearZ = mCubeCamera->mNear;
+		passConstants.FarZ = mCubeCamera->mFar;
+		passConstants.Width = static_cast<float>(gEngine->GetWindow().Width);
+		passConstants.Height = static_cast<float>(gEngine->GetWindow().Height);
+		passConstants.TotalTime = TOTAL_TIME;
+		passConstants.DeltaTime = DELTA_TIME;
+		passConstants.AmbientLight = mAmbientLight;
+
+		PASS_CB->CopyData(i + 1, passConstants);
+	}
+
+}
+
+void Scene::CreateCubeMapTexture()
+{
 }

@@ -16,6 +16,9 @@ public:
 	void SetSkyTexHeapIndex(uint32 index) { _skyTexHeapIndex = index; }
 	uint32 GetCbvSrvUavDescriptorSize() { return _cbvSrvUavDescriptorSize; }
 
+	uint32 GetCubeMapTexHeapIndex() const { return mCubeMapTexHeapIndex; }
+	void SetCubeMapTexHeapIndex(uint32 index) { mCubeMapTexHeapIndex = index; }
+
 	uint32 AddSrvCount() { uint32 srvCount = _srvCount++; return srvCount; }
 	uint32 AddUavCount() { uint32 uavCount = _uavCount++; return uavCount; }
 
@@ -28,6 +31,7 @@ private:
 
 	uint32 _cbvSrvUavDescriptorSize;
 	uint32 _skyTexHeapIndex;
+	uint32 mCubeMapTexHeapIndex;
 
 	uint32 _srvCount = 0;
 	uint32 _uavCount = 0;

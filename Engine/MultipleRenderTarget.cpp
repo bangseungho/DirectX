@@ -69,7 +69,10 @@ void MultipleRenderTarget::ClearRenderTargetView()
 		D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(_rtvHeapBegin, i * _rtvHeapSize);
 		GRAPHICS_CMD_LIST->ClearRenderTargetView(rtvHandle, mRtVec[i].clearColor, 0, nullptr);
 	}
+}
 
+void MultipleRenderTarget::ClearDepthStencilView()
+{
 	GRAPHICS_CMD_LIST->ClearDepthStencilView(_dsvHeapBegin, D3D12_CLEAR_FLAG_DEPTH, 1.f, 0, 0, nullptr);
 }
 
