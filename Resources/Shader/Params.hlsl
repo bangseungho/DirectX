@@ -1,15 +1,15 @@
 #ifndef _PARAMS_HLSL_
 #define _PARAMS_HLSL_
 #define MAX_LIGHTS 50
-#define TEXTURE2D_COUNT 11
+#define TEXTURE2D_COUNT 12
 
-#define POSITIONMAP_INDEX 0
-#define NORMALMAP_INDEX 1
-#define DIFFUSEMAP_INDEX 2
-#define FRESNELMAP_INDEX 3
-#define SHININESSMAP_INDEX 4
-#define DIFFUSELIGHT_INDEX 5
-#define SPECULARLIGHT_INDEX 6
+#define POSITIONMAP_INDEX 1
+#define NORMALMAP_INDEX 2
+#define DIFFUSEMAP_INDEX 3
+#define FRESNELMAP_INDEX 4
+#define SHININESSMAP_INDEX 5
+#define DIFFUSELIGHT_INDEX 6
+#define SPECULARLIGHT_INDEX 7
 
 struct LightInfo
 {
@@ -41,6 +41,7 @@ struct PassConstants
     row_major matrix    View;
     row_major matrix    Proj;
     row_major matrix    ViewProj;
+    row_major matrix    ViewInv;
     
     float4              eyePosW;
     
@@ -67,6 +68,7 @@ struct PassConstants
     float               padding4;
     
 	row_major Matrix	WorldViewProjTexture;
+	row_major Matrix	LightViewProjTexture;
 };
 
 struct ObjectData
@@ -84,13 +86,15 @@ struct MaterialData
     float4              diffuseAlbedo;
     float3              fresnelR0;
     float               roughness;
-    row_major float4x4  matTransform;
+    row_major matrix    matTransform;
+    row_major matrix    ShadowCameraViewProj;
     uint                textureMapIndex;
     uint                normalMapIndex;
     uint                roughnessMapIndex;
     uint                heightMapIndex;
     float2	            ScoreIndex;
-	float2	            Padding;
+    uint                ShadowMapIndex;
+	float	            Padding;
 };
 
 struct TerrainData

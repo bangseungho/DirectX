@@ -739,6 +739,28 @@ void Resources::CreateDefaultShader()
 		shader->LoadGraphicsShader(info, path);
 		Add<Shader>(L"Terrain", shader);
 	}
+
+	// Shadow
+	{
+		ShaderInfo info =
+		{
+			SHADER_TYPE::SHADOW,
+			RASTERIZER_TYPE::CULL_BACK,
+			DEPTH_STENCIL_TYPE::LESS,
+		};
+
+		ShaderPath path = {
+			L"..\\Output\\cso\\Shadow_vs.cso",
+			L"",
+			L"",
+			L"",
+			L"..\\Output\\cso\\Shadow_ps.cso",
+		};
+
+		shared_ptr<Shader> shader = make_shared<Shader>();
+		shader->LoadGraphicsShader(info, path);
+		Add<Shader>(L"Shadow", shader);
+	}
 }
 
 void Resources::CreateDefaultTexture()
@@ -865,6 +887,14 @@ void Resources::CreateDefaultMaterial()
 		shininess->SetDiffuseSrvHeapIndex(Get<Texture>(L"ShininessTarget")->GetTexHeapIndex());
 		shininess->SetShader(shader);
 		Add<Material>(L"ShininessTarget", move(shininess));
+	}
+
+	{
+		shared_ptr<Shader> shader = Get<Shader>(L"Tex");
+		auto shininess = make_shared<Material>();
+		shininess->SetDiffuseSrvHeapIndex(Get<Texture>(L"ShadowTarget")->GetTexHeapIndex());
+		shininess->SetShader(shader);
+		Add<Material>(L"ShadowTarget", move(shininess));
 	}
 
 	{
@@ -1047,8 +1077,10 @@ void Resources::CreateDefaultMaterial()
 		}
 	}
 
-	//float numberW = GET_SINGLE(Resources)->Get<Texture>(L"Number")->GetWidth();
-	//float numberH = GET_SINGLE(Resources)->Get<Texture>(L"Number")->GetHeight();
-	//float dW = numberW / 5.f;
-	//float dH = numberH / 2.f;
+	{
+		shared_ptr<Shader> shader = GET_SINGLE(Resources)->Get<Shader>(L"Shadow");
+		shared_ptr<Material> material = make_shared<Material>();
+		material->SetShader(shader);
+		Add<Material>(L"Shadow", material);
+	}
 }

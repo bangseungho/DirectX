@@ -10,9 +10,12 @@
 
 Matrix Camera::sMatView;
 Matrix Camera::sMatProjection;
+Matrix Camera::sMatShadowViewProj;
 
 Camera::Camera() : Component(COMPONENT_TYPE::CAMERA)
 {
+	mWidth = static_cast<float>(gEngine->GetWindow().Width);
+	mHeight = static_cast<float>(gEngine->GetWindow().Height);
 }
 
 Camera::~Camera()
@@ -23,13 +26,10 @@ void Camera::FinalUpdate()
 {
 	mMatView = GetTransform()->GetLocalToWorldMatrix().Invert();
 
-	float Width = static_cast<float>(gEngine->GetWindow().Width);
-	float Height = static_cast<float>(gEngine->GetWindow().Height);
-
 	if (mProjectionType == PROJECTION_TYPE::PERSPECTIVE)
-		mMatProjection = ::XMMatrixPerspectiveFovLH(mFov, Width / Height, mNear, mFar);
+		mMatProjection = ::XMMatrixPerspectiveFovLH(mFov, mWidth / mHeight, mNear, mFar);
 	else
-		mMatProjection = ::XMMatrixOrthographicLH(Width * mScale, Height * mScale, mNear, mFar);
+		mMatProjection = ::XMMatrixOrthographicLH(mWidth * mScale, mHeight * mScale, mNear, mFar);
 
 	// Regenerate Frutum
 	mFrustum.CreateFromMatrix(mFrustum, mMatProjection);
@@ -83,6 +83,35 @@ void Camera::SortGameObject()
 	}
 }
 
+void Camera::SortShadowObject()
+{
+	shared_ptr<Scene> scene = GET_SINGLE(SceneManager)->GetActiveScene();
+	const vector<shared_ptr<GameObject>>& gameObjects = scene->GetGameObjects();
+
+	mShadowObjects.clear();
+
+	for (auto& gameObject : gameObjects)
+	{
+		if (gameObject->GetMeshRenderer() == nullptr)
+			continue;
+
+		if (gameObject->IsStatic())
+			continue;
+
+		if (IsCulled(gameObject->GetLayerIndex()))
+			continue;
+
+		if (gameObject->GetCheckFrustum()) {
+			BoundingOrientedBox boundingBox = gameObject->GetMeshRenderer()->GetBoundingBox();
+			boundingBox.Transform(boundingBox, gameObject->GetTransform()->GetLocalToWorldMatrix());
+			if (!IsInFrustum(boundingBox))
+				continue;
+		}
+
+		mShadowObjects.push_back(gameObject);
+	}
+}
+
 void Camera::Render_Deferred()
 {
 	sMatView = mMatView;
@@ -110,13 +139,13 @@ void Camera::Render_Forward()
 	}
 }
 
-//void Camera::Render_Transparent()
-//{
-//	sMatView = mMatView;
-//	sMatProjection = mMatProjection;
-//
-//	for (auto& gameObject : mParticleObjects)
-//	{
-//		gameObject->GetParticleSystem()->Render();
-//	}
-//}
+void Camera::Render_Shadow()
+{
+	sMatView = mMatView;
+	sMatProjection = mMatProjection;
+
+	for (auto& gameObject : mShadowObjects)
+	{
+		gameObject->GetMeshRenderer()->RenderShadow();
+	}
+}

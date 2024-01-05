@@ -13,7 +13,7 @@ public:
 	void WaitSync();
 	void FlushResourceCommandQueue();
 
-	void RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect);
+	void RenderBegin();
 	void RenderEnd();
 
 	ComPtr<ID3D12CommandQueue> GetCmdQueue() { return mCmdQueue; }

@@ -55,6 +55,9 @@ public:
 	void SetActive(bool active) { mActiveSelf = active; }
 	bool GetActive() const { return mActiveSelf; }
 
+	void SetStatic(bool flag) { mStatic = flag; }
+	bool IsStatic() { return mStatic; }
+
 	static uint32 ObjCBIndex;
 
 private:
@@ -68,5 +71,6 @@ private:
 	uint8		mLayerIndex = 0;
 
 	bool		mActiveSelf = true;
+	bool		mStatic = true;
 };
 

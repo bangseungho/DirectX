@@ -24,6 +24,8 @@ public:
 	void SetNormalSrvHeapIndex(uint8 index) { mMatData.NormalMapIndex = static_cast<uint8>(index); }
 	void SetRoughnessSrvHeapIndex(uint8 index) { mMatData.RoughnessMapIndex = static_cast<uint8>(index); }
 	void SetHeightSrvHeapIndex(uint8 index) { mMatData.HeigtMapIndex = static_cast<uint8>(index); }
+	void SetShadowMapHeapIndex(uint8 index) { mMatData.ShadowMapIndex = static_cast<uint8>(index); }
+	void SetMatShadowCameraViewProj(const Matrix& mat) { mMatData.ShadowCameraViewProj = mat; }
 
 	void Dispatch(uint32 x, uint32 y, uint32 z);
 

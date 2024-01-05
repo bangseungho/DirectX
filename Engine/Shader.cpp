@@ -136,6 +136,13 @@ void Shader::CreateGraphicsShader()
 		mGraphicsPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		mGraphicsPipelineDesc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		break;
+	case SHADER_TYPE::COMPUTE:
+		mGraphicsPipelineDesc.NumRenderTargets = 0;
+		break;
+	case SHADER_TYPE::SHADOW:
+		mGraphicsPipelineDesc.NumRenderTargets = 1;
+		mGraphicsPipelineDesc.RTVFormats[0] = DXGI_FORMAT_R32_FLOAT;
+		break;
 	default:
 		break;
 	}

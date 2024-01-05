@@ -18,8 +18,16 @@ public:
 
 public:
 	void Render();
-	void RenderFinal();
+
+	void ClearRTV();
+
+	void RenderShadow();
+	void RenderDeferred();
 	void RenderLights();
+	void RenderFinal();
+	void RenderForward();
+
+private:
 	void PushPassData();
 
 public:

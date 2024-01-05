@@ -23,9 +23,11 @@ public:
 	PROJECTION_TYPE GetProjectionType() const { return mProjectionType; }
 
 	void SortGameObject();
+	void SortShadowObject();
+
 	void Render_Deferred();
 	void Render_Forward();
-	//void Render_Transparent();
+	void Render_Shadow();
 
 	void SetCullingMaskLayerOnOff(uint8 layer, bool on)
 	{
@@ -39,6 +41,17 @@ public:
 	void SetCullingMask(uint32 mask) { mCullingMask = mask; }
 	bool IsCulled(uint8 layer) { return (mCullingMask & (1 << layer)) != 0; }
 
+	void SetNear(float value) { mNear = value; }
+	void SetFar(float value) { mFar = value; }
+	void SetFOV(float value) { mFov = value; }
+	void SetScale(float value) { mScale = value; }
+	void SetWidth(float value) { mWidth = value; }
+	void SetHeight(float value) { mHeight = value; }
+
+	Matrix& GetViewMatrix() { return mMatView; }
+	Matrix& GetProjectionMatrix() { return mMatProjection; }
+	Matrix& GetMatShadowViewProj() { return mMatShadowViewProj; }
+
 private:
 	friend class Scene;
 
@@ -49,17 +62,23 @@ private:
 	float				mScale = 1.0f;
 	Matrix				mMatView = {};
 	Matrix				mMatProjection = {};
+	Matrix				mMatShadowViewProj = {};
 	BoundingFrustum		mFrustum;
 	uint32				mCullingMask = 0;
+
+	float				mWidth = 0.f;
+	float				mHeight = 0.f;
 
 private:
 	vector<shared_ptr<GameObject>>	mDeferredObjects;
 	vector<shared_ptr<GameObject>>	mForwardObjects;
 	vector<shared_ptr<GameObject>>	mParticleObjects;
+	vector<shared_ptr<GameObject>>	mShadowObjects;
 
 public:
 	static Matrix sMatView;
 	static Matrix sMatProjection;
+	static Matrix sMatShadowViewProj;
 };
 
 

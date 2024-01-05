@@ -4,6 +4,7 @@
 #include "Material.h"
 #include "Transform.h"
 #include "GameObject.h"
+#include "Resources.h"
 
 MeshRenderer::MeshRenderer() : Component(COMPONENT_TYPE::MESH_RENDERER)
 {
@@ -28,6 +29,23 @@ void MeshRenderer::Render()
 
 		GetTransform()->PushData();
 		material->Update();
+		mMesh->Render(1, i);
+	}
+}
+
+void MeshRenderer::RenderShadow()
+{
+	for (uint32 i = 0; i < mMaterials.size(); ++i) {
+		sptr<Material>& material = mMaterials[i];
+
+		if (material == nullptr || material->GetShader() == nullptr)
+			continue;
+
+		if (!GetGameObject()->GetActive())
+			continue;
+
+		GetTransform()->PushData();
+		GET_SINGLE(Resources)->Get<Material>(L"Shadow")->Update();
 		mMesh->Render(1, i);
 	}
 }

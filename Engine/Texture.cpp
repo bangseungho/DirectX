@@ -164,6 +164,7 @@ void Texture::CreateFromResource(ComPtr<ID3D12Resource> resource, RENDER_GROUP_T
 		case RENDER_GROUP_TYPE::G_BUFFER:
 		case RENDER_GROUP_TYPE::LIGHTING:
 		case RENDER_GROUP_TYPE::COMPUTE:
+		case RENDER_GROUP_TYPE::SHADOW:
 			CreateSRVFromDescHeap();
 			break;
 		default:

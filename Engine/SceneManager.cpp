@@ -115,15 +115,15 @@ sptr<Scene> SceneManager::LoadTestScene()
 		pCamera->Init();
 		pCamera->SetName(L"ProjectiveTexturing_Camera");
 		pCamera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
-		pCamera->GetTransform()->SetLocalPosition(Vec3(-100.f, 1000.f, 100.f));
+		pCamera->GetTransform()->SetLocalPosition(Vec3(500.f, 2000.f, 500.f));
 		pCamera->GetTransform()->SetLocalRotation(Vec3(90.f, -90.f, 0.f));
-		pCamera->GetCamera()->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
+		//pCamera->GetCamera()->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
 		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
 		pCamera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, true);
 		scene->SetProjTexCamera(pCamera);
 		scene->AddGameObject(pCamera);
 
-		pCamera->AddComponent(make_shared<TestAutoMoveScript>(pCamera->GetTransform()->GetLocalPosition().x));
+		//pCamera->AddComponent(make_shared<TestAutoMoveScript>(pCamera->GetTransform()->GetLocalPosition().x));
 	}
 #pragma endregion
 #pragma region UICamera
@@ -182,27 +182,6 @@ sptr<Scene> SceneManager::LoadTestScene()
 //		scene->AddGameObject(gameObject);
 //	}
 //#pragma endregion
-#pragma region WallCube
-{
-	sptr<GameObject> gameObject = make_shared<GameObject>();
-	gameObject->Init();
-
-	sptr<Transform> transform = gameObject->GetTransform();
-	transform->SetLocalPosition(Vec3(150.f, 0.f, -220.f));
-	transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
-
-	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-	{
-		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
-		meshRenderer->SetMesh(mesh);
-		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"wall");
-		meshRenderer->SetMaterial(material);
-	}
-	gameObject->AddComponent(make_shared<Collider>());
-	gameObject->AddComponent(meshRenderer);
-	scene->AddGameObject(gameObject);
-}
-#pragma endregion
 #pragma region NewjeansSphere
 uniform_int_distribution uid{ -3000, 3000 };
 uniform_int_distribution uidMass{ 1, 300 };
@@ -244,7 +223,7 @@ for (int i = 0; i < 10; ++i) {
 	gameObject->Init();
 
 	sptr<Transform> transform = gameObject->GetTransform();
-	transform->SetLocalPosition(Vec3(150.f, 0.f, 0.f));
+	transform->SetLocalPosition(Vec3(150.f, 200.f, 0.f));
 	transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
 
 	sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
@@ -349,13 +328,14 @@ for (int i = 0; i < 10; ++i) {
 	{
 		sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadRectangleMesh();
 		meshRenderer->SetMesh(mesh);
-		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"SpecularLightTarget");
+		sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"ShadowTarget");
 		meshRenderer->SetMaterial(material);
 	}
 	gameObject->AddComponent(meshRenderer);
 	scene->AddGameObject(gameObject);
 }
 #pragma endregion
+
 #pragma region UIScore
 {
 	sptr<GameObject> gameObject = make_shared<GameObject>();
@@ -394,9 +374,10 @@ for (int i = 0; i < 10; ++i) {
 	{
 		sptr<GameObject> light = make_shared<GameObject>();
 		light->AddComponent(make_shared<Transform>());
+		light->GetTransform()->SetLocalPosition(Vec3(500.f, 2000.f, 500.f));
 		light->AddComponent(make_shared<Light>());
 		light->GetLight()->SetLightType(LIGHT_TYPE::DIRECTIONAL_LIGHT);
-		light->GetLight()->SetLightDirection(Vec3(-1.f, -1.f, -1.f));
+		light->GetLight()->SetLightDirection(Vec3(0.f, -1.f, 0.f));
 		light->GetLight()->SetLightStrenth(Vec3(0.8f, 0.8f, 0.8f));
 		scene->AddGameObject(light);
 	}
@@ -511,6 +492,7 @@ for (int i = 0; i < 10; ++i) {
 		obj->AddComponent(make_shared<Transform>());
 		obj->AddComponent(make_shared<Terrain>());
 		obj->AddComponent(make_shared<MeshRenderer>());
+		obj->SetStatic(true);
 
 		sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
 		{
@@ -529,7 +511,29 @@ for (int i = 0; i < 10; ++i) {
 		scene->AddGameObject(obj);
 	}
 #pragma endregion
+#pragma region WallCube
+	{
+		sptr<GameObject> gameObject = make_shared<GameObject>();
+		gameObject->Init();
+		gameObject->SetStatic(false);
+		gameObject->SetCheckFrustum(false);
 
+		sptr<Transform> transform = gameObject->GetTransform();
+		transform->SetLocalPosition(Vec3(300.f, 200.f, 300.f));
+		transform->SetLocalScale(Vec3(200.f, 200.f, 200.f));
+
+		sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+		{
+			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
+			meshRenderer->SetMesh(mesh);
+			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"wall");
+			meshRenderer->SetMaterial(material);
+		}
+		gameObject->AddComponent(make_shared<Collider>());
+		gameObject->AddComponent(meshRenderer);
+		scene->AddGameObject(gameObject);
+	}
+#pragma endregion
 #pragma region FBX
 	{
 		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Building.fbx");
@@ -538,9 +542,10 @@ for (int i = 0; i < 10; ++i) {
 
 		for (auto& gameObject : gameObjects)
 		{
+			gameObject->SetStatic(false);
 			gameObject->SetName(L"Building");
 			gameObject->SetCheckFrustum(false);
-			gameObject->GetTransform()->SetLocalPosition(Vec3(500.f, -100.f, 500.f));
+			gameObject->GetTransform()->SetLocalPosition(Vec3(500.f, 200.f, 500.f));
 			gameObject->GetTransform()->SetLocalScale(Vec3(100.f, 100.f, 100.f));
 			scene->AddGameObject(gameObject);
 		}

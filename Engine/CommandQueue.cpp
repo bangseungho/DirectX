@@ -59,7 +59,7 @@ void GraphicsCommandqueue::FlushResourceCommandQueue()
 	mResCmdList->Reset(mResCmdAlloc.Get(), nullptr);
 }
 
-void GraphicsCommandqueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_RECT* rect)
+void GraphicsCommandqueue::RenderBegin()
 {
 	auto cmdAlloc = CURR_FRAMERESOURCE->mGraphicsCmdAlloc;
 
@@ -95,8 +95,6 @@ void GraphicsCommandqueue::RenderBegin(const D3D12_VIEWPORT* vp, const D3D12_REC
 	mCmdList->SetGraphicsRootShaderResourceView(4, terrainData->GetGPUVirtualAddress());
 
 	mCmdList->ResourceBarrier(1, &barrier);
-	mCmdList->RSSetViewports(1, vp);
-	mCmdList->RSSetScissorRects(1, rect);
 }
 
 void GraphicsCommandqueue::RenderEnd()

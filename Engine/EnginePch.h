@@ -74,16 +74,24 @@ enum class UAV_REGISTER : uint8
 
 enum class RENDER_TARGET_GROUP_TYPE : uint8
 {
-	SWAP_CHAIN, // BACK_BUFFER, FRONT_BUFFER
-	G_BUFFER, // Position, Normal, DIFFUSEALBEDO, SHINESS, FRESNELR0
-	LIGHTING, // DIFFUSE, SPECULAR
+	SWAP_CHAIN,		// BACK_BUFFER, FRONT_BUFFER
+	SHADOW,			// SHADOW
+	G_BUFFER,		// Position, Normal, DIFFUSEALBEDO, SHINESS, FRESNELR0
+	LIGHTING,		// DIFFUSE, SPECULAR
+
+	END,
+};
+
+enum class SHADOW_INDEX : uint8
+{
+	SHADOW,
 
 	END,
 };
 
 enum class G_BUFFER_INDEX : uint8
 {
-	G_POSITION,
+	G_POSITION = static_cast<uint8>(SHADOW_INDEX::END),
 	G_NORMAL,
 	G_DIFFUSEALBEDO,
 	G_FRESNELR0,
@@ -156,8 +164,9 @@ enum class COMPUTE_TEXTURE2D_INDEX : uint8 // uav + srv
 
 enum
 {
-	RENDER_TARGET_G_BUFFER_GROUP_COUNT = static_cast<uint8>(G_BUFFER_INDEX::END),
-	RENDER_TARGET_LIGHTING_COUNT = static_cast<uint8>(LIGHTING_INDEX::END) - RENDER_TARGET_G_BUFFER_GROUP_COUNT,
+	RENDER_TARGET_SHADOW_GROUP_COUNT = 1,
+	RENDER_TARGET_G_BUFFER_GROUP_COUNT = static_cast<uint8>(G_BUFFER_INDEX::END) - RENDER_TARGET_SHADOW_GROUP_COUNT,
+	RENDER_TARGET_LIGHTING_COUNT = static_cast<uint8>(LIGHTING_INDEX::END) - RENDER_TARGET_G_BUFFER_GROUP_COUNT - RENDER_TARGET_SHADOW_GROUP_COUNT,
 	RENDER_TARGET_GROUP_COUNT = static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::END),
 
 	COMPUTE_TEXTURE_COUNT = static_cast<uint8>(COMPUTE_TEXTURE2D_INDEX::END),
@@ -224,6 +233,7 @@ struct PassConstants
 	Matrix		View = Matrix::Identity;
 	Matrix		Proj = Matrix::Identity;
 	Matrix		ViewProj = Matrix::Identity;
+	Matrix		ViewInv = Matrix::Identity;
 	Vec4		EyePosW = { 0.f, 0.f, 0.f, 0.f };
 	float		NearZ = 0.f;
 	float		FarZ = 0.f;
@@ -240,7 +250,8 @@ struct PassConstants
 	LightInfo	Lights[MAX_LIGHTS];
 	Vec3		CameraRight = { 0.f, 0.f, 0.f };
 	float		Padding3;
-	Matrix		WorldViewProjTexture;
+	Matrix		WorldViewProjTexture = Matrix::Identity;
+	Matrix		LightViewProj = Matrix::Identity;
 };
 
 struct ObjectData
@@ -259,12 +270,14 @@ struct MaterialData
 	Vec3	FresnelR0 = { 0.01f, 0.01f, 0.01f };
 	float	Roughness = 0.25f;
 	Matrix	MatTransform = MathHelper::Identity4x4();
+	Matrix  ShadowCameraViewProj = MathHelper::Identity4x4();
 	int32	TextureMapIndex = -1;
 	int32	NormalMapIndex = -1;
 	int32	RoughnessMapIndex = -1;
 	int32	HeigtMapIndex = -1;
 	Vec2	ScoreIndex;
-	Vec2	Padding;
+	int32	ShadowMapIndex = -1;
+	float	Padding;
 };
 
 struct TerrainData

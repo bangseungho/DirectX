@@ -45,9 +45,10 @@ PS_OUT PS_Main(VS_OUT pin)
     // 보간 과정에서 단위 벡터가 안될 수 있으므로 노말라이즈를 한다.
     pin.normalW = normalize(pin.normalW);
     
+    pin.ProjTex.xyz /= pin.ProjTex.w;
     pin.ProjTex.x = pin.ProjTex.x * 0.5f + 0.5f;
     pin.ProjTex.y = pin.ProjTex.y * 0.5f + 0.5f;
-    float4 projTexMap = gTextureMaps[7].Sample(gsamAnisotropicBorder, pin.ProjTex.xy);
+    float4 projTexMap = gTextureMaps[8].Sample(gsamAnisotropicBorder, pin.ProjTex.xy);
     
     // 베이스 컬러
     if (diffuseMapIndex != -1)

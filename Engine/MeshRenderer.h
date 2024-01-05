@@ -12,6 +12,9 @@ public:
 
 public:
 	void Render();
+	void RenderShadow();
+
+public:
 	virtual void Start() override;
 
 public:

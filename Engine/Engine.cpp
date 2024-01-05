@@ -83,7 +83,7 @@ void Engine::BuildFrameResource(ComPtr<ID3D12Device> device, uint32 objectCount,
 void Engine::RenderBegin()
 {
 	mComputeCmdQueue->RenderBegin();
-	mGraphicsCmdQueue->RenderBegin(&mViewport, &mScissorRect);
+	mGraphicsCmdQueue->RenderBegin();
 }
 
 void Engine::RenderEnd()
@@ -126,6 +126,28 @@ void Engine::CreateMultipleRenderTarget()
 
 		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)] = make_shared<MultipleRenderTarget>();
 		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)]->Create(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN, rtVec, dsTexture);
+	}
+
+	// Shadow Group
+	{
+		vector<RenderTarget> rtVec(RENDER_TARGET_SHADOW_GROUP_COUNT);
+
+		rtVec[0].target = GET_SINGLE(Resources)->CreateTexture(L"ShadowTarget",
+			DXGI_FORMAT_R32_FLOAT, 4096, 4096,
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::SHADOW,
+			D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET /*Vec4(1.f, 0.f, 0.f, 0.f)*/);
+
+		//rtVec[0].clearColor[0] = 1.f;
+
+		sptr<Texture> shadowDepthTexture = GET_SINGLE(Resources)->CreateTexture(L"ShadowDepthStencil",
+			DXGI_FORMAT_D32_FLOAT, 4096, 4096,
+			CD3DX12_HEAP_PROPERTIES(D3D12_HEAP_TYPE_DEFAULT),
+			D3D12_HEAP_FLAG_NONE, RENDER_GROUP_TYPE::DEPTH_STENCIL,
+			D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);
+
+		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SHADOW)] = make_shared<MultipleRenderTarget>();
+		mMrtGroup[static_cast<uint8>(RENDER_TARGET_GROUP_TYPE::SHADOW)]->Create(RENDER_TARGET_GROUP_TYPE::SHADOW, rtVec, shadowDepthTexture);
 	}
 
 	// Deferred Group

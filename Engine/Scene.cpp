@@ -20,20 +20,49 @@ void Scene::Render()
 {
 	PushPassData();
 
+	ClearRTV();
+
+	RenderShadow();
+	RenderDeferred();
+	RenderLights();
+	RenderFinal();
+	RenderForward();
+}
+
+void Scene::ClearRTV()
+{
 	int8 backIndex = gEngine->GetSwapChain()->GetBackBufferIndex();
+
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SWAP_CHAIN)->ClearRenderTargetView(backIndex);
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SHADOW)->ClearRenderTargetView();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->ClearRenderTargetView();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->ClearRenderTargetView();
+}
 
+void Scene::RenderShadow()
+{
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SHADOW)->OMSetRenderTargets();
+
+	for (auto& light : mLightObjects) {
+		if (light->GetLightType() != LIGHT_TYPE::DIRECTIONAL_LIGHT)
+			continue;
+
+		light->RenderShadow();
+	}
+
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::SHADOW)->WaitTargetToResource();
+}
+
+void Scene::RenderDeferred()
+{
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->OMSetRenderTargets();
 	mMainCamera->SortGameObject();
 	mMainCamera->Render_Deferred();
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::G_BUFFER)->WaitTargetToResource();
+}
 
-	RenderLights();
-	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->WaitTargetToResource();
-	RenderFinal();
-
+void Scene::RenderForward()
+{
 	mMainCamera->Render_Forward();
 
 	// UI Camera
@@ -57,12 +86,17 @@ void Scene::RenderFinal()
 
 void Scene::RenderLights()
 {
+	Camera::sMatView = mMainCamera->GetViewMatrix();
+	Camera::sMatProjection = mMainCamera->GetProjectionMatrix();
+
 	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->OMSetRenderTargets();
 
 	for (auto& light : mLightObjects)
 	{
 		light->Render();
 	}
+
+	gEngine->GetMRT(RENDER_TARGET_GROUP_TYPE::LIGHTING)->WaitTargetToResource();
 }
 
 void Scene::Start()
@@ -160,8 +194,9 @@ void Scene::PushPassData()
 	passConstants.TotalTime = TOTAL_TIME;
 	passConstants.DeltaTime = DELTA_TIME;
 	passConstants.AmbientLight = mAmbientLight;
-	
+	passConstants.ViewInv = mMainCamera->mMatView.Invert();
 	passConstants.WorldViewProjTexture = mProjTexCamera->mMatView * mProjTexCamera->mMatProjection;
+	passConstants.LightViewProj = Camera::sMatShadowViewProj;
 
 	for (auto& light : mLightObjects) {
 		const LightInfo& lightInfo = light->GetLightInfo();
