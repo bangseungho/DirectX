@@ -31,7 +31,7 @@ enum
 
 enum
 {
-	STATIC_SAMPLER_COUNT = 6,
+	STATIC_SAMPLER_COUNT = 7,
 };
 
 enum
@@ -240,6 +240,7 @@ struct PassConstants
 	LightInfo	Lights[MAX_LIGHTS];
 	Vec3		CameraRight = { 0.f, 0.f, 0.f };
 	float		Padding3;
+	Matrix		WorldViewProjTexture;
 };
 
 struct ObjectData

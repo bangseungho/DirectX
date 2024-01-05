@@ -66,6 +66,7 @@ struct PassConstants
     float3              CameraRight;
     float               padding4;
     
+	row_major Matrix	WorldViewProjTexture;
 };
 
 struct ObjectData
@@ -156,5 +157,6 @@ SamplerState gsamLinearWrap       : register(s2);
 SamplerState gsamLinearClamp      : register(s3);
 SamplerState gsamAnisotropicWrap  : register(s4);
 SamplerState gsamAnisotropicClamp : register(s5);
+SamplerState gsamAnisotropicBorder : register(s6);
 
 #endif

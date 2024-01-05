@@ -39,6 +39,7 @@ PS_OUT PS_Main(VS_OUT pin)
     
     float3 normalW = gTextureMaps[NORMALMAP_INDEX].Sample(gsamAnisotropicWrap, Uv).xyz;
     float4 diffuseAlbedo = gTextureMaps[DIFFUSEMAP_INDEX].Sample(gsamAnisotropicWrap, Uv);
+    
     float3 fresnelR0 = gTextureMaps[FRESNELMAP_INDEX].Sample(gsamAnisotropicWrap, Uv).xyz;
     float shininess = gTextureMaps[SHININESSMAP_INDEX].Sample(gsamAnisotropicWrap, Uv).x;
     

@@ -109,6 +109,23 @@ sptr<Scene> SceneManager::LoadTestScene()
 		sceneMainCamera = mainCamera;
 	}
 #pragma endregion
+#pragma region ProjectiveTexturingCamera
+	{
+		sptr<GameObject> pCamera = make_shared<GameObject>();
+		pCamera->Init();
+		pCamera->SetName(L"ProjectiveTexturing_Camera");
+		pCamera->AddComponent(make_shared<Camera>()); // Near=1, Far=1000, FOV=45µµ
+		pCamera->GetTransform()->SetLocalPosition(Vec3(-100.f, 1000.f, 100.f));
+		pCamera->GetTransform()->SetLocalRotation(Vec3(90.f, -90.f, 0.f));
+		pCamera->GetCamera()->SetProjectionType(PROJECTION_TYPE::ORTHOGRAPHIC);
+		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
+		pCamera->GetCamera()->SetCullingMaskLayerOnOff(layerIndex, true);
+		scene->SetProjTexCamera(pCamera);
+		scene->AddGameObject(pCamera);
+
+		pCamera->AddComponent(make_shared<TestAutoMoveScript>(pCamera->GetTransform()->GetLocalPosition().x));
+	}
+#pragma endregion
 #pragma region UICamera
 	{
 		sptr<GameObject> camera = make_shared<GameObject>();
@@ -142,29 +159,29 @@ sptr<Scene> SceneManager::LoadTestScene()
 	}
 #pragma endregion
 //============================================================================== Object
-#pragma region NewjeansCube
-	{
-		sptr<GameObject> gameObject = make_shared<GameObject>();
-		gameObject->Init();
-
-		sptr<Transform> transform = gameObject->GetTransform();
-		transform->SetLocalPosition(Vec3(-150.f, 0.f, 200.f));
-		transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
-
-		sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
-		{
-			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
-			meshRenderer->SetMesh(mesh);
-			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"newjeans3");
-			meshRenderer->SetMaterial(material);
-		}
-		gameObject->AddComponent(make_shared<Collider>());
-		gameObject->AddComponent(meshRenderer);
-		gameObject->AddComponent(make_shared<TestAutoMoveScript>(transform->GetLocalPosition().x));
-		gameObject->AddComponent(make_shared<Collider>());
-		scene->AddGameObject(gameObject);
-	}
-#pragma endregion
+//#pragma region NewjeansCube
+//	{
+//		sptr<GameObject> gameObject = make_shared<GameObject>();
+//		gameObject->Init();
+//
+//		sptr<Transform> transform = gameObject->GetTransform();
+//		transform->SetLocalPosition(Vec3(-150.f, 0.f, 200.f));
+//		transform->SetLocalScale(Vec3(100.f, 100.f, 100.f));
+//
+//		sptr<MeshRenderer> meshRenderer = make_shared<MeshRenderer>();
+//		{
+//			sptr<Mesh> mesh = GET_SINGLE(Resources)->LoadCubeMesh();
+//			meshRenderer->SetMesh(mesh);
+//			sptr<Material> material = GET_SINGLE(Resources)->Get<Material>(L"newjeans3");
+//			meshRenderer->SetMaterial(material);
+//		}
+//		gameObject->AddComponent(make_shared<Collider>());
+//		gameObject->AddComponent(meshRenderer);
+//		gameObject->AddComponent(make_shared<TestAutoMoveScript>(transform->GetLocalPosition().x));
+//		gameObject->AddComponent(make_shared<Collider>());
+//		scene->AddGameObject(gameObject);
+//	}
+//#pragma endregion
 #pragma region WallCube
 {
 	sptr<GameObject> gameObject = make_shared<GameObject>();
@@ -197,7 +214,7 @@ vector<wstring> mats = {
 		L"newjeans3"
 };
 
-for (int i = 0; i < 100; ++i) {
+for (int i = 0; i < 10; ++i) {
 		sptr<GameObject> gameObject = make_shared<GameObject>();
 		gameObject->Init();
 
@@ -530,23 +547,23 @@ for (int i = 0; i < 100; ++i) {
 	}
 #pragma endregion
 
-#pragma region FBX
-	{
-		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Dragon.fbx");
-
-		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
-
-		for (auto& gameObject : gameObjects)
-		{
-			gameObject->SetName(L"Dragon");
-			gameObject->SetCheckFrustum(false);
-			gameObject->GetTransform()->SetLocalPosition(Vec3(1000.f, -100.f, 500.f));
-			gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, 90.f, 0.f));
-			gameObject->GetTransform()->SetLocalScale(Vec3(50.f, 50.f, 50.f));
-			scene->AddGameObject(gameObject);
-		}
-	}
-#pragma endregion
+//#pragma region FBX
+//	{
+//		shared_ptr<MeshData> meshData = GET_SINGLE(Resources)->LoadFBX(L"..\\Resources\\FBX\\Dragon.fbx");
+//
+//		vector<shared_ptr<GameObject>> gameObjects = meshData->Instantiate();
+//
+//		for (auto& gameObject : gameObjects)
+//		{
+//			gameObject->SetName(L"Dragon");
+//			gameObject->SetCheckFrustum(false);
+//			gameObject->GetTransform()->SetLocalPosition(Vec3(1000.f, -100.f, 500.f));
+//			gameObject->GetTransform()->SetLocalRotation(Vec3(0.f, 90.f, 0.f));
+//			gameObject->GetTransform()->SetLocalScale(Vec3(50.f, 50.f, 50.f));
+//			scene->AddGameObject(gameObject);
+//		}
+//	}
+//#pragma endregion
 
 #pragma region GunPlayer
 	{

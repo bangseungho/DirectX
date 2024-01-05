@@ -22,6 +22,7 @@ struct DS_OUT
     float3 normalW : Normal;
 	float3 tangentW : Tangent;
     float2 Uv : TEXCOORD;
+    float4 ProjTex : TEXCOORD1;
 };
 
 [domain("tri")]
@@ -64,6 +65,7 @@ DS_OUT DS_Main(const OutputPatch<HS_OUT, 3> input, float3 location : SV_DomainLo
 
     output.posW = mul(float4(localPos, 1.f), gObjConstants.world).xyz;
     output.posH = mul(float4(output.posW, 1.f), gObjConstants.ViewProj);
+    output.ProjTex = mul(float4(output.posW, 1.f), gPassConstants.WorldViewProjTexture);
     
     output.tangentW = normalize(mul(float4(localTangent, 0.f), gObjConstants.world)).xyz;
     float3 binormalW = normalize(mul(float4(localBinormal, 0.f), gObjConstants.world)).xyz;

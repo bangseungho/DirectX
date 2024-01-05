@@ -17,7 +17,8 @@ struct VS_OUT
     float3 posW : Position;
     float3 normalW : Normal;
 	float3 tangentW : Tangent;
-    float2 Uv : TEXCOORD;
+    float2 Uv : TEXCOORD0;
+    float4 ProjTex : TEXCOORD1;
 };
 
 VS_OUT VS_Main(VS_IN vin)
@@ -37,10 +38,12 @@ VS_OUT VS_Main(VS_IN vin)
 
     // 동차 절단 공간으로 변환
     vout.posH = mul(posW, gObjConstants.ViewProj);
-
+    vout.ProjTex = mul(posW, gPassConstants.WorldViewProjTexture);
+    
     float4 Uv = mul(float4(vin.Uv, 0.f, 1.f), matData.matTransform);
     vout.Uv = Uv.xy;
- 
+    
+    
     return vout;
 }
 

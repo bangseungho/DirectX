@@ -11,6 +11,9 @@ FrameResource::FrameResource(ComPtr<ID3D12Device> device, uint32 objectCount, ui
     mObjectCB = std::make_shared<UploadBuffer<ObjectData>>(device, objectCount, true);
     mMatData = std::make_shared<UploadBuffer<MaterialData>>(device, materialCount, false);
     mTerrainData = std::make_shared<UploadBuffer<TerrainData>>(device, 2, false);
+
+
+    mObjectCB->CopyData(10, ObjectData{});
 }
 
 FrameResource::~FrameResource()

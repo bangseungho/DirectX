@@ -33,6 +33,7 @@ public:
 	sptr<ScoreScript>& GetScoreObject() { return mScoreObject; }
 
 	void SetMainCamera(sptr<GameObject> camera) { mMainCamera = camera->GetCamera(); }
+	void SetProjTexCamera(sptr<GameObject> camera) { mProjTexCamera = camera->GetCamera(); }
 
 private:
 	vector<sptr<GameObject>>			mGameObjects;
@@ -40,6 +41,7 @@ private:
 
 	vector<sptr<Camera>>				mCameraObjects;
 	sptr<Camera>						mMainCamera;
+	sptr<Camera>						mProjTexCamera;
 
 	vector<sptr<class Light>>		mLightObjects;
 	vector<sptr<GameObject>>		mParticleObjects;

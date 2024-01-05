@@ -6,6 +6,7 @@
 #include "Transform.h"
 #include "Timer.h"
 #include "Resources.h"
+#include "SceneManager.h"
 
 void Scene::Awake()
 {
@@ -35,12 +36,13 @@ void Scene::Render()
 
 	mMainCamera->Render_Forward();
 
+	// UI Camera
 	for (auto& camera : mCameraObjects) {
-		if (camera == mMainCamera)
-			continue;
-
-		camera->SortGameObject();
-		camera->Render_Forward();
+		uint8 layerIndex = GET_SINGLE(SceneManager)->LayerNameToIndex(L"UI");
+		if (false == camera->IsCulled(layerIndex)) {
+			camera->SortGameObject();
+			camera->Render_Forward();
+		}
 	}
 }
 
@@ -159,6 +161,7 @@ void Scene::PushPassData()
 	passConstants.DeltaTime = DELTA_TIME;
 	passConstants.AmbientLight = mAmbientLight;
 	
+	passConstants.WorldViewProjTexture = mProjTexCamera->mMatView * mProjTexCamera->mMatProjection;
 
 	for (auto& light : mLightObjects) {
 		const LightInfo& lightInfo = light->GetLightInfo();
